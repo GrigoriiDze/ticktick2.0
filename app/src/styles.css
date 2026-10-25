@@ -1222,7 +1222,7 @@ header .more {
 .tab {
   background: none;
   border: 0;
-  color: var(--icon-off);
+  color: var(--tab-off);
   padding: 8px 0;
   display: grid;
   place-items: center;
@@ -3531,6 +3531,35 @@ main {
 }
 .tasks input[type='checkbox'] {
   transition: background 0.16s var(--ease-std), border-color 0.16s var(--ease-std), transform 0.12s var(--ease-std);
+}
+
+@keyframes tabbar-in {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+@keyframes tabbar-out {
+  from {
+    transform: none;
+    opacity: 1;
+  }
+  to {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+.tabbar {
+  animation: tabbar-in var(--dur-tabbar-in) var(--ease-tabbar) both;
+}
+.tabbar.leaving {
+  animation: tabbar-out var(--dur-tabbar-out) var(--ease-acc-dec) both;
+  pointer-events: none;
 }
 
 .fab {
