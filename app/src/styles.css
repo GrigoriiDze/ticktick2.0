@@ -5064,11 +5064,11 @@ button.cal-title-text:active {
   z-index: 60;
   display: grid;
   place-items: center;
-  background: rgba(25, 25, 25, 0.2);
-  animation: ds-fade 0.18s var(--ease-std) both;
+  background: rgba(0, 0, 0, 0.5);
+  animation: ds-fade var(--dur-scrim-in) var(--ease-std) both;
 }
 .ds-scrim.leaving {
-  animation: ds-fade-out 0.16s var(--ease-in) both;
+  animation: ds-fade-out var(--dur-scrim-out) var(--ease-in) both;
 }
 @keyframes ds-fade {
   from {
@@ -5084,7 +5084,7 @@ button.cal-title-text:active {
   --ds-nav: #f8f8f8;
   --ds-group: rgba(25, 25, 25, 0.02);
   --ds-sel: rgba(25, 25, 25, 0.04);
-  --ds-bg: #ffffff;
+  --ds-bg: var(--sheet);
   position: relative;
   display: flex;
   width: 800px;
@@ -5092,15 +5092,15 @@ button.cal-title-text:active {
   height: 680px;
   max-height: calc(100vh - 40px);
   overflow: hidden;
-  border-radius: 20px;
+  border-radius: var(--radius-dialog);
   background: var(--ds-bg);
   color: var(--text);
   font-size: 14px;
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(25, 25, 25, 0.04);
-  animation: ds-pop 0.22s var(--ease-out) both;
+  animation: ds-pop var(--dur-dialog) var(--ease-out) both;
 }
 .ds-scrim.leaving .ds {
-  animation: ds-pop-out 0.16s var(--ease-in) both;
+  animation: ds-pop-out var(--dur-popup-out) var(--ease-in) both;
 }
 @keyframes ds-pop {
   from {
@@ -5116,18 +5116,18 @@ button.cal-title-text:active {
 }
 :root[data-theme='dark'] .ds {
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.07);
-  --ds-nav: #242424;
+  --ds-nav: var(--popup);
   --ds-group: #202020;
   --ds-sel: #2d2d2d;
-  --ds-bg: #1c1c1c;
+  --ds-bg: var(--sheet);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) .ds {
     box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.07);
-    --ds-nav: #242424;
+    --ds-nav: var(--popup);
     --ds-group: #202020;
     --ds-sel: #2d2d2d;
-    --ds-bg: #1c1c1c;
+    --ds-bg: var(--sheet);
   }
 }
 .ds-nav {

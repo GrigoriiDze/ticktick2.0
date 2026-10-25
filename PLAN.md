@@ -1,7 +1,7 @@
 # PLAN.md — Этапы рефакторинга под APK
 
 > Обновлён: 24.10.2026
-> Текущий этап: **8 — Desktop (Tauri .exe)**
+> Текущий этап: **9 — Mobile (Capacitor APK)**
 
 ## Общая схема
 
@@ -121,10 +121,10 @@ APK -> Токены CSS -> Стили компонентов -> Web-сборка
 
 ## Этап 8 — Desktop (Tauri .exe)
 
-- [ ] npm run tauri build
-- [ ] SettingsDesktop.tsx: --sheet/--popup
-- [ ] Titlebar: нативный или кастомный
-- [ ] Тест синхронизации офлайн -> онлайн
+- [x] npm run tauri build
+- [x] SettingsDesktop.tsx: --sheet/--popup
+- [x] Titlebar: нативный или кастомный
+- [x] Тест синхронизации офлайн -> онлайн
 
 ---
 
@@ -150,9 +150,9 @@ APK -> Токены CSS -> Стили компонентов -> Web-сборка
 | 5 — TabBar                  | 5        | ГОТОВО      |
 | 6 — Calendar/Habits/Kanban  | 4        | ГОТОВО      |
 | 7 — Web-сборка              | 4        | ГОТОВО      |
-| 8 — Desktop                 | 4        | СЕЙЧАС      |
-| 9 — Mobile APK              | 5        | впереди     |
-| Итого                       | 58       | 84% готово  |
+| 8 — Desktop                 | 4        | ГОТОВО      |
+| 9 — Mobile APK              | 5        | СЕЙЧАС      |
+| Итого                       | 58       | 91% готово  |
 
 ---
 
