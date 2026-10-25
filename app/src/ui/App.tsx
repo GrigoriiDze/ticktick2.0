@@ -15,6 +15,7 @@ import { compareWaiting, isWaiting, waitingCount } from '../domain/waiting'
 import { orderBetween } from '../domain/order'
 import { nextOccurrence } from '../domain/repeat'
 import { isSite } from '../domain/sites'
+import { isUrgent, type Quadrant } from '../domain/matrix'
 import { type Priority, type Project, type SiteStage, type Task } from '../domain/types'
 import { Calendar, CalendarHeader, type QuickAddRequest } from './Calendar'
 import { CalendarDesktop, DeskCalHeader } from './CalendarDesktop'
@@ -591,6 +592,43 @@ function Workspace({ user }: { user: User }) {
     void addQuick({ title: s.title.trim() || text.trim(), date, priority, projectId: projectForNew(effectiveView), tags: s.tags.map(normalizeTag).filter(Boolean), content: '' })
   }
 
+  function addInQuadrant(title: string, quadrant: Quadrant) {
+    const isImp = quadrant === 'q1' || quadrant === 'q2'
+    const isUrg = quadrant === 'q1' || quadrant === 'q3'
+    const priority: Priority = isImp ? 5 : 0
+    const day = isUrg ? today(ctx) : null
+    const date = day ? { ...EMPTY_DATE, day } : EMPTY_DATE
+    void addQuick({
+      title: title.trim(),
+      date,
+      priority,
+      projectId: projectForNew(effectiveView),
+      tags: [],
+      content: '',
+    })
+  }
+
+  function moveQuadrant(taskId: string, target: Quadrant) {
+    const t = (tasks ?? []).find((x) => x.id === taskId)
+    if (!t) return
+    const isImp = target === 'q1' || target === 'q2'
+    const isUrg = target === 'q1' || target === 'q3'
+    const priority: Priority = isImp ? (t.priority >= 3 ? t.priority : 5) : 0
+    let newStart = t.start
+    let newDue = t.due
+    if (isUrg) {
+      if (!isUrgent(t, ctx)) {
+        newDue = today(ctx)
+      }
+    } else {
+      if (isUrgent(t, ctx)) {
+        newDue = null
+        newStart = null
+      }
+    }
+    void tasksRepo.update(taskId, { priority, start: newStart, due: newDue })
+  }
+
   return (
     <div className={['app', wide ? 'wide' : '', showSide ? 'side' : '', boardLayout ? 'board' : '', wide && ((tasksSection && !boardLayout) || ox) ? 'has-pane' : ''].filter(Boolean).join(' ')}>
       {wide && (
@@ -726,7 +764,14 @@ function Workspace({ user }: { user: User }) {
             onDelete={(id) => void countdownsRepo.softDelete(id)}
           />
         ) : effectiveView.type === 'matrix' ? (
-          <Matrix tasks={tasks ?? []} ctx={ctx} onToggle={toggle} onOpen={rowActions.open} />
+          <Matrix
+            tasks={tasks ?? []}
+            ctx={ctx}
+            onToggle={toggle}
+            onOpen={rowActions.open}
+            onAdd={addInQuadrant}
+            onMoveQuadrant={moveQuadrant}
+          />
         ) : effectiveView.type === 'habits' ? (
           <Habits
             habits={habits ?? []}

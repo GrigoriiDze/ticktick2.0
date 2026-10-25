@@ -3141,63 +3141,180 @@ main {
 .matrix {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  padding: 4px 12px 96px;
+  grid-template-rows: 1fr 1fr;
+  gap: 12px;
+  padding: 8px 14px 80px;
+  box-sizing: border-box;
+  height: 100%;
+  min-height: 0;
 }
+
+.app.wide .matrix {
+  padding: 8px 20px 24px;
+  gap: 16px;
+  height: calc(100vh - 120px);
+}
+
 .mx-cell {
   background: var(--card);
-  border-radius: 14px;
-  padding: 10px 8px 8px;
-  min-height: 180px;
-  min-width: 0;
-  border-top: 3px solid var(--mx, var(--accent));
-}
-.mx-cell.q1 {
-  --mx: #ef5350;
-}
-.mx-cell.q2 {
-  --mx: #f5a623;
-}
-.mx-cell.q3 {
-  --mx: #5b9cf0;
-}
-.mx-cell.q4 {
-  --mx: #8a8a8d;
-}
-.mx-cell header {
+  border-radius: 12px;
+  padding: 12px 14px;
+  min-height: 0;
   display: flex;
-  justify-content: space-between;
-  gap: 6px;
-  padding: 0 4px 6px;
-  font-size: 13px;
-  color: color-mix(in srgb, var(--mx) 62%, var(--text));
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--mx, var(--accent));
+  transition: border-color 0.15s, box-shadow 0.15s;
+  overflow: hidden;
 }
-.mx-cell .tasks {
+
+.mx-cell.drag-over {
+  border-color: var(--mx);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--mx) 40%, transparent);
+}
+
+.mx-cell.q1 { --mx: #ef5350; }
+.mx-cell.q2 { --mx: #f5a623; }
+.mx-cell.q3 { --mx: #4772fa; }
+.mx-cell.q4 { --mx: #8e8e93; }
+
+.mx-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+  margin-bottom: 8px;
+}
+.mx-head-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.mx-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--mx);
+  flex-shrink: 0;
+}
+.mx-title-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
+.mx-hint-text {
+  font-size: 12px;
+  color: var(--hint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mx-badge {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--hint);
+  background: color-mix(in srgb, var(--text) 6%, transparent);
+  padding: 1px 7px;
+  border-radius: 10px;
+}
+
+/* Строка добавления в квадрант */
+.mx-addbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  background: color-mix(in srgb, var(--field) 70%, transparent);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  border: 1px solid transparent;
+  transition: border-color 0.15s, background 0.15s;
+}
+.mx-addbar.on,
+.mx-addbar:focus-within {
+  background: var(--field);
+  border-color: color-mix(in srgb, var(--mx) 60%, transparent);
+}
+.mx-add-plus {
+  font-size: 16px;
+  color: var(--hint);
+  line-height: 1;
+}
+.mx-addbar input {
+  flex: 1;
+  min-width: 0;
+  background: none;
+  border: 0;
+  outline: none;
+  font: inherit;
+  font-size: 13px;
+  color: var(--text);
+}
+.mx-addbar input::placeholder {
+  color: var(--hint);
+  font-size: 12px;
+}
+
+.mx-list-wrap {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.mx-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 60px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.mx-tasks {
   list-style: none;
   margin: 0;
   padding: 0;
-}
-.mx-cell .tasks li {
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
+  gap: 3px;
+}
+.mx-task-item {
+  display: flex;
+  align-items: center;
   gap: 8px;
-  padding: 6px 2px;
-  min-height: 0;
-  background: none;
-  border-radius: 0;
-  box-shadow: none;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--bg) 50%, transparent);
+  cursor: grab;
+  transition: background 0.12s;
+}
+.mx-task-item:hover {
+  background: var(--hover);
+}
+.mx-task-item:active {
+  cursor: grabbing;
 }
 .mx-title {
   all: unset;
   flex: 1;
   min-width: 0;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.25;
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 2px;
   cursor: pointer;
-  overflow-wrap: anywhere;
+}
+.mx-task-title {
+  word-break: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .mx-title small {
   font-size: 11px;
