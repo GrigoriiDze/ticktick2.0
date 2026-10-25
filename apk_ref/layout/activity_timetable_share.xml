@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:orientation="vertical" android:id="@id/layout_background" android:background="?activity_background" android:fitsSystemWindows="true" android:layout_width="match_parent" android:layout_height="match_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <FrameLayout android:id="@id/bar" android:layout_width="match_parent" android:layout_height="wrap_content">
+        <include android:id="@id/toolbarLayout" android:layout_width="match_parent" android:layout_height="?actionBarSize" layout="@layout/toolbar_layout" />
+    </FrameLayout>
+    <androidx.viewpager.widget.ViewPager android:id="@id/vpShare" android:scrollbars="none" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_below="@id/bar" android:overScrollMode="never" />
+    <androidx.appcompat.widget.AppCompatImageView android:id="@id/ivFakeToolbar" android:layout_width="match_parent" android:layout_height="?actionBarSize" />
+    <ProgressBar android:id="@id/pb_making_image" android:visibility="gone" android:layout_width="24.0dp" android:layout_height="24.0dp" android:layout_marginLeft="14.0dp" android:layout_marginTop="12.0dp" android:layout_marginRight="14.0dp" android:indeterminateDrawable="@drawable/progress_medium_holo" android:layout_alignParentRight="true" android:layout_marginStart="14.0dp" android:layout_marginEnd="14.0dp" android:layout_alignParentEnd="true" />
+    <androidx.appcompat.widget.AppCompatImageView android:id="@id/ivFakeTabBar" android:layout_width="match_parent" android:layout_height="@dimen/bottom_navigation_height" android:layout_alignParentBottom="true" />
+    <com.ticktick.customview.chooseshare.ChooseShareAppView android:id="@id/choose_share_app_view" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_alignParentBottom="true" />
+    <include android:layout_width="match_parent" android:layout_height="@dimen/divider_1" android:layout_marginTop="-1.0dp" android:layout_below="@id/tab_layout" layout="@layout/toolbar_divider" />
+    <View android:id="@id/view_mask" android:background="#fff" android:visibility="gone" android:layout_width="match_parent" android:layout_height="match_parent" />
+</RelativeLayout>

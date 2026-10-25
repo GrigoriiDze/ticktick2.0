@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout android:paddingTop="11.0dp" android:paddingBottom="11.0dp" android:layout_width="match_parent" android:layout_height="wrap_content"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.ticktick.task.theme.view.TTImageView android:id="@id/iv_icon" android:layout_width="12.0dp" android:layout_height="12.0dp" app:iconTintType="themeIconPrimary" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintLeft_toLeftOf="parent" app:layout_constraintTop_toTopOf="parent" app:srcCompat="@drawable/ic_svg_om_selected_v8" />
+    <com.ticktick.task.theme.view.TTTextView android:textSize="16.0sp" android:id="@id/tv_title" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="10.0dp" app:layout_constraintBottom_toBottomOf="@id/iv_icon" app:layout_constraintLeft_toRightOf="@id/iv_icon" app:layout_constraintTop_toTopOf="@id/iv_icon" app:layout_constraintWidth_min="158.0dp" app:layout_goneMarginEnd="8.0dp" app:textColorType="themeTextPrimary" />
+</androidx.constraintlayout.widget.ConstraintLayout>

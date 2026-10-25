@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:layout_width="match_parent" android:layout_height="54.0dp"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout android:gravity="center_vertical" android:orientation="horizontal" android:id="@id/layout_item" android:layout_width="match_parent" android:layout_height="match_parent">
+        <com.ticktick.task.theme.view.TTImageView android:layout_gravity="center_vertical" android:id="@id/iv_icon" android:padding="1.0dp" android:layout_width="24.0dp" android:layout_height="24.0dp" android:layout_marginStart="12.0dp" app:iconTintType="themeIconSecondary" app:srcCompat="@drawable/ic_svg_slidemenu_list_shared_v8" />
+        <com.ticktick.task.theme.view.TTTextView android:textSize="15.0sp" android:gravity="center" android:layout_gravity="center" android:id="@id/tv_emoji" android:visibility="gone" android:layout_width="24.0dp" android:layout_height="24.0dp" android:layout_marginStart="12.0dp" app:textColorAlpha="1.0" app:textColorType="themeTextPrimary" />
+        <com.ticktick.task.theme.view.TTTextView android:textSize="16.0sp" android:layout_gravity="center_vertical" android:id="@id/tv_title" android:layout_width="0.0dp" android:layout_height="wrap_content" android:layout_weight="1.0" android:layout_marginStart="6.0dp" android:layout_marginEnd="6.0dp" app:textColorType="themeTextPrimary" />
+        <com.ticktick.task.theme.view.TTImageView android:layout_gravity="center_vertical" android:id="@id/iv_arrow" android:layout_width="18.0dp" android:layout_height="18.0dp" android:layout_marginEnd="12.0dp" app:iconTintType="themeIconTertiary" app:srcCompat="@drawable/ic_svg_common_arrow_down" />
+    </LinearLayout>
+</FrameLayout>

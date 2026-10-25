@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:layout_width="match_parent" android:layout_height="60.0dp" android:paddingStart="16.0dp" android:paddingEnd="16.0dp"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout android:orientation="horizontal" android:id="@id/right_btn_layout" android:layout_width="match_parent" android:layout_height="match_parent">
+        <FrameLayout android:layout_width="0.0dp" android:layout_height="match_parent" android:layout_weight="1.0">
+            <com.ticktick.task.theme.view.TTImageView android:textSize="24.0sp" android:layout_gravity="center" android:id="@id/setDate" android:padding="16.0dp" android:layout_width="@dimen/action_bar_btn_default_width" android:layout_height="match_parent" android:scaleType="centerInside" app:backgroundType="themeSelectable" app:srcCompat="@drawable/ic_svg_quickdate_pick_date_v8" />
+        </FrameLayout>
+        <FrameLayout android:layout_width="0.0dp" android:layout_height="match_parent" android:layout_weight="1.0">
+            <com.ticktick.task.theme.view.TTImageView android:layout_gravity="center" android:id="@id/moveColumn" android:padding="16.0dp" android:layout_width="@dimen/action_bar_btn_default_width" android:layout_height="match_parent" android:scaleType="centerInside" app:backgroundType="themeSelectable" app:srcCompat="@drawable/ic_svg_om_move_column_v8" app:tint="?header_icon_color" />
+        </FrameLayout>
+        <FrameLayout android:layout_width="0.0dp" android:layout_height="match_parent" android:layout_weight="1.0">
+            <com.ticktick.task.theme.view.TTImageView android:textSize="24.0sp" android:layout_gravity="center" android:id="@id/movelist" android:padding="16.0dp" android:layout_width="@dimen/action_bar_btn_default_width" android:layout_height="match_parent" android:scaleType="centerInside" app:backgroundType="themeSelectable" app:srcCompat="@drawable/ic_svg_om_move_project_v8" />
+        </FrameLayout>
+        <FrameLayout android:layout_width="0.0dp" android:layout_height="match_parent" android:layout_weight="1.0">
+            <com.ticktick.task.theme.view.TTImageView android:layout_gravity="center" android:id="@id/delete" android:padding="16.0dp" android:layout_width="@dimen/action_bar_btn_default_width" android:layout_height="match_parent" android:scaleType="centerInside" app:backgroundType="themeSelectable" app:srcCompat="@drawable/ic_svg_om_delete_v8" />
+        </FrameLayout>
+        <FrameLayout android:layout_width="0.0dp" android:layout_height="match_parent" android:layout_weight="1.0">
+            <com.ticktick.task.theme.view.TTImageView android:layout_gravity="center" android:id="@id/more" android:padding="16.0dp" android:layout_width="@dimen/action_bar_btn_default_width" android:layout_height="match_parent" android:scaleType="centerInside" app:backgroundType="themeSelectable" app:srcCompat="@drawable/ic_svg_om_more_v8" />
+        </FrameLayout>
+    </LinearLayout>
+</FrameLayout>

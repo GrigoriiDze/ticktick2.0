@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.ticktick.customview.FullscreenFrameLayout android:background="?activity_background" android:layout_width="match_parent" android:layout_height="match_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.ticktick.customview.FitWindowsRelativeLayout android:layout_width="match_parent" android:layout_height="match_parent">
+        <androidx.appcompat.widget.Toolbar android:theme="?TT_Toolbar" android:id="@id/toolbar" android:layout_width="match_parent" android:layout_height="?actionBarSize" android:layout_alignParentTop="true" app:contentInsetEnd="0.0dp" app:contentInsetLeft="0.0dp" app:contentInsetRight="0.0dp" app:contentInsetStart="0.0dp" app:contentInsetStartWithNavigation="0.0dp" app:layout_collapseMode="pin" app:navigationIcon="@drawable/abc_ic_ab_back_mtrl_am_alpha" app:popupTheme="?TT_Toolbar_Pop" app:titleMargin="0.0dp" app:titleTextColor="?toolbar_title_color">
+            <com.google.android.material.tabs.TabLayout android:id="@id/tabs" android:layout_width="wrap_content" android:layout_height="wrap_content" app:tabMaxWidth="2000.0dp" style="@style/TabLayoutStyle.Text18dp.Toolbar" />
+        </androidx.appcompat.widget.Toolbar>
+        <androidx.viewpager2.widget.ViewPager2 android:id="@id/view_pager" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_below="@id/toolbar" />
+    </com.ticktick.customview.FitWindowsRelativeLayout>
+</com.ticktick.customview.FullscreenFrameLayout>

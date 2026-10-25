@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:id="@id/layoutBackground" android:layout_width="match_parent" android:layout_height="wrap_content"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.ticktick.task.theme.view.TTTabLayout android:id="@id/tab_layout" android:layout_width="match_parent" android:layout_height="30.0dp" android:layout_marginTop="16.0dp" android:layout_marginBottom="24.0dp" app:selectedTextColorType="themeTextAccent" app:tabGravity="center" app:tabIndicatorGravity="center" app:tabIndicatorHeight="30.0dp" app:tabMode="fixed" app:tabRippleColor="@null" app:tabSelectedTextColor="?colorAccent" app:tabTextAppearance="@style/TabTextAppearance14sp" app:tabTextColor="?android:textColorSecondary" app:unselectedTextColorType="themeTextSecondary" />
+</FrameLayout>

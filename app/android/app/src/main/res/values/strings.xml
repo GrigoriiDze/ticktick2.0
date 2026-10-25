@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">TickTick 2.0</string>
+    <string name="title_activity_main">TickTick 2.0</string>
+    <string name="package_name">dev.grigorii.tasks</string>
+    <string name="custom_url_scheme">dev.grigorii.tasks</string>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout android:gravity="center_vertical" android:id="@id/view_toolbar_custom" android:layout_width="match_parent" android:layout_height="match_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.google.android.material.tabs.TabLayout android:id="@id/tabs" android:fadingEdgeLength="16.0dp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:requiresFadingEdge="vertical" app:layout_constrainedWidth="true" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toStartOf="@id/iv_help" app:layout_constraintHorizontal_bias="0.0" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent" app:tabMaxWidth="2000.0dp" style="@style/TabLayoutStyle.Text18dp.Toolbar" />
+    <com.ticktick.task.theme.view.TTImageView android:id="@id/iv_help" android:visibility="gone" android:src="@drawable/ic_svg_om_help_v8" android:tint="?iconColorTertiary" app:backgroundType="themeSelectable" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="parent" style="@style/BaseToolbarRightIcon" />
+</androidx.constraintlayout.widget.ConstraintLayout>

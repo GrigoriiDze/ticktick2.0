@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.ticktick.customview.selectableview.SelectableFrameLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <RelativeLayout android:gravity="center_vertical" android:layout_gravity="bottom" android:paddingLeft="44.0dp" android:paddingRight="@dimen/preference_padding_h" android:layout_width="match_parent" android:layout_height="48.0dp" android:paddingStart="44.0dp" android:paddingEnd="@dimen/preference_padding_h">
+        <com.ticktick.task.view.ProjectIconView android:id="@id/left" android:visibility="visible" android:layout_width="28.0dp" android:layout_height="28.0dp" android:layout_centerVertical="true" />
+        <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent" android:layout_toLeftOf="@id/right_layout" android:layout_toRightOf="@id/left" android:layout_toStartOf="@id/right_layout" android:layout_toEndOf="@id/left">
+            <TextView android:ellipsize="end" android:id="@id/text" android:singleLine="true" style="@style/dialog_text_style" />
+            <ImageView android:id="@id/info_icon" android:visibility="gone" android:src="@drawable/ic_svg_common_about_circle_v8" android:layout_centerVertical="true" android:layout_toEndOf="@id/text" app:tint="?android:textColorTertiary" style="@style/IconAboutCircle" />
+        </RelativeLayout>
+        <RelativeLayout android:id="@id/right_layout" android:layout_width="wrap_content" android:layout_height="match_parent" android:layout_alignParentRight="true" android:layout_alignParentEnd="true">
+            <com.ticktick.task.view.customview.MultiStyleCheckBox android:id="@id/selection_checkbox" android:visibility="gone" android:layout_centerVertical="true" style="@style/ListItemRightCheckBoxStyle" />
+            <ImageView android:id="@id/right" android:background="@color/primary_pink_10" android:visibility="gone" android:layout_width="wrap_content" android:layout_height="match_parent" android:scaleType="center" app:tint="?iconColorPrimary" />
+        </RelativeLayout>
+    </RelativeLayout>
+</com.ticktick.customview.selectableview.SelectableFrameLayout>

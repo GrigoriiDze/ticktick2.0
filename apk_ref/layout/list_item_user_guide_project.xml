@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.ticktick.task.activity.share.share_view.ThemeCheckFrameLayout android:id="@id/fl_check" android:layout_width="match_parent" android:layout_height="wrap_content">
+        <LinearLayout android:gravity="center_vertical" android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="66.0dp">
+            <TextView android:textSize="15.0sp" android:textColor="?android:textColorPrimary" android:id="@id/tv_emoji" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="16.0dp" android:layout_marginStart="16.0dp" />
+            <TextView android:textSize="16.0sp" android:gravity="start" android:id="@id/tv_title" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginLeft="8.0dp" android:layout_marginRight="8.0dp" android:layout_marginStart="8.0dp" android:layout_marginEnd="8.0dp" android:layout_marginVertical="21.0dp" />
+        </LinearLayout>
+    </com.ticktick.task.activity.share.share_view.ThemeCheckFrameLayout>
+</FrameLayout>

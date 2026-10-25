@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:layout_width="match_parent" android:layout_height="match_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <FrameLayout android:id="@id/layout_fragment" android:layout_width="match_parent" android:layout_height="match_parent" />
+    <com.ticktick.customview.NonClickableToolbar android:id="@id/toolbar" android:layout_width="match_parent" android:layout_height="?actionBarSize" android:paddingEnd="2.0dp" app:iconTintType="themeIconPrimary" app:popupTheme="?TT_Toolbar_Pop" app:textColorType="themeHomeTextPrimary">
+        <com.ticktick.task.theme.view.TTImageView android:layout_gravity="end|center" android:id="@id/item_add_timer" android:background="?actionBarItemBackground" app:iconTintType="themeHomeIconPrimary" app:srcCompat="@drawable/ic_svg_actionbar_add_v8" style="@style/ActionBarIcon" />
+        <com.ticktick.task.theme.view.TTImageView android:layout_gravity="end|center" android:id="@id/item_statistics" android:background="?actionBarItemBackground" app:iconTintType="themeHomeIconPrimary" app:srcCompat="@drawable/ic_svg_actionbar_statistic_v8" style="@style/ActionBarIcon" />
+    </com.ticktick.customview.NonClickableToolbar>
+</FrameLayout>

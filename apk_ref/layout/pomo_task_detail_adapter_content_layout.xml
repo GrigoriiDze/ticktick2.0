@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingHorizontal="@dimen/dialog_content_align_title_padding"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <TextView android:textSize="16.0sp" android:textColor="?android:textColorSecondary" android:id="@id/title" android:layout_width="match_parent" android:layout_height="wrap_content" android:lineSpacingMultiplier="1.4" />
+</FrameLayout>

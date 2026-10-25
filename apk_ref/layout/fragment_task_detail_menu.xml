@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.ticktick.customview.FitWindowsLinearLayout android:orientation="vertical" android:background="@drawable/bg_top_r20" android:layout_width="match_parent" android:layout_height="match_parent" app:backgroundTintType="themeBackgroundBottomSheet" app:insetTopEnable="false"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <include android:id="@id/layout_header" android:visibility="gone" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="6.0dp" layout="@layout/item_task_detail_menu_header" />
+    <com.ticktick.customview.BoundsAnimateLayout android:id="@id/list_parent" android:paddingTop="4.0dp" android:paddingBottom="4.0dp" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4.0dp">
+        <androidx.coordinatorlayout.widget.CoordinatorLayout android:orientation="vertical" android:layout_width="match_parent" android:layout_height="wrap_content">
+            <androidx.recyclerview.widget.RecyclerView android:id="@id/list_normal" android:paddingBottom="12.0dp" android:layout_width="match_parent" android:layout_height="wrap_content" android:overScrollMode="never" />
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <androidx.recyclerview.widget.RecyclerView android:id="@id/list_more" android:paddingBottom="12.0dp" android:visibility="gone" android:layout_width="match_parent" android:layout_height="wrap_content" android:overScrollMode="never" />
+    </com.ticktick.customview.BoundsAnimateLayout>
+</com.ticktick.customview.FitWindowsLinearLayout>

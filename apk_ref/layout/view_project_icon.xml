@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:layout_width="match_parent" android:layout_height="match_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.appcompat.widget.AppCompatImageView android:id="@id/img_projectIcon" android:padding="1.0dp" android:layout_width="match_parent" android:layout_height="match_parent" app:tint="?iconColorPrimary" />
+    <com.ticktick.customview.IconTextView android:textSize="16.0sp" android:textColor="@color/black_alpha_100" android:gravity="center" android:id="@id/tv_projectIcon" android:visibility="gone" android:layout_width="match_parent" android:layout_height="match_parent" />
+</FrameLayout>

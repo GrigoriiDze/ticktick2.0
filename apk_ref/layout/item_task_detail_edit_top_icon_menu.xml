@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout android:paddingTop="10.0dp" android:paddingBottom="10.0dp" android:clipToPadding="false" android:layout_width="wrap_content" android:layout_height="wrap_content"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout android:orientation="vertical" android:id="@id/layout_action" android:layout_width="56.0dp" android:layout_height="wrap_content" android:minWidth="56.0dp" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent">
+        <androidx.cardview.widget.CardView android:layout_gravity="center_horizontal" android:layout_width="56.0dp" android:layout_height="56.0dp" app:cardBackgroundColor="?card_background" app:cardCornerRadius="@dimen/corners_radius_card" app:cardElevation="0.0dp">
+            <com.ticktick.task.theme.view.TTImageView android:id="@id/iv_icon" android:padding="14.0dp" android:layout_width="56.0dp" android:layout_height="56.0dp" app:backgroundType="themeSelectableBorderless" />
+        </androidx.cardview.widget.CardView>
+        <com.ticktick.task.theme.view.TTTextView android:textSize="12.0sp" android:gravity="center" android:layout_gravity="center_horizontal" android:id="@id/tv_title" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8.0dp" android:maxWidth="56.0dp" app:textColorType="themeTextPrimary" />
+    </LinearLayout>
+    <androidx.appcompat.widget.AppCompatImageView android:id="@id/iv_remove" android:padding="8.0dp" android:layout_width="32.0dp" android:layout_height="32.0dp" android:translationX="10.0dp" android:translationY="-10.0dp" app:layout_constraintEnd_toEndOf="@id/layout_action" app:layout_constraintTop_toTopOf="@id/layout_action" app:srcCompat="@drawable/ic_svg_tab_remove" app:tint="#ff7271" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@id/content" android:background="?activity_background" android:fitsSystemWindows="true" android:layout_width="match_parent" android:layout_height="match_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.appcompat.widget.Toolbar android:id="@id/toolbar" android:layout_width="match_parent" android:layout_height="?actionBarSize" app:contentInsetEnd="0.0dp" app:contentInsetLeft="0.0dp" app:contentInsetRight="0.0dp" app:contentInsetStart="0.0dp" app:contentInsetStartWithNavigation="0.0dp" app:layout_constraintTop_toTopOf="parent" app:navigationIcon="@drawable/abc_ic_ab_back_mtrl_am_alpha" app:popupTheme="?TT_Toolbar_Pop" app:theme="?TT_Toolbar" app:titleTextColor="?toolbar_title_color" />
+    <ScrollView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_above="@id/tvDeleteSchedule" android:layout_below="@id/toolbar">
+        <LinearLayout android:gravity="center_horizontal" android:orientation="vertical" android:layout_width="match_parent" android:layout_height="wrap_content">
+            <RelativeLayout android:background="?input_bg_r14" android:layout_width="match_parent" android:layout_height="48.0dp" android:layout_marginHorizontal="@dimen/preference_padding_h">
+                <com.google.android.material.textfield.TextInputLayout android:id="@id/til_layout" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_centerVertical="true" app:endIconDrawable="@drawable/ic_clear_text" app:endIconMode="clear_text" app:endIconTint="?android:textColorTertiary" app:hintAnimationEnabled="false" app:hintEnabled="false">
+                    <com.ticktick.task.theme.view.TTEditText android:textSize="16.0sp" android:textColor="?android:textColorPrimary" android:gravity="center_vertical" android:id="@id/etScheduleName" android:background="@null" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_marginLeft="14.0dp" android:hint="@string/course_schedule_name" android:maxLength="@integer/max_length_common" android:inputType="textNoSuggestions" android:imeOptions="actionDone" android:layout_marginStart="14.0dp" android:importantForAutofill="no" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </RelativeLayout>
+            <androidx.cardview.widget.CardView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="20.0dp" style="@style/TickTickCardView">
+                <LinearLayout android:orientation="vertical" android:layout_width="match_parent" android:layout_height="wrap_content">
+                    <com.ticktick.customview.selectableview.SelectableLinearLayout android:gravity="center_vertical" android:id="@id/llChooseStartDate" android:layout_width="match_parent" android:layout_height="wrap_content">
+                        <LinearLayout android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="@dimen/preference_margin" android:layout_marginTop="12.0dp" android:layout_marginBottom="12.0dp" android:layout_marginStart="@dimen/preference_margin">
+                            <com.ticktick.task.theme.view.TTTextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/course_term_start" style="@style/PreferenceTextTitle" />
+                            <com.ticktick.task.theme.view.TTTextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/course_term_start_hint" style="@style/PreferenceTextSummary.SmallText" />
+                        </LinearLayout>
+                        <View android:layout_width="0.0dp" android:layout_height="0.0dp" android:layout_weight="1.0" />
+                        <TextView android:id="@id/tvTermStartDate" android:layout_width="wrap_content" android:layout_height="wrap_content" style="@style/ItemTextSummary" />
+                        <com.ticktick.task.theme.view.TTImageView android:layout_marginTop="0.8000001dp" app:iconTintType="themeIconTertiary" app:srcCompat="@drawable/ic_svg_common_preference_arrow" style="@style/edit_project_item_right" />
+                    </com.ticktick.customview.selectableview.SelectableLinearLayout>
+                    <com.ticktick.task.view.PreferenceItemLayout android:id="@id/weekItemLayout" android:layout_width="match_parent" android:layout_height="wrap_content" app:title="@string/course_semester_weeks" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+            <androidx.cardview.widget.CardView android:layout_width="match_parent" android:layout_height="wrap_content" style="@style/TickTickCardView">
+                <LinearLayout android:orientation="vertical" android:layout_width="match_parent" android:layout_height="wrap_content">
+                    <com.ticktick.task.view.PreferenceItemLayout android:id="@id/lessonTimeItemLayout" android:layout_width="match_parent" android:layout_height="wrap_content" app:title="@string/course_class_time" />
+                    <com.ticktick.task.view.PreferenceItemLayout android:id="@id/reminderItemLayout" android:layout_width="match_parent" android:layout_height="wrap_content" app:title="@string/course_class_reminder" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+            <androidx.cardview.widget.CardView android:id="@id/cvUseTimetable" android:layout_width="match_parent" android:layout_height="wrap_content" style="@style/TickTickCardView">
+                <com.ticktick.customview.selectableview.SelectableLinearLayout android:gravity="center_vertical" android:layout_width="match_parent" android:layout_height="50.0dp">
+                    <com.ticktick.task.theme.view.TTTextView android:layout_width="0.0dp" android:layout_height="wrap_content" android:text="@string/course_use_timetable" android:layout_weight="1.0" android:layout_marginStart="@dimen/preference_margin" android:layout_marginEnd="@dimen/preference_margin" style="@style/PreferenceTextTitle" />
+                    <com.ticktick.task.view.customview.TTSwitch android:id="@android:id/checkbox" app:theme="@style/switch_color" style="@style/Switch_Preference_settings" />
+                </com.ticktick.customview.selectableview.SelectableLinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
+    <com.ticktick.customview.selectableview.SelectableTextView android:textSize="14.0sp" android:textColor="@color/textColor_red" android:id="@id/tvDeleteSchedule" android:padding="@dimen/preference_margin" android:paddingLeft="24.0dp" android:paddingRight="24.0dp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="16.0dp" android:text="@string/delete" android:layout_alignParentBottom="true" android:layout_centerHorizontal="true" />
+</RelativeLayout>

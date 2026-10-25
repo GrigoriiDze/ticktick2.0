@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Проверка связи</title>
+<style>
+  :root { --bg:#f4f5f7; --card:#fff; --text:#1c1f24; --muted:#6b7280; --ok:#16a34a; --bad:#dc2626; --line:#e5e7eb; --accent:#2563eb; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#141518; --card:#1d1f24; --text:#eceef2; --muted:#9aa0ab; --line:#2c2f36; --accent:#60a5fa; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:16px; background:var(--bg); color:var(--text); font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+  main { max-width:560px; margin:0 auto; }
+  h1 { font-size:22px; margin:8px 0 6px; }
+  p { margin:0 0 14px; color:var(--muted); }
+  button { font:inherit; font-weight:600; padding:12px 18px; border:0; border-radius:10px; background:var(--accent); color:#fff; cursor:pointer; width:100%; }
+  button:disabled { opacity:.6; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; margin-top:16px; overflow:hidden; }
+  .row { display:flex; flex-wrap:wrap; justify-content:space-between; gap:4px 12px; padding:12px 14px; border-bottom:1px solid var(--line); }
+  .row:last-child { border-bottom:0; }
+  .host { flex:1 1 230px; overflow-wrap:anywhere; }
+  .note { display:block; font-size:13px; color:var(--muted); }
+  .res { font-weight:700; white-space:nowrap; }
+  .ok { color:var(--ok); } .bad { color:var(--bad); }
+  textarea { width:100%; height:150px; margin-top:16px; padding:10px; border-radius:10px; border:1px solid var(--line); background:var(--card); color:var(--text); font:13px/1.4 ui-monospace,Consolas,monospace; }
+  #verdict { margin-top:16px; font-weight:700; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Проверка связи</h1>
+  <p>Нажмите кнопку и подождите около 10 секунд. Потом нажмите «Скопировать» и отправьте результат в чат.</p>
+  <button id="go">Проверить</button>
+  <div class="card" id="list"></div>
+  <div id="verdict"></div>
+  <textarea id="report" readonly hidden></textarea>
+  <button id="copy" hidden style="margin-top:10px">Скопировать</button>
+</main>
+<script>
+const HOSTS = [
+  { h: 'firestore.googleapis.com',          n: 'база данных', must: true },
+  { h: 'identitytoolkit.googleapis.com',    n: 'вход в аккаунт', must: true },
+  { h: 'securetoken.googleapis.com',        n: 'продление входа', must: true },
+  { h: 'accounts.google.com',               n: 'окно входа через Google', must: true },
+  { h: 'www.googleapis.com',                n: 'общий сервис Google', must: false },
+  { h: 'ticktick-47613.firebaseapp.com',    n: 'сайт приложения (запасной вариант)', must: false },
+  { h: 'ticktick-47613.web.app',            n: 'сайт приложения (запасной вариант)', must: false },
+  { h: 'github.com',                        n: 'для обновлений программы', must: false },
+];
+const TIMEOUT = 8000;
+const list = document.getElementById('list');
+const go = document.getElementById('go');
+const verdict = document.getElementById('verdict');
+const report = document.getElementById('report');
+const copy = document.getElementById('copy');
+
+async function ping(host) {
+  const c = new AbortController();
+  const t = setTimeout(() => c.abort(), TIMEOUT);
+  const start = performance.now();
+  try {
+    await fetch('https://' + host + '/?probe=' + Date.now(), { mode: 'no-cors', cache: 'no-store', signal: c.signal });
+    return { ok: true, ms: Math.round(performance.now() - start) };
+  } catch (e) {
+    return { ok: false, ms: Math.round(performance.now() - start), why: e.name === 'AbortError' ? 'нет ответа' : 'заблокировано' };
+  } finally { clearTimeout(t); }
+}
+
+go.addEventListener('click', async () => {
+  go.disabled = true; verdict.textContent = ''; report.hidden = true; copy.hidden = true;
+  list.innerHTML = '';
+  const rows = HOSTS.map(x => {
+    const el = document.createElement('div'); el.className = 'row';
+    el.innerHTML = '<div class="host">' + x.h + '<span class="note">' + x.n + '</span></div><div class="res">…</div>';
+    list.appendChild(el); return el;
+  });
+  const results = await Promise.all(HOSTS.map(x => ping(x.h)));
+  results.forEach((r, i) => {
+    const res = rows[i].querySelector('.res');
+    res.textContent = r.ok ? 'работает ' + r.ms + ' мс' : r.why;
+    res.className = 'res ' + (r.ok ? 'ok' : 'bad');
+  });
+  const mustFail = HOSTS.filter((x, i) => x.must && !results[i].ok);
+  verdict.textContent = mustFail.length === 0
+    ? 'Всё нужное доступно.'
+    : 'Не доступно: ' + mustFail.map(x => x.h).join(', ');
+  verdict.className = mustFail.length === 0 ? 'ok' : 'bad';
+  const lines = [
+    'Дата: ' + new Date().toLocaleString('ru-RU'),
+    'Часовой пояс: ' + Intl.DateTimeFormat().resolvedOptions().timeZone,
+    'Устройство: ' + navigator.userAgent,
+    'Тип сети: ' + ((navigator.connection && navigator.connection.effectiveType) || 'неизвестно'),
+    '',
+    ...HOSTS.map((x, i) => (results[i].ok ? 'OK   ' : 'FAIL ') + x.h + '  ' + (results[i].ok ? results[i].ms + ' мс' : results[i].why)),
+  ];
+  report.value = lines.join('\n'); report.hidden = false; copy.hidden = false;
+  go.disabled = false; go.textContent = 'Проверить ещё раз';
+});
+
+copy.addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText(report.value); copy.textContent = 'Скопировано'; }
+  catch { report.select(); document.execCommand('copy'); copy.textContent = 'Скопировано'; }
+});
+</script>
+</body>
+</html>

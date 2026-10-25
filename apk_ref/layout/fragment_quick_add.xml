@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:layout_width="match_parent" android:layout_height="match_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <View android:id="@id/layout_quick_add_background" android:layout_width="match_parent" android:layout_height="match_parent" />
+    <com.ticktick.customview.FitWindowsRelativeLayout android:clipChildren="false" android:clipToPadding="false" android:layout_width="match_parent" android:layout_height="match_parent" app:insetBottomEnable="true" app:insetTopEnable="true">
+        <FrameLayout android:id="@id/content" android:layout_width="match_parent" android:layout_height="match_parent" />
+        <FrameLayout android:layout_gravity="bottom" android:id="@id/quick_add_layout" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_alignParentBottom="true">
+            <com.ticktick.customview.MaxHeightFrameLayout android:layout_gravity="bottom" android:orientation="vertical" android:id="@id/layout_quick_add_bar" android:layout_width="match_parent" android:layout_height="wrap_content" app:maxHeight="268.0dp">
+                <LinearLayout android:gravity="bottom" android:orientation="vertical" android:layout_width="match_parent" android:layout_height="wrap_content">
+                    <FrameLayout android:gravity="center_vertical" android:orientation="horizontal" android:id="@id/input_view" android:layout_width="match_parent" android:layout_height="0.0dp" android:baselineAligned="false" android:layout_weight="1.0">
+                        <ScrollView android:layout_gravity="bottom" android:scrollbars="none" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16.0dp" android:layout_marginEnd="20.0dp">
+                            <LinearLayout android:orientation="vertical" android:id="@id/edit_input_layout" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginEnd="20.0dp">
+                                <com.ticktick.task.view.OnSectionChangedEditText android:textSize="16.0sp" android:gravity="bottom" android:layout_gravity="bottom" android:id="@id/et_title" android:background="@null" android:layout_width="match_parent" android:layout_height="wrap_content" android:minWidth="@dimen/quickbar_text_min_width" android:hint="@string/editor_hint_note" android:maxLength="@integer/max_length_task_title" android:lineSpacingMultiplier="1.2" android:inputType="textCapSentences|textAutoCorrect|textMultiLine|textImeMultiLine" android:imeOptions="actionDone" android:paddingStart="16.0dp" android:paddingEnd="0.0dp" app:textColorType="themeTextPrimary" app:textHintType="themeTextHint" />
+                                <com.ticktick.richeditor.TickEditText android:textSize="14.0sp" android:ellipsize="end" android:gravity="start|top" android:autoLink="none" android:id="@id/et_content" android:background="@null" android:paddingBottom="0.0dp" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="6.0dp" android:minWidth="@dimen/quickbar_text_min_width" android:minLines="2" android:maxLength="@integer/max_length_task_content" android:lineSpacingMultiplier="1.2" android:inputType="textCapSentences|textAutoCorrect|textMultiLine|textImeMultiLine" android:imeOptions="actionUnspecified|normal" android:paddingStart="16.0dp" android:paddingEnd="0.0dp" app:textColorType="themeTextSecondary" app:textHintType="themeTextHint" />
+                            </LinearLayout>
+                        </ScrollView>
+                    </FrameLayout>
+                    <androidx.recyclerview.widget.RecyclerView android:id="@id/list_attachment" android:paddingTop="5.0dp" android:visibility="gone" android:layout_width="match_parent" android:layout_height="84.0dp" android:paddingStart="7.0dp" android:paddingEnd="7.0dp" />
+                    <LinearLayout android:layout_gravity="bottom" android:orientation="horizontal" android:id="@id/extra_layout" android:layout_width="match_parent" android:layout_height="@dimen/quick_add_view_choose_layout_height">
+                        <FrameLayout android:layout_width="0.0dp" android:layout_height="match_parent" android:layout_weight="1.0" android:layout_marginEnd="4.0dp">
+                            <androidx.recyclerview.widget.RecyclerView android:layout_gravity="center_vertical" android:id="@id/list_buttons" android:scrollbars="none" android:clipChildren="false" android:clipToPadding="false" android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingStart="6.0dp" android:paddingEnd="24.0dp" />
+                            <View android:layout_gravity="end" android:background="?fade_edge" android:layout_width="24.0dp" android:layout_height="match_parent" />
+                        </FrameLayout>
+                        <androidx.appcompat.widget.AppCompatImageView android:layout_gravity="center_vertical" android:id="@id/iv_save" android:paddingLeft="4.0dp" android:paddingTop="2.0dp" android:paddingRight="4.0dp" android:paddingBottom="2.0dp" android:layout_width="40.0dp" android:layout_height="30.0dp" android:scaleType="centerInside" android:paddingStart="4.0dp" android:paddingEnd="4.0dp" android:layout_marginStart="8.0dp" android:layout_marginEnd="14.0dp" app:srcCompat="@drawable/ic_save_button" />
+                        <com.ticktick.task.theme.view.TTImageView android:gravity="center" android:layout_gravity="center_vertical" android:id="@id/iv_voice" android:layout_width="38.0dp" android:layout_height="36.0dp" android:layout_marginStart="4.0dp" android:layout_marginEnd="4.0dp" android:paddingHorizontal="7.0dp" android:paddingVertical="4.0dp" app:backgroundType="themeSelectable" app:iconTintType="themeIconTertiary" app:srcCompat="@drawable/ic_svg_microphone_v8" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.ticktick.customview.MaxHeightFrameLayout>
+        </FrameLayout>
+    </com.ticktick.customview.FitWindowsRelativeLayout>
+</FrameLayout>

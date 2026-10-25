@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:gravity="center_vertical" android:id="@id/normal_project_item" android:background="?selectableItemBackground" android:layout_width="match_parent" android:layout_height="50.0dp"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <RelativeLayout android:id="@id/content" android:layout_width="wrap_content" android:layout_height="match_parent">
+        <LinearLayout android:gravity="center" android:orientation="vertical" android:id="@id/left_layout" android:layout_width="wrap_content" android:layout_height="match_parent" android:layout_alignParentLeft="true" android:layout_centerVertical="true" android:layout_marginStart="16.0dp" android:layout_marginEnd="12.0dp" android:layout_alignParentStart="true">
+            <com.ticktick.task.view.ProjectIconView android:id="@id/left" android:layout_width="24.0dp" android:layout_height="24.0dp" app:tint="?iconColorPrimary" />
+        </LinearLayout>
+        <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_toLeftOf="@id/right_layout" android:layout_toRightOf="@id/left_layout" android:layout_toStartOf="@id/right_layout" android:layout_toEndOf="@id/left_layout">
+            <TextView android:textSize="16.0sp" android:textColor="?android:textColorPrimary" android:ellipsize="end" android:gravity="start|center" android:id="@id/name" android:layout_width="wrap_content" android:layout_height="match_parent" android:singleLine="true" android:textAlignment="viewStart" />
+        </LinearLayout>
+        <LinearLayout android:orientation="vertical" android:id="@id/right_layout" android:layout_width="wrap_content" android:layout_height="match_parent" android:layout_marginRight="16.0dp" android:layout_alignParentRight="true" android:layout_centerVertical="true" android:layout_marginEnd="16.0dp" android:layout_alignParentEnd="true" />
+    </RelativeLayout>
+</RelativeLayout>

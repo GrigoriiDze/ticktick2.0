@@ -1,0 +1,30 @@
+node_modules/
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+dist/
+.env*
+
+# Android
+app/android/.gradle/
+app/android/build/
+app/android/app/build/
+app/android/local.properties
+app/android/capacitor-cordova-android-plugins/build/
+app/android/app/src/main/assets/public/
+app/android/app/src/main/assets/capacitor.config.json
+app/android/app/src/main/assets/capacitor.plugins.json
+*.apk
+*.aab
+*.keystore
+dist-apk/
+docs/reference/
+
+# Веб-версия для хостинга собирается командой npm run web, в репозиторий не входит
+hosting/assets/
+hosting/index.html
+hosting/icon*
+hosting/manifest.webmanifest
+app/src-tauri/target/
+app/src-tauri/gen/

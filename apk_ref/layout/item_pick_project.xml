@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.ticktick.customview.selectableview.SelectableLinearLayout android:layout_width="match_parent" android:layout_height="48.0dp" android:paddingHorizontal="16.0dp"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.ticktick.task.view.ProjectIconView android:layout_gravity="center" android:id="@id/project_icon" android:layout_width="24.0dp" android:layout_height="24.0dp" android:layout_marginStart="0.0dp" android:layout_marginEnd="8.0dp" app:tint="?iconColorPrimary" />
+    <TextView android:ellipsize="end" android:gravity="center_vertical" android:id="@id/tv_text" android:layout_width="0.0dp" android:singleLine="true" android:layout_weight="1.0" android:paddingStart="0.0dp" android:paddingEnd="8.0dp" style="@style/dialog_text_style" />
+    <FrameLayout android:gravity="center_vertical" android:layout_gravity="center_vertical" android:layout_width="wrap_content" android:layout_height="wrap_content">
+        <androidx.appcompat.widget.AppCompatImageView android:id="@id/iv_arrow" android:visibility="gone" android:layout_width="20.0dp" android:layout_height="20.0dp" app:srcCompat="@drawable/ic_svg_common_arrow_down" app:tint="?iconColorTertiary" />
+        <ImageView android:id="@id/iv_selected" android:visibility="gone" android:layout_width="20.0dp" android:layout_height="20.0dp" app:srcCompat="@drawable/ic_svg_common_check" />
+    </FrameLayout>
+</com.ticktick.customview.selectableview.SelectableLinearLayout>

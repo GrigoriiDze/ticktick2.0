@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent" android:layout_height="32.0dp"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <RelativeLayout android:gravity="center_vertical" android:focusable="true" android:clickable="true" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_marginHorizontal="8.0dp">
+        <com.google.android.material.imageview.ShapeableImageView android:id="@id/iv_select" android:layout_width="match_parent" android:layout_height="match_parent" android:src="@drawable/drawer_item_background" />
+        <FrameLayout android:id="@id/left_view" android:layout_width="30.0dp" android:layout_height="30.0dp" android:layout_centerVertical="true" android:layout_marginStart="4.0dp">
+            <RelativeLayout android:gravity="center" android:layout_gravity="center" android:layout_width="30.0dp" android:layout_height="30.0dp">
+                <com.ticktick.task.view.ProjectIconView android:id="@id/project_icon" android:layout_width="18.0dp" android:layout_height="18.0dp" android:layout_centerInParent="true" />
+            </RelativeLayout>
+            <com.ticktick.customview.CalendarTextView android:textSize="8.0sp" android:textStyle="bold" android:gravity="center" android:layout_gravity="center" android:id="@id/tv_calendar" android:visibility="gone" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="1.1999817dp" android:includeFontPadding="false" style="@style/date_icon_text_style" />
+        </FrameLayout>
+        <TextView android:textSize="11.0dp" android:textColor="@color/black_alpha_100" android:ellipsize="end" android:gravity="start|center" android:id="@id/name" android:layout_width="match_parent" android:layout_height="match_parent" android:text="@string/long_string" android:singleLine="true" android:textAlignment="viewStart" android:layout_toEndOf="@id/left_view" />
+    </RelativeLayout>
+</RelativeLayout>

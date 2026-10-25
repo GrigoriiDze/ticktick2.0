@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout android:gravity="center_horizontal" android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_alignParentLeft="true" android:layout_alignParentStart="true">
+        <com.ticktick.task.theme.view.TTTabLayout android:id="@id/tabs" android:layout_width="match_parent" android:layout_height="?actionBarSize" app:indicatorColorType="themeIconAccent" app:selectedTextColorType="themeTextPrimary" app:tabGravity="fill" app:tabIndicatorColor="?colorAccent" app:tabIndicatorFullWidth="false" app:tabIndicatorHeight="3.0dp" app:tabMaxWidth="0.0dp" app:tabMode="scrollable" app:tabSelectedTextColor="?android:textColorPrimary" app:tabTextAppearance="@style/TabTextAppearance18sp.Bold" app:tabTextColor="?android:textColorTertiary" app:unselectedTextColorType="themeTextTertiary" style="@style/TabLayoutStyle.Text18dp.Toolbar" />
+    </LinearLayout>
+    <com.ticktick.task.theme.view.TTTextView android:textSize="20.0sp" android:textStyle="bold" android:ellipsize="end" android:gravity="center_vertical" android:id="@id/title" android:visibility="gone" android:layout_width="wrap_content" android:layout_height="match_parent" android:singleLine="true" android:layout_alignParentLeft="true" android:layout_alignParentStart="true" app:textColorType="themeTextPrimary" />
+</RelativeLayout>

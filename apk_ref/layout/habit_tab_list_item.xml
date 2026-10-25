@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:gravity="center_vertical" android:background="?itemForeground" android:layout_width="match_parent" android:layout_height="wrap_content" android:baselineAligned="false"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <FrameLayout android:id="@id/habit_icon_container" android:layout_width="wrap_content" android:layout_height="match_parent" android:paddingStart="@dimen/preference_padding_h" android:paddingEnd="10.0dp">
+        <com.ticktick.task.view.HabitIconView android:layout_gravity="center" android:id="@id/habit_icon_view" android:layout_width="36.0dp" android:layout_height="36.0dp" app:tCheckBgColor="?activity_background_color" app:tCheckStrokeColor="@color/transparent" />
+    </FrameLayout>
+    <LinearLayout android:orientation="vertical" android:layout_width="0.0dp" android:layout_height="wrap_content" android:layout_weight="1.0">
+        <TextView android:textSize="16.0sp" android:textColor="?android:textColorPrimary" android:ellipsize="end" android:gravity="center_vertical" android:id="@id/tv_habit_name" android:layout_width="match_parent" android:layout_height="match_parent" android:maxLines="1" android:textDirection="locale" />
+        <LinearLayout android:orientation="horizontal" android:id="@id/ll_goal_info" android:layout_width="match_parent" android:layout_height="wrap_content">
+            <com.ticktick.task.view.SectorProgressView android:layout_gravity="center_vertical" android:id="@id/iv_progress" android:layout_width="12.0dp" android:layout_height="12.0dp" />
+            <TextView android:textSize="12.0sp" android:textColor="?android:textColorSecondary" android:id="@id/tv_habit_goal_value" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="-2.0dp" android:layout_marginStart="2.0dp" android:layout_marginEnd="16.0dp" />
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout android:gravity="end" android:orientation="vertical" android:id="@id/ll_total_days" android:layout_width="wrap_content" android:layout_height="wrap_content" android:minWidth="50.0dp" android:layout_marginEnd="16.0dp" android:paddingVertical="4.0dp">
+        <TextView android:textSize="16.0sp" android:textColor="?android:textColorPrimary" android:id="@id/tv_total_days" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+        <TextView android:textSize="12.0sp" android:textColor="?android:textColorTertiary" android:id="@id/tv_insist" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="-2.0dp" />
+    </LinearLayout>
+</LinearLayout>

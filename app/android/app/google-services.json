@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "876314461466",
+    "project_id": "ticktick-47613",
+    "storage_bucket": "ticktick-47613.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:876314461466:android:2cff203e090c05f6f058a3",
+        "android_client_info": {
+          "package_name": "dev.grigorii.tasks"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "876314461466-2hlhslnacuhrcih8nnd7jbeahnfikuhs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dev.grigorii.tasks",
+            "certificate_hash": "544c1c737f67cac1bfe13bfcf18509bee5fce9ec"
+          }
+        },
+        {
+          "client_id": "876314461466-pqmtdrjvr8ahtr9dvtqn7ihplvvsf0ip.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dev.grigorii.tasks",
+            "certificate_hash": "eb47ffb4fd1558a0ea865f3844c2b37c5b973249"
+          }
+        },
+        {
+          "client_id": "876314461466-jfk96q38fngnsmpm8m973juk6vnosc9f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChlFTdecUElTIt583CyhYTiEYNRyAz98Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "876314461466-jfk96q38fngnsmpm8m973juk6vnosc9f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

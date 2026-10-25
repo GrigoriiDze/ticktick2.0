@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical" android:background="?activity_background" android:fitsSystemWindows="true" android:layout_width="match_parent" android:layout_height="match_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.appcompat.widget.Toolbar android:id="@id/toolbar" android:layout_width="match_parent" android:layout_height="?actionBarSize" app:contentInsetEnd="0.0dp" app:contentInsetLeft="0.0dp" app:contentInsetRight="0.0dp" app:contentInsetStart="0.0dp" app:contentInsetStartWithNavigation="0.0dp" app:layout_constraintTop_toTopOf="parent" app:navigationIcon="@drawable/abc_ic_ab_back_mtrl_am_alpha" app:popupTheme="?TT_Toolbar_Pop" app:theme="?TT_Toolbar" app:titleTextColor="?toolbar_title_color" />
+    <androidx.core.widget.NestedScrollView android:layout_width="match_parent" android:layout_height="wrap_content">
+        <LinearLayout android:orientation="vertical" android:layout_width="match_parent" android:layout_height="wrap_content">
+            <androidx.cardview.widget.CardView android:focusable="true" android:focusableInTouchMode="true" android:layout_width="match_parent" android:layout_height="wrap_content" style="@style/TickTickCardView">
+                <LinearLayout android:gravity="center_horizontal" android:orientation="vertical" android:layout_width="match_parent" android:layout_height="match_parent">
+                    <LinearLayout android:gravity="center_vertical" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_marginTop="@dimen/preference_margin" android:layout_marginBottom="@dimen/preference_margin">
+                        <LinearLayout android:orientation="vertical" android:layout_width="0.0dp" android:layout_height="wrap_content" android:layout_marginLeft="@dimen/preference_margin" android:layout_marginRight="@dimen/preference_margin" android:layout_weight="1.0" android:layout_marginStart="@dimen/preference_margin" android:layout_marginEnd="@dimen/preference_margin">
+                            <com.ticktick.task.theme.view.TTTextView android:id="@id/tvCourseViewTitle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/course_schedule" style="@style/PreferenceTextTitle" />
+                            <com.ticktick.task.theme.view.TTTextView android:id="@id/tvCourseViewSummary" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/course_schedule_enable_hint" style="@style/PreferenceTextSummary.SmallText" />
+                        </LinearLayout>
+                        <com.ticktick.task.view.customview.TTSwitch android:id="@id/swCourseView" android:focusable="true" android:clickable="true" app:layout_constraintBottom_toBottomOf="@id/tvCourseViewSummary" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="@id/tvCourseViewTitle" app:theme="@style/switch_color" style="@style/Switch_Preference_settings" />
+                    </LinearLayout>
+                    <com.ticktick.customview.roundimage.RoundedImageView android:id="@id/ivCourseViewPreview" android:layout_width="wrap_content" android:layout_height="255.0dp" android:layout_marginTop="3.0dp" android:layout_marginBottom="18.0dp" android:src="@drawable/ic_course_schedule_preview_en" android:adjustViewBounds="true" app:corner_radius="6.0dp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+            <androidx.cardview.widget.CardView android:id="@id/cvImport" android:visibility="invisible" android:layout_width="match_parent" android:layout_height="50.0dp" style="@style/TickTickCardView">
+                <LinearLayout android:gravity="center_vertical" android:layout_width="match_parent" android:layout_height="match_parent">
+                    <com.ticktick.task.theme.view.TTTextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="@dimen/preference_margin" android:text="@string/course_schedule_import" android:layout_marginStart="@dimen/preference_margin" style="@style/PreferenceTextTitle" />
+                    <ImageView android:visibility="visible" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="4.0dp" android:layout_marginTop="1.0dp" android:src="@drawable/ic_beta" android:layout_toRightOf="@android:id/title" android:layout_alignTop="@android:id/title" android:layout_alignBottom="@android:id/title" android:layout_marginStart="4.0dp" android:layout_toEndOf="@android:id/title" />
+                    <View android:layout_width="0.0dp" android:layout_height="0.0dp" android:layout_weight="1.0" />
+                    <com.ticktick.task.theme.view.TTImageView android:id="@id/iv_arrow" app:iconTintType="themeIconTertiary" app:srcCompat="@drawable/ic_svg_common_preference_arrow" style="@style/edit_project_item_right" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

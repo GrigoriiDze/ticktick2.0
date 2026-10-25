@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.ticktick.customview.selectableview.SelectableRelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <RelativeLayout android:gravity="center_vertical" android:layout_gravity="bottom" android:paddingLeft="16.0dp" android:paddingRight="16.0dp" android:layout_width="match_parent" android:layout_height="48.0dp" android:paddingStart="16.0dp" android:paddingEnd="16.0dp">
+        <FrameLayout android:id="@id/left_layout" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_centerVertical="true">
+            <com.ticktick.task.theme.view.TTImageView android:gravity="center" android:layout_gravity="center" android:id="@id/left" android:padding="2.0dp" android:layout_width="24.0dp" android:layout_height="24.0dp" app:iconTintType="themeIconAccent" app:srcCompat="@drawable/ic_svg_common_add" />
+        </FrameLayout>
+        <com.ticktick.task.theme.view.TTTextView android:ellipsize="end" android:id="@id/text" android:text="@string/add_list" android:singleLine="true" android:layout_toRightOf="@id/left_layout" android:layout_alignWithParentIfMissing="true" android:marqueeRepeatLimit="10" android:layout_toEndOf="@id/left_layout" app:textColorType="themeTextAccent" style="@style/dialog_text_style" />
+    </RelativeLayout>
+</com.ticktick.customview.selectableview.SelectableRelativeLayout>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical" android:id="@id/root_view" android:background="?activity_background" android:fitsSystemWindows="true" android:layout_width="match_parent" android:layout_height="match_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.appcompat.widget.Toolbar android:id="@id/toolbar" android:layout_width="match_parent" android:layout_height="?actionBarSize" app:contentInsetEnd="0.0dp" app:contentInsetLeft="0.0dp" app:contentInsetRight="0.0dp" app:contentInsetStart="0.0dp" app:contentInsetStartWithNavigation="0.0dp" app:layout_collapseMode="pin" app:navigationIcon="@drawable/abc_ic_ab_back_mtrl_am_alpha" app:popupTheme="?TT_Toolbar_Pop" app:theme="?TT_Toolbar" app:titleTextColor="?toolbar_title_color" />
+    <LinearLayout android:orientation="vertical" android:layout_width="match_parent" android:layout_height="0.0dp" android:layout_weight="1.0">
+        <FrameLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginLeft="@dimen/week_hour_view_width" android:layout_marginBottom="16.0dp" android:layout_marginStart="@dimen/week_hour_view_width">
+            <include layout="@layout/calendar_week_header_layout" />
+        </FrameLayout>
+        <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="match_parent">
+            <com.ticktick.task.view.PagedScrollView android:id="@id/lesson_count_scroll" android:scrollbars="none" android:layout_width="@dimen/week_hour_view_width" android:layout_height="match_parent">
+                <com.ticktick.task.view.CourseLessonView android:id="@id/lesson_view" android:layout_width="match_parent" android:layout_height="wrap_content" app:showLessonTime="false" />
+            </com.ticktick.task.view.PagedScrollView>
+            <FrameLayout android:layout_width="match_parent" android:layout_height="match_parent">
+                <View android:background="?calendar_bg_top_r_6" android:layout_width="match_parent" android:layout_height="match_parent" />
+                <com.ticktick.task.view.PagedScrollView android:scrollbarSize="0.0dp" android:id="@id/week_days_scroll" android:scrollbars="none" android:layout_width="match_parent" android:layout_height="match_parent">
+                    <com.ticktick.task.view.CourseScheduleGridView android:id="@id/course_view" android:layout_width="match_parent" android:layout_height="match_parent" />
+                </com.ticktick.task.view.PagedScrollView>
+            </FrameLayout>
+        </LinearLayout>
+    </LinearLayout>
+    <androidx.cardview.widget.CardView android:layout_width="match_parent" android:layout_height="wrap_content" app:cardBackgroundColor="?card_background" app:cardCornerRadius="0.0dp" app:cardElevation="0.0dp">
+        <LinearLayout android:orientation="vertical" android:padding="@dimen/preference_margin" android:layout_width="match_parent" android:layout_height="wrap_content">
+            <TextView android:textSize="16.0sp" android:textColor="?android:textColorPrimary" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/timetable_share_save_tip" />
+            <LinearLayout android:gravity="end" android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="10.0dp" android:layout_marginBottom="10.0dp">
+                <com.ticktick.customview.selectableview.SelectableTextView android:textSize="14.0sp" android:textColor="?android:textColorSecondary" android:id="@id/tvCancel" android:paddingLeft="16.0dp" android:paddingTop="8.0dp" android:paddingRight="16.0dp" android:paddingBottom="8.0dp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/btn_cancel" />
+                <com.ticktick.customview.selectableview.SelectableTextView android:textSize="14.0sp" android:textColor="?colorAccent" android:id="@id/tvSave" android:paddingLeft="16.0dp" android:paddingTop="8.0dp" android:paddingRight="16.0dp" android:paddingBottom="8.0dp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/save" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</LinearLayout>

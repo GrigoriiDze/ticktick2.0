@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:clipChildren="false" android:clipToPadding="false" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="7.0dp" android:layout_marginBottom="7.0dp" android:layout_marginHorizontal="5.0dp"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.google.android.material.imageview.ShapeableImageView android:id="@id/iv_preview" android:layout_width="40.0dp" android:layout_height="40.0dp" android:scaleType="center" app:shapeAppearance="@style/rounded12" />
+    <androidx.appcompat.widget.AppCompatImageView android:layout_gravity="right|top" android:id="@id/iv_pro" android:padding="3.0dp" android:layout_width="17.0dp" android:layout_height="17.0dp" android:scaleType="centerInside" android:translationX="4.0dp" android:translationY="-4.0dp" app:srcCompat="@drawable/ic_svg_focus_pro_sound" app:tint="@color/white_alpha_100" />
+    <androidx.appcompat.widget.AppCompatImageView android:layout_gravity="right|bottom" android:id="@id/iv_select" android:padding="4.0dp" android:layout_width="17.0dp" android:layout_height="17.0dp" android:scaleType="centerInside" android:translationX="4.0dp" android:translationY="4.0dp" app:srcCompat="@drawable/ic_svg_om_selected_v8" app:tint="@color/white_alpha_100" />
+</FrameLayout>

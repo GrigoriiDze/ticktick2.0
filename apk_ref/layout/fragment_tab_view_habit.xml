@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout android:id="@id/main_content" android:layout_width="match_parent" android:layout_height="match_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.appcompat.widget.Toolbar android:id="@id/toolbar" android:layout_width="match_parent" android:layout_height="?actionBarSize" app:popupTheme="?TT_Toolbar_Pop" app:theme="?TT_Toolbar" app:title="@string/navigation_habit" app:titleTextColor="?header_text_color">
+        <LinearLayout android:layout_gravity="end" android:orientation="horizontal" android:id="@id/top_layout" android:layout_width="wrap_content" android:layout_height="?actionBarSize">
+            <androidx.appcompat.widget.AppCompatImageView android:layout_gravity="center_vertical" android:id="@id/icon_habit_statistics" android:background="?actionBarItemBackground" app:srcCompat="@drawable/ic_svg_actionbar_statistic_v8" app:tint="?header_icon_color" style="@style/ActionBarIcon" />
+            <androidx.appcompat.widget.AppCompatImageView android:layout_gravity="center_vertical" android:id="@id/icon_habit_list" android:background="?actionBarItemBackground" android:layout_marginEnd="2.0dp" app:srcCompat="@drawable/ic_svg_actionbar_category_book_v8" app:tint="?header_icon_color" style="@style/ActionBarIcon" />
+            <androidx.appcompat.widget.AppCompatImageView android:layout_gravity="center_vertical" android:id="@id/icon_settings" android:background="?actionBarItemBackground" app:srcCompat="@drawable/ic_svg_actionbar_more_settings_v8" app:tint="?header_icon_color" style="@style/ActionBarIcon" />
+        </LinearLayout>
+    </androidx.appcompat.widget.Toolbar>
+    <RelativeLayout android:id="@id/habit_content" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_marginTop="?actionBarSize">
+        <com.ticktick.customview.refreshlayout.TTSwipeRefreshLayout android:id="@id/refresh_layout" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_below="@id/date_select_view">
+            <FrameLayout android:id="@id/layout_haibit_lists" android:layout_width="match_parent" android:layout_height="match_parent">
+                <FrameLayout android:id="@id/layout_fragment_0" android:layout_width="match_parent" android:layout_height="match_parent" />
+                <FrameLayout android:id="@id/layout_fragment_1" android:layout_width="match_parent" android:layout_height="match_parent" />
+            </FrameLayout>
+        </com.ticktick.customview.refreshlayout.TTSwipeRefreshLayout>
+        <com.ticktick.task.view.calendarlist.Habit7DaysView android:id="@id/date_select_view" android:layout_width="match_parent" android:layout_height="79.0dp" android:layout_marginBottom="4.0dp" />
+    </RelativeLayout>
+    <com.ticktick.task.controller.viewcontroller.AddKeyView android:id="@id/add_key_view" android:layout_width="match_parent" android:layout_height="match_parent" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

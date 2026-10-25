@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:gravity="center_vertical" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="50.0dp" android:paddingHorizontal="16.0dp" app:backgroundType="themeSelectable"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.ticktick.task.theme.view.TTTextView android:textSize="16.0sp" android:ellipsize="end" android:id="@id/tv_title" android:layout_width="0.0dp" android:layout_height="wrap_content" android:singleLine="true" android:layout_weight="1.0" android:paddingVertical="12.0dp" app:textColorType="themeTextPrimary" />
+    <com.ticktick.task.theme.view.TTTextView android:textSize="16.0sp" android:ellipsize="end" android:id="@id/tv_state" android:visibility="gone" android:layout_width="wrap_content" android:layout_height="wrap_content" android:singleLine="true" android:paddingVertical="12.0dp" app:textColorType="themeTextSecondary" />
+    <com.ticktick.task.theme.view.TTImageView android:layout_gravity="end|center" android:id="@id/iv_transfer" android:background="?selectableItemBackground" android:padding="6.0dp" android:layout_width="30.0dp" android:layout_height="30.0dp" app:iconTintType="themeIconAccent" app:srcCompat="@drawable/ic_svg_menu_share_transfer_v8" />
+    <ImageView android:layout_gravity="end|center" android:id="@id/iv_delete" android:background="?selectableItemBackground" android:padding="6.0dp" android:layout_width="30.0dp" android:layout_height="30.0dp" app:srcCompat="@drawable/ic_svg_menu_delete_v8" app:tint="@color/textColor_red" />
+</LinearLayout>

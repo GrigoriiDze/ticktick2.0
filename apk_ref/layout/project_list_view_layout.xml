@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:layout_width="match_parent" android:layout_height="match_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <com.ticktick.task.view.CompletedAnimationRecyclerView android:scrollbarStyle="outsideOverlay" android:id="@id/list" android:paddingBottom="80.0dp" android:scrollbars="vertical" android:fadingEdge="none" android:fadingEdgeLength="0.0sp" android:clipChildren="false" android:clipToPadding="false" android:layout_width="match_parent" android:layout_height="match_parent" android:drawSelectorOnTop="false" android:scrollingCache="true" android:cacheColorHint="#00000000" android:divider="@null" android:dividerHeight="0.0dp" android:smoothScrollbar="true" android:paddingHorizontal="16.0dp" />
+    <include android:layout_width="match_parent" android:layout_height="match_parent" layout="@layout/include_empty_v7" />
+</FrameLayout>

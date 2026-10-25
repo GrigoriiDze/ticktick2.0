@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.snackbar.SnackbarContentLayout android:layout_gravity="center" android:layout_width="match_parent" android:layout_height="match_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent">
+        <androidx.cardview.widget.CardView android:id="@id/content_card" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="@dimen/snackbar_margin_bottom" android:layout_alignParentBottom="true" android:layout_centerHorizontal="true" android:layout_marginHorizontal="40.0dp" app:cardCornerRadius="@dimen/corners_radius_card" app:cardElevation="12.0dp">
+            <LinearLayout android:gravity="center_vertical" android:orientation="horizontal" android:id="@id/content_ll" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingStart="20.0dp" android:paddingEnd="12.0dp">
+                <FrameLayout android:layout_width="0.0dp" android:layout_height="wrap_content" android:layout_weight="1.0">
+                    <RelativeLayout android:id="@id/container_view" android:layout_width="wrap_content" android:layout_height="wrap_content">
+                        <TextView android:textSize="14.0sp" android:textColor="@color/white_alpha_85" android:ellipsize="end" android:id="@id/jepack_snack_bar_msg" android:paddingTop="10.0dp" android:paddingBottom="10.0dp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:maxLines="3" android:layout_alignParentLeft="true" android:layout_centerVertical="true" android:lineSpacingMultiplier="1.0" android:layout_alignParentStart="true" />
+                        <Button android:id="@id/jepack_snack_bar_action" android:visibility="gone" android:layout_width="wrap_content" android:layout_height="wrap_content" android:button="@null" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent" />
+                    </RelativeLayout>
+                </FrameLayout>
+                <androidx.appcompat.widget.AppCompatImageView android:id="@id/jepack_snack_bar_end_icon" android:background="@null" android:layout_width="24.0dp" android:layout_height="24.0dp" android:layout_marginLeft="2.0dp" android:layout_marginTop="1.0dp" android:layout_marginRight="1.0dp" android:src="@mipmap/icon_sidebar_right" android:layout_marginStart="2.0dp" android:layout_marginEnd="1.0dp" app:tint="?iconColorPrimary" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </RelativeLayout>
+</com.google.android.material.snackbar.SnackbarContentLayout>

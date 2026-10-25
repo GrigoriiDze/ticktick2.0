@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:orientation="vertical" android:layout_width="match_parent" android:layout_height="wrap_content"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <TextView android:textSize="12.0sp" android:textColor="?textColorTertiaryNoAlpha" android:ellipsize="end" android:gravity="center_vertical" android:id="@id/project_name" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginLeft="12.0dp" android:layout_marginTop="9.0dp" android:layout_marginRight="12.0dp" android:layout_marginBottom="7.0dp" android:maxLines="1" android:layout_toLeftOf="@id/iv_fold" android:layout_marginStart="12.0dp" android:layout_marginEnd="12.0dp" android:layout_toStartOf="@id/iv_fold" />
+    <com.ticktick.task.theme.view.TTImageView android:gravity="end|center" android:id="@id/iv_fold" android:padding="2.0dp" android:layout_width="18.0dp" android:layout_height="18.0dp" android:layout_marginRight="@dimen/height_16dp" android:layout_centerVertical="true" android:layout_marginEnd="@dimen/height_16dp" android:layout_alignParentEnd="true" app:iconAlpha="0.6" app:iconTintType="themeIconTertiary" app:srcCompat="@drawable/ic_svg_common_arrow_right" />
+</RelativeLayout>

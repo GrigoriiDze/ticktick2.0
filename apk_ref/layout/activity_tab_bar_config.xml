@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:background="?activity_background" android:fitsSystemWindows="false" android:layout_width="match_parent" android:layout_height="match_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <androidx.recyclerview.widget.RecyclerView android:id="@id/list" android:paddingTop="8.0dp" android:layout_width="match_parent" android:layout_height="match_parent" android:overScrollMode="never" android:paddingHorizontal="@dimen/preference_padding_h" />
+    <androidx.recyclerview.widget.RecyclerView android:layout_gravity="bottom" android:id="@id/preview" android:background="?dialog_bg_color" android:layout_width="match_parent" android:layout_height="wrap_content" android:overScrollMode="never" />
+    <include android:id="@id/toolbar" layout="@layout/theme_toolbar_layout" />
+</FrameLayout>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.ticktick.customview.FullscreenFrameLayout android:orientation="vertical" android:layout_width="match_parent" android:layout_height="match_parent" app:backgroundType="themeBackgroundPrimary"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout android:orientation="vertical" android:layout_width="match_parent" android:layout_height="match_parent">
+        <com.ticktick.customview.FitWindowsFrameLayout android:layout_width="match_parent" android:layout_height="wrap_content" app:insetBottomEnable="false">
+            <com.ticktick.task.theme.view.TTToolbar android:id="@id/toolbar" android:layout_width="match_parent" android:layout_height="wrap_content" app:contentInsetStart="0.0dp" app:contentInsetStartWithNavigation="0.0dp" app:navigationIcon="@drawable/ic_svg_actionbar_back_v8" app:navigationTintType="themeIconPrimary" app:textColorType="themeTextPrimary" app:title="@string/menu_list_edit" app:titleMargin="0.0dp">
+                <com.ticktick.task.theme.view.TTImageView android:layout_gravity="end|center" android:id="@id/iv_help" android:padding="6.0dp" android:layout_width="40.0dp" android:layout_height="36.0dp" android:layout_marginEnd="4.0dp" app:backgroundType="themeSelectable" app:iconTintType="themeIconTertiary" app:srcCompat="@drawable/ic_svg_om_help_v8" />
+            </com.ticktick.task.theme.view.TTToolbar>
+        </com.ticktick.customview.FitWindowsFrameLayout>
+        <com.ticktick.customview.FitWindowsFrameLayout android:layout_width="match_parent" android:layout_height="match_parent" app:insetTopEnable="false">
+            <androidx.recyclerview.widget.RecyclerView android:id="@id/list" android:layout_width="match_parent" android:layout_height="wrap_content" />
+        </com.ticktick.customview.FitWindowsFrameLayout>
+    </LinearLayout>
+</com.ticktick.customview.FullscreenFrameLayout>

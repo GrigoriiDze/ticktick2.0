@@ -1,0 +1,171 @@
+/* Токены мобильной версии, сняты из ресурсов APK TickTick 24.10.2026 (apktool, res/values).
+   Источник каждого значения указан справа: атрибут темы, dimen или файл анимации.
+   Раскладка для компьютера (от 900px) переопределяет цвета в styles.css, её значения сняты с веб-версии */
+
+:root {
+  /* ---- Цвета, светлая тема: Theme.TickTick.Base.Default.Light ---- */
+  --bg: #f2f4f9; /* activity_background_color */
+  --card: #ffffff; /* card_background */
+  --sheet: #ffffff; /* detail_background, нижние шторки */
+  --popup: #ffffff; /* popup_background, dialog_bg_color */
+  --text: rgba(25, 25, 25, 0.9); /* android:textColorPrimary #e6191919 */
+  --muted: rgba(25, 25, 25, 0.6); /* android:textColorSecondary #99191919 */
+  --faint: rgba(25, 25, 25, 0.4); /* textColorTertiary #66191919 */
+  --hint: rgba(25, 25, 25, 0.2); /* android:textColorHint #33191919 */
+  --done: rgba(25, 25, 25, 0.24); /* textColorDoneTint #3d191919 */
+  --line: rgba(25, 25, 25, 0.06); /* divider_color #0f191919 */
+  --line-strong: rgba(25, 25, 25, 0.18); /* dividerSecondary_color #2e191919 */
+  --chip: rgba(25, 25, 25, 0.05); /* quick_date_background #0d191919 */
+  --icon: rgba(25, 25, 25, 0.54); /* iconColorPrimary #8a191919 */
+  --icon-off: rgba(25, 25, 25, 0.3); /* iconColorTertiary #4c191919 */
+  --icon-disabled: #d1d1d1; /* iconColorDisable */
+  --tab-off: rgba(25, 25, 25, 0.54); /* iconColorPrimary */
+  --snack: #dce1fa; /* snackBarBackgroundColor */
+  --circle: #ffffff;
+  --bar: #ffffff;
+  --danger: #e5484d;
+
+  /* Акцент. Синий по умолчанию у TickTick: colorAccent #4772fa. У нас выбирается в «Ещё», по умолчанию оранжевый */
+  --accent: #f16905;
+  --accent-rgb: 241, 105, 5;
+  --on-accent: #ffffff;
+  --selected: rgba(var(--accent-rgb), 0.1); /* item_selected_color: акцент 10% */
+
+  /* ---- Размеры, dp = px ---- */
+  --radius: 14px; /* corners_radius_card */
+  --radius-btn: 14px; /* corners_radius_btn */
+  --radius-btn-sm: 8px; /* corners_radius_btn_small */
+  --radius-tag: 8px; /* corners_radius_tag */
+  --radius-banner: 12px; /* corners_radius_banner */
+  --radius-dialog: 20px; /* corners_radius_dialog */
+  --radius-sheet: 20px; /* quick_add_popup_top_radius */
+  --radius-window: 8px; /* corners_radius_window, всплывающие меню */
+  --gap: 16px; /* list_item_gap */
+
+  /* Строка задачи: standard_task_list_item.xml */
+  --row-h: 52px; /* task_item_height_normal */
+  --row-h-large: 68px; /* task_item_height_large, с подзаголовком */
+  --row-pad-start: 15px; /* checkbox_wrap paddingStart */
+  --row-check-gap: 8px; /* checkbox_wrap paddingEnd */
+  --row-pad-end: 14px; /* view_goneMargin */
+  --row-pad-y: 10px; /* title marginVertical */
+  --row-title: 16px; /* task_item_title_font_size */
+  --row-date: 13px; /* date textSize */
+  --check-box: 24px; /* taskItemCheckbox, padding 1dp */
+  --project-stripe: 3px; /* task_item_color_width */
+  --subtask-indent: 30px; /* item_node_child_offset */
+
+  /* Панель быстрого добавления: fragment_quick_add.xml */
+  --qa-title: 16px; /* et_title, lineSpacingMultiplier 1.2 */
+  --qa-note: 14px; /* et_content */
+  --qa-pad-x: 16px;
+  --qa-buttons-h: 48px; /* quick_add_view_choose_layout_height */
+  --qa-max-h: 268px; /* layout_quick_add_bar maxHeight */
+
+  /* ---- Движение: res/anim, res/interpolator. Кривые Android переведены в cubic-bezier ---- */
+  --ease-acc-dec: cubic-bezier(0.37, 0, 0.63, 1); /* accelerate_decelerate (косинус) */
+  --ease-dec: cubic-bezier(0.25, 0.46, 0.45, 0.94); /* decelerate, decelerate_quad */
+  --ease-acc: cubic-bezier(0.55, 0.085, 0.68, 0.53); /* accelerate, accelerate_quad */
+  --ease-sheet: cubic-bezier(0.25, 0.8, 0.4, 1); /* bottom_dialog_interpolator: decelerate factor 1.6 */
+  --ease-dec-cubic: cubic-bezier(0.215, 0.61, 0.355, 1); /* decelerate_cubic */
+  --ease-dec-quint: cubic-bezier(0.23, 1, 0.32, 1); /* decelerate_quint */
+  --ease-tabbar: cubic-bezier(0, 1, 1, 1); /* tabbar_in_interpolator, pathInterpolator 0,1,1,1 */
+  --ease-overshoot: cubic-bezier(0.34, 1.56, 0.64, 1); /* overshoot_interpolator, диалог-подтверждение */
+  --ease-emph: cubic-bezier(0.2, 0, 0, 1); /* fragment_fast_out_extra_slow_in, смена экрана */
+
+  /* Старые имена, ими пользуется styles.css */
+  --ease-out: var(--ease-dec-quint);
+  --ease-in: var(--ease-acc);
+  --ease-std: var(--ease-acc-dec);
+
+  --dur-sheet-in: 250ms; /* dialog_bottom_in: сдвиг 250, прозрачность 0.5→1 за 200 */
+  --dur-sheet-out: 250ms; /* bottom_out_fast */
+  --dur-scrim-in: 300ms; /* dialog_show_anim */
+  --dur-scrim-out: 200ms;
+  --dur-popup-in: 250ms; /* popup_from_*_top: масштаб от угла + прозрачность */
+  --dur-popup-out: 200ms; /* popup_to_*_top */
+  --dur-dialog: 250ms; /* dialog_enter_anim / dialog_exit_anim */
+  --dur-page: 300ms; /* fragment_open_enter */
+  --dur-fade: 150ms; /* fragment_fade_enter */
+  --dur-quick-add: 220ms; /* quick_add_scale_in: config_activityDefaultDur */
+  --dur-tabbar-in: 200ms; /* tabbar_bottom_in */
+  --dur-tabbar-out: 300ms; /* tabbar_bottom_out */
+  --dur-push: 350ms; /* push_up_in / push_up_out */
+
+  color-scheme: light dark;
+}
+
+:root[data-accent='blue'] {
+  --accent: #4772fa;
+  --accent-rgb: 71, 114, 250;
+}
+:root[data-accent='green'] {
+  --accent: #2faa6b;
+  --accent-rgb: 47, 170, 107;
+}
+:root[data-accent='purple'] {
+  --accent: #8a63e6;
+  --accent-rgb: 138, 99, 230;
+}
+:root[data-accent='red'] {
+  --accent: #e5484d;
+  --accent-rgb: 229, 72, 77;
+}
+
+/* ---- Тёмная тема: Theme.TickTick.Base.Default.Dark. Включается системой или вручную, ручной выбор главнее ---- */
+:root[data-theme='dark'] {
+  --bg: #010101; /* activity_background_color */
+  --card: #1c1c1c; /* card_background */
+  --sheet: #1c1c1c; /* detail_background, bottom_dialog_bg_color */
+  --popup: #242424; /* popup_background, dialog_bg_color */
+  --text: rgba(255, 255, 255, 0.87); /* #deffffff */
+  --muted: rgba(255, 255, 255, 0.56); /* #8fffffff */
+  --faint: rgba(255, 255, 255, 0.36); /* textColorTertiary #5bffffff */
+  --hint: rgba(255, 255, 255, 0.36); /* android:textColorHint #5bffffff */
+  --done: rgba(255, 255, 255, 0.3);
+  --line: rgba(255, 255, 255, 0.12); /* divider_color #1fffffff */
+  --line-strong: rgba(255, 255, 255, 0.15); /* dividerSecondary_color #26ffffff */
+  --chip: rgba(255, 255, 255, 0.12); /* quick_date_background #1fffffff */
+  --icon: #b2b6bd; /* iconColorPrimary */
+  --icon-off: rgba(255, 255, 255, 0.6); /* iconColorTertiary #99ffffff */
+  --icon-disabled: #4c4f53;
+  --tab-off: #b2b6bd;
+  --snack: #4c4f53; /* snackBarBackgroundColor */
+  --circle: #131313;
+  --bar: #1c1c1c;
+  --danger: #ff6b6b;
+  --on-accent: #ffffff;
+  --selected: rgba(var(--accent-rgb), 0.2); /* item_selected_color #334772fa */
+  color-scheme: dark;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #010101;
+    --card: #1c1c1c;
+    --sheet: #1c1c1c;
+    --popup: #242424;
+    --text: rgba(255, 255, 255, 0.87);
+    --muted: rgba(255, 255, 255, 0.56);
+    --faint: rgba(255, 255, 255, 0.36);
+    --hint: rgba(255, 255, 255, 0.36);
+    --done: rgba(255, 255, 255, 0.3);
+    --line: rgba(255, 255, 255, 0.12);
+    --line-strong: rgba(255, 255, 255, 0.15);
+    --chip: rgba(255, 255, 255, 0.12);
+    --icon: #b2b6bd;
+    --icon-off: rgba(255, 255, 255, 0.6);
+    --icon-disabled: #4c4f53;
+    --tab-off: #b2b6bd;
+    --snack: #4c4f53;
+    --circle: #131313;
+    --bar: #1c1c1c;
+    --danger: #ff6b6b;
+    --on-accent: #ffffff;
+    --selected: rgba(var(--accent-rgb), 0.2);
+  }
+}

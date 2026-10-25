@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.ticktick.customview.selectableview.SelectableLinearLayout android:orientation="vertical" android:layout_width="match_parent" android:layout_height="wrap_content"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout android:gravity="center_vertical" android:orientation="horizontal" android:paddingRight="?android:scrollbarSize" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="50.0dp" android:paddingEnd="?android:scrollbarSize">
+        <FrameLayout android:layout_width="24.0dp" android:layout_height="wrap_content" android:layout_marginStart="16.0dp" android:layout_marginEnd="12.0dp">
+            <ImageView android:gravity="center" android:layout_gravity="center" android:id="@id/left" android:padding="1.0dp" android:layout_width="24.0dp" android:layout_height="24.0dp" app:tint="?iconColorPrimary" />
+            <com.ticktick.customview.CalendarTextView android:textColor="?go_today_text_color" android:gravity="center" android:id="@id/date_text" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2.0dp" style="@style/date_icon_text_style" />
+        </FrameLayout>
+        <LinearLayout android:layout_width="0.0dp" android:layout_height="match_parent" android:layout_weight="1.0">
+            <TextView android:textSize="16.0sp" android:textColor="?android:textColorPrimary" android:ellipsize="marquee" android:gravity="center_vertical" android:id="@id/name" android:fadingEdge="horizontal" android:layout_width="0.0dp" android:layout_height="match_parent" android:singleLine="true" android:layout_weight="1.0" />
+            <TextView android:textSize="14.0sp" android:textColor="?android:textColorTertiary" android:gravity="center_vertical" android:id="@id/left_text" android:layout_width="wrap_content" android:layout_height="match_parent" android:layout_marginLeft="1.0dp" android:layout_marginRight="1.0dp" android:maxLines="4" android:layout_below="@id/name" android:layout_alignLeft="@id/name" android:layout_marginStart="1.0dp" android:layout_marginEnd="1.0dp" android:layout_alignStart="@id/name" />
+        </LinearLayout>
+        <com.ticktick.task.theme.view.TTImageView android:padding="2.0dp" app:iconTintType="themeIconTertiary" app:srcCompat="@drawable/ic_svg_common_preference_arrow" style="@style/edit_project_item_right" />
+    </LinearLayout>
+</com.ticktick.customview.selectableview.SelectableLinearLayout>
