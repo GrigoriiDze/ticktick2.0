@@ -84,12 +84,13 @@ export function CalendarHeader(props: {
   anchor: DayKey
   ctx: DateCtx
   showDone: boolean
+  onMenu?: () => void
   onShift: (dir: 1 | -1) => void
   onToday: () => void
   onView: (v: CalView) => void
   onToggleDone: () => void
 }) {
-  const { view, anchor, ctx } = props
+  const { view, anchor, ctx, onMenu } = props
   const [menu, setMenu] = useState<'view' | 'more' | null>(null)
   const title = calTitle(view, anchor, ctx)
   const viewItems: PopItem[] = CAL_VIEWS.map((v) => ({ key: v.id, title: v.title, checked: v.id === view, onPick: () => props.onView(v.id) }))
@@ -97,47 +98,58 @@ export function CalendarHeader(props: {
 
   return (
     <header className="cal-head">
-      <button
-        className="round"
-        onClick={() => {
-          // Уже на сегодняшнем дне: второе нажатие открывает полный месяц, иначе кнопка выглядела бы мёртвой
-          if (props.anchor === today(ctx) && view === 'list') props.onView('month')
-          else props.onToday()
-        }}
-        aria-label="Сегодня"
-      >
-        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
-          <rect x="3.5" y="4.8" width="17" height="15.7" rx="3.5" fill="currentColor" opacity="0.9" />
-          <path d="M8 2.8v3.6M16 2.8v3.6" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
-          <text x="12" y="16.4" textAnchor="middle" fontSize="8.5" fontWeight="700" style={{ fill: 'var(--circle)' }}>
-            {Number(today(ctx).slice(8))}
-          </text>
-        </svg>
-      </button>
-      <div className="cal-title">
-        <button className="ghost" onClick={() => props.onShift(-1)} aria-label="Назад">
-          <ChevronLeft size={18} />
-        </button>
-        <button className="cal-title-text" onClick={() => props.onView(view === 'list' ? 'month' : 'list')} aria-label={view === 'list' ? 'Открыть месяц' : 'Вернуться к списку дня'}>
-          {title.small && <span className="cal-small">{title.small}</span>}
-          <strong>{title.main}</strong>
-        </button>
-        <button className="ghost" onClick={() => props.onShift(1)} aria-label="Вперёд">
-          <ChevronRight size={18} />
-        </button>
+      <div className="cal-head-left">
+        {onMenu && (
+          <button className="round menu-btn" onClick={onMenu} aria-label="Списки">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+              <path d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        )}
+        <div className="cal-title">
+          <button className="ghost" onClick={() => props.onShift(-1)} aria-label="Назад">
+            <ChevronLeft size={18} />
+          </button>
+          <button className="cal-title-text" onClick={() => props.onView(view === 'list' ? 'month' : 'list')} aria-label={view === 'list' ? 'Открыть месяц' : 'Вернуться к списку дня'}>
+            {title.small && <span className="cal-small">{title.small}</span>}
+            <strong>{title.main}</strong>
+          </button>
+          <button className="ghost" onClick={() => props.onShift(1)} aria-label="Вперёд">
+            <ChevronRight size={18} />
+          </button>
+        </div>
       </div>
-      <div className="round-pill">
-        <button className="ghost" onClick={() => setMenu('view')} aria-label="Вид календаря">
-          <ViewIcon size={22} />
-        </button>
-        <button className="ghost" onClick={() => setMenu('more')} aria-label="Меню календаря">
+
+      <div className="cal-head-right">
+        <button
+          className="cal-action-btn today-btn"
+          onClick={() => {
+            if (props.anchor === today(ctx) && view === 'list') props.onView('month')
+            else props.onToday()
+          }}
+          aria-label="Сегодня"
+          title="Сегодня"
+        >
           <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
-            <circle cx="5.5" cy="12" r="1.8" fill="currentColor" />
+            <rect x="3.5" y="4.8" width="17" height="15.7" rx="3.5" fill="none" stroke="currentColor" strokeWidth="1.8" />
+            <path d="M8 2.8v3.6M16 2.8v3.6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+            <text x="12" y="16.5" textAnchor="middle" fontSize="9" fontWeight="700" fill="currentColor">
+              {Number(today(ctx).slice(8))}
+            </text>
+          </svg>
+        </button>
+        <button className="cal-action-btn" onClick={() => setMenu('view')} aria-label="Вид календаря" title="Вид">
+          <ViewIcon size={20} />
+        </button>
+        <button className="cal-action-btn" onClick={() => setMenu('more')} aria-label="Меню календаря" title="Ещё">
+          <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="5" cy="12" r="1.8" fill="currentColor" />
             <circle cx="12" cy="12" r="1.8" fill="currentColor" />
-            <circle cx="18.5" cy="12" r="1.8" fill="currentColor" />
+            <circle cx="19" cy="12" r="1.8" fill="currentColor" />
           </svg>
         </button>
       </div>
+
       {menu === 'view' && <PopMenu label="Вид календаря" items={viewItems} onClose={() => setMenu(null)} />}
       {menu === 'more' && <PopMenu label="Меню календаря" items={moreItems} onClose={() => setMenu(null)} />}
     </header>
@@ -185,22 +197,29 @@ export function Calendar(props: Props) {
   )
 }
 
-function WeekStrip({ ctx, anchor, events, onAnchor }: Props & { events: Map<DayKey, CalEvent[]> }) {
+function WeekStrip({ ctx, anchor, events, onAnchor, colors }: Props & { events: Map<DayKey, CalEvent[]> }) {
   const now = today(ctx)
   return (
     <div className="strip">
-      {weekDays(anchor).map((d) => (
-        <button key={d} className={`strip-day${d === anchor ? ' sel' : ''}${d === now ? ' today' : ''}`} onClick={() => onAnchor(d)} aria-label={formatDay(d, ctx)} aria-pressed={d === anchor}>
-          <span className="strip-wd">{WEEKDAYS_SHORT[weekdayIndex(d)]}</span>
-          <span className="strip-num">{Number(d.slice(8))}</span>
-          <span className={events.has(d) ? 'dot on' : 'dot'} />
-        </button>
-      ))}
+      {weekDays(anchor).map((d) => {
+        const evs = events.get(d) ?? []
+        return (
+          <button key={d} className={`strip-day${d === anchor ? ' sel' : ''}${d === now ? ' today' : ''}`} onClick={() => onAnchor(d)} aria-label={formatDay(d, ctx)} aria-pressed={d === anchor}>
+            <span className="strip-wd">{WEEKDAYS_SHORT[weekdayIndex(d)]}</span>
+            <span className="strip-num">{Number(d.slice(8))}</span>
+            <span className="cal-dots">
+              {evs.slice(0, 3).map((e, idx) => (
+                <span key={idx} className={`cal-dot p${e.task.priority}`} style={{ backgroundColor: colors?.[e.task.projectId] || undefined }} />
+              ))}
+            </span>
+          </button>
+        )
+      })}
     </div>
   )
 }
 
-function MonthGrid({ ctx, anchor, events, onAnchor }: Props & { events: Map<DayKey, CalEvent[]> }) {
+function MonthGrid({ ctx, anchor, events, onAnchor, colors }: Props & { events: Map<DayKey, CalEvent[]> }) {
   const weeks = useMemo(() => monthGrid(anchor), [anchor])
   const now = today(ctx)
   return (
@@ -212,18 +231,25 @@ function MonthGrid({ ctx, anchor, events, onAnchor }: Props & { events: Map<DayK
       </div>
       {weeks.map((week) => (
         <div className="month-week" key={week[0]}>
-          {week.map((day) => (
-            <button
-              key={day}
-              className={`month-cell${sameMonth(day, anchor) ? '' : ' other'}${day === anchor ? ' sel' : ''}${day === now ? ' today' : ''}`}
-              onClick={() => onAnchor(day)}
-              aria-label={formatDay(day, ctx)}
-              aria-pressed={day === anchor}
-            >
-              <span className="num">{Number(day.slice(8))}</span>
-              <span className={events.has(day) ? 'dot on' : 'dot'} />
-            </button>
-          ))}
+          {week.map((day) => {
+            const evs = events.get(day) ?? []
+            return (
+              <button
+                key={day}
+                className={`month-cell${sameMonth(day, anchor) ? '' : ' other'}${day === anchor ? ' sel' : ''}${day === now ? ' today' : ''}`}
+                onClick={() => onAnchor(day)}
+                aria-label={formatDay(day, ctx)}
+                aria-pressed={day === anchor}
+              >
+                <span className="num">{Number(day.slice(8))}</span>
+                <span className="cal-dots">
+                  {evs.slice(0, 3).map((e, idx) => (
+                    <span key={idx} className={`cal-dot p${e.task.priority}`} style={{ backgroundColor: colors?.[e.task.projectId] || undefined }} />
+                  ))}
+                </span>
+              </button>
+            )
+          })}
         </div>
       ))}
     </div>
@@ -231,7 +257,7 @@ function MonthGrid({ ctx, anchor, events, onAnchor }: Props & { events: Map<DayK
 }
 
 /** Задачи выбранного дня одной карточкой, закрытые в этот день отдельной */
-function DayCards({ ctx, anchor, events, tasks, showDone, actions }: Props & { events: Map<DayKey, CalEvent[]> }) {
+function DayCards({ ctx, anchor, events, tasks, showDone, actions, onSlot }: Props & { events: Map<DayKey, CalEvent[]> }) {
   const list = useMemo(() => {
     const seen = new Set<string>()
     const out: Task[] = []
@@ -247,7 +273,15 @@ function DayCards({ ctx, anchor, events, tasks, showDone, actions }: Props & { e
   return (
     <>
       <section className="group day-card">
-        <h3 className="day-title">{formatDay(anchor, ctx)}</h3>
+        <div className="day-head-row">
+          <h3 className="day-title">{formatDay(anchor, ctx)}</h3>
+          <button className="cal-day-add-btn" onClick={() => onSlot({ day: anchor, minutes: null })} aria-label="Добавить задачу" title="Добавить задачу">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+            <span>Добавить</span>
+          </button>
+        </div>
         {list.length ? <TaskList tasks={list} groups={null} ctx={ctx} listKey={`cal:${anchor}`} actions={actions} forDay={anchor} /> : <p className="muted day-empty">Нет задач</p>}
       </section>
       {done.length > 0 && (

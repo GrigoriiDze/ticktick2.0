@@ -2451,11 +2451,90 @@ main {
 }
 
 .cal-head {
-  display: grid;
-  grid-template-columns: 44px 1fr auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+
+.cal-head-left {
+  display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 16px 6px;
+  min-width: 0;
+}
+
+.cal-head-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cal-action-btn {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.cal-action-btn:hover {
+  background: var(--hover);
+}
+.cal-action-btn:active {
+  background: var(--selected);
+}
+
+.cal-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  height: 6px;
+  margin-top: 2px;
+}
+.cal-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.cal-dot.p5 { background: #ef4444; }
+.cal-dot.p3 { background: #f59e0b; }
+.cal-dot.p1 { background: #3b82f6; }
+.cal-dot.p0 { background: #9ca3af; }
+
+.day-head-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 4px;
+}
+.day-head-row .day-title {
+  padding: 0;
+}
+.cal-day-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.15s ease;
+}
+.cal-day-add-btn:hover {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
 .cal-title {
@@ -6249,48 +6328,7 @@ textarea.sheet-title {
   opacity: 0.6;
 }
 
-/* Фон как в Telegram: тихий цветной градиент, который плывёт, и рисунки из своего набора поверх него */
-body::before,
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-}
-body::before {
-  background:
-    radial-gradient(60% 45% at 15% 10%, rgba(var(--accent-rgb), 0.16), transparent 70%),
-    radial-gradient(55% 40% at 90% 35%, rgba(130, 90, 230, 0.13), transparent 70%),
-    radial-gradient(60% 45% at 30% 95%, rgba(40, 170, 140, 0.11), transparent 70%);
-  background-size: 140% 140%;
-  animation: bg-drift 28s ease-in-out infinite alternate;
-}
-body::after {
-  background: url('/pattern.svg') 0 0 / 260px 260px;
-  opacity: 0.1;
-}
-:root[data-theme='dark'] body::after {
-  opacity: 0.12;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) body::after {
-    opacity: 0.12;
-  }
-}
-@keyframes bg-drift {
-  from {
-    background-position: 0% 0%;
-  }
-  to {
-    background-position: 100% 100%;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  body::before {
-    animation: none;
-  }
-}
+/* Чистый фон без сторонних паттернов и фоновой анимации для максимальной производительности */
 
 /* Жидкое стекло: размытие фона, насыщенность, светлая кромка и блик сверху. Настоящего преломления на телефоне нет: его не умеют встроенные браузеры Android */
 .tabbar,

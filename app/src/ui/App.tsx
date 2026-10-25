@@ -677,6 +677,7 @@ function Workspace({ user }: { user: User }) {
           anchor={cal.anchor}
           ctx={ctx}
           showDone={calDone}
+          onMenu={() => setDrawer(true)}
           onShift={(dir) => setCal({ ...cal, anchor: shiftAnchor(calView, cal.anchor, dir) })}
           onToday={() => setCal({ ...cal, anchor: today(ctx) })}
           onView={(v) => setCal({ ...cal, view: v })}
