@@ -32,6 +32,7 @@ interface Props {
   onRenameGroup: (id: string, name: string) => void
   onDeleteGroup: (id: string) => void
   onToggleGroup: (id: string, collapsed: boolean) => void
+  onMoveToGroup?: (projectId: string, groupId: string | null) => void
   onSettings: () => void
   /** Число на значке «Сегодня» в меню большого экрана */
   dayOfMonth?: number
@@ -48,6 +49,7 @@ export function Drawer(props: Props) {
   const [renaming, setRenaming] = useState<string | null>(null)
   const [renameText, setRenameText] = useState('')
   const [folded, setFolded] = useState<Record<string, boolean>>({})
+  const [dragOverGroup, setDragOverGroup] = useState<string | null>(null)
 
   const tree = buildSidebar(projects, groups)
   const pick = (v: View) => {
@@ -124,13 +126,13 @@ export function Drawer(props: Props) {
         )}
       </div>
     )
-    const smart = (['all', 'today', 'tomorrow', 'week'] as SmartListId[]).filter((id) => props.smartIds.includes(id) || id !== 'tomorrow')
+    const smart = (['all', 'today', 'tomorrow', 'week', 'highPriority', 'nodate'] as SmartListId[]).filter((id) => props.smartIds.includes(id) || id === 'today' || id === 'all')
     const inboxOn = (view.type === 'project' && view.id === INBOX_ID) || (view.type === 'smart' && view.id === 'inbox')
     return (
       <>
         <aside className="drawer docked on sd">
           <div className="sd-scroll">
-            {smart.map((id) => side({ type: 'smart', id }, SMART_LISTS.find((l) => l.id === id)!.title, id === 'all' ? SideIcon.all() : id === 'week' ? SideIcon.week() : SideIcon.today(id === 'tomorrow' ? (props.dayOfMonth ?? 1) + 1 : (props.dayOfMonth ?? 1)), counts[`smart:${id}`]))}
+            {smart.map((id) => side({ type: 'smart', id }, SMART_LISTS.find((l) => l.id === id)!.title, id === 'all' ? SideIcon.all() : id === 'week' ? SideIcon.week() : id === 'highPriority' ? SideIcon.priority() : id === 'nodate' ? SideIcon.nodate() : SideIcon.today(id === 'tomorrow' ? (props.dayOfMonth ?? 1) + 1 : (props.dayOfMonth ?? 1)), counts[`smart:${id}`]))}
             {side({ type: 'project', id: INBOX_ID }, 'Входящие', SideIcon.inbox(), counts[`project:${INBOX_ID}`], null, inboxOn)}
             <hr />
             {head('lists', 'Список', () => setAddMenu(true))}
@@ -139,16 +141,78 @@ export function Drawer(props: Props) {
                 {objectsCount > 0 && side({ type: 'objects' }, 'Объекты', SideIcon.folder(), objectsCount)}
                 {waiting.total > 0 && side({ type: 'waiting' }, 'Зависло', SideIcon.list(), waiting.total)}
                 {tree.map((entry) => {
-                  if (entry.kind === 'project') return side({ type: 'project', id: entry.project.id }, entry.project.name, SideIcon.list(), counts[`project:${entry.project.id}`], entry.project.color)
+                  if (entry.kind === 'project') {
+                    const p = entry.project
+                    return (
+                      <div
+                        key={p.id}
+                        draggable
+                        onDragStart={(e) => {
+                          e.dataTransfer.setData('text/plain', p.id)
+                          e.dataTransfer.effectAllowed = 'move'
+                        }}
+                      >
+                        {side({ type: 'project', id: p.id }, p.name, SideIcon.list(), counts[`project:${p.id}`], p.color)}
+                      </div>
+                    )
+                  }
                   const g = entry.group
+                  const total = entry.projects.reduce((n, p) => n + (counts[`project:${p.id}`] ?? 0), 0)
+                  const isOver = dragOverGroup === g.id
                   return (
-                    <div key={g.id} className="sd-group">
-                      <button className="sd-item" onClick={() => props.onToggleGroup(g.id, !g.collapsed)} onContextMenu={(e) => (e.preventDefault(), setGroupMenu(g))} aria-expanded={!g.collapsed}>
-                        <span className="sd-icon">{SideIcon.folder()}</span>
-                        <span className="sd-title">{g.name}</span>
-                        <Triangle open={!g.collapsed} />
-                      </button>
-                      {!g.collapsed && entry.projects.map((p) => side({ type: 'project', id: p.id }, p.name, SideIcon.list(), counts[`project:${p.id}`], p.color))}
+                    <div
+                      key={g.id}
+                      className={`sd-group${isOver ? ' drag-over' : ''}`}
+                      onDragOver={(e) => {
+                        e.preventDefault()
+                        if (dragOverGroup !== g.id) setDragOverGroup(g.id)
+                      }}
+                      onDragLeave={(e) => {
+                        if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                          setDragOverGroup(null)
+                        }
+                      }}
+                      onDrop={(e) => {
+                        e.preventDefault()
+                        setDragOverGroup(null)
+                        const pid = e.dataTransfer.getData('text/plain')
+                        if (pid && props.onMoveToGroup) props.onMoveToGroup(pid, g.id)
+                      }}
+                    >
+                      <div className="sd-group-head">
+                        <button
+                          type="button"
+                          className="sd-item"
+                          onClick={() => props.onToggleGroup(g.id, !g.collapsed)}
+                          onContextMenu={(e) => (e.preventDefault(), setGroupMenu(g))}
+                          aria-expanded={!g.collapsed}
+                        >
+                          <span className="sd-icon">{SideIcon.folder()}</span>
+                          <span className="sd-title">{g.name}</span>
+                          {total > 0 && <span className="sd-count">{total}</span>}
+                          <Triangle open={!g.collapsed} />
+                        </button>
+                        <button
+                          type="button"
+                          className="ghost folder-more-btn"
+                          onClick={() => setGroupMenu(g)}
+                          aria-label={`Действия с папкой ${g.name}`}
+                        >
+                          ⋯
+                        </button>
+                      </div>
+                      {!g.collapsed && entry.projects.map((p) => (
+                        <div
+                          key={p.id}
+                          draggable
+                          onDragStart={(e) => {
+                            e.dataTransfer.setData('text/plain', p.id)
+                            e.dataTransfer.effectAllowed = 'move'
+                          }}
+                        >
+                          {side({ type: 'project', id: p.id }, p.name, SideIcon.list(), counts[`project:${p.id}`], p.color)}
+                        </div>
+                      ))}
                     </div>
                   )
                 })}

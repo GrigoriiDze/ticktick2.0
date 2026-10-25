@@ -94,6 +94,8 @@ export const MENU_LIST_CHOICES = [
   ['week', 'Следующие 7 дней'],
   ['inbox', 'Входящие'],
   ['all', 'Все'],
+  ['highPriority', 'Высокий приоритет'],
+  ['nodate', 'Без срока'],
 ] as const
 export type MenuListId = (typeof MENU_LIST_CHOICES)[number][0]
 

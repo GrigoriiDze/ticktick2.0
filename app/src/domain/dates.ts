@@ -100,7 +100,7 @@ export function isOverdue(t: Task, ctx: DateCtx): boolean {
   return t.due < today(ctx)
 }
 
-export type SmartListId = 'today' | 'tomorrow' | 'week' | 'inbox' | 'all' | 'done' | 'wontdo'
+export type SmartListId = 'today' | 'tomorrow' | 'week' | 'inbox' | 'all' | 'highPriority' | 'nodate' | 'done' | 'wontdo'
 
 export const SMART_LISTS: Array<{ id: SmartListId; title: string }> = [
   { id: 'today', title: 'Сегодня' },
@@ -108,6 +108,8 @@ export const SMART_LISTS: Array<{ id: SmartListId; title: string }> = [
   { id: 'week', title: 'Следующие 7 дней' },
   { id: 'inbox', title: 'Входящие' },
   { id: 'all', title: 'Все' },
+  { id: 'highPriority', title: 'Высокий приоритет' },
+  { id: 'nodate', title: 'Без срока' },
   { id: 'done', title: 'Выполнено' },
   { id: 'wontdo', title: 'Не будет выполнено' },
 ]
@@ -130,6 +132,10 @@ export function matchesSmartList(id: SmartListId, t: Task, ctx: DateCtx): boolea
       return t.projectId === INBOX_ID
     case 'all':
       return true
+    case 'highPriority':
+      return t.priority >= 3
+    case 'nodate':
+      return due === null && start === null
     case 'today':
       if (due === null) return false
       return due <= now || (start !== null && start <= now)

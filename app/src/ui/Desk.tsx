@@ -158,6 +158,17 @@ export const SideIcon = {
       <path d="M3 11h4l1 1.8h4l1-1.8h4" />
     </svg>
   ),
+  priority: () => (
+    <svg {...s}>
+      <path d="M4 17V3M4 4h9l-1.5 4L13 12H4" fill="#e5484d" stroke="#e5484d" strokeWidth="1.2" />
+    </svg>
+  ),
+  nodate: () => (
+    <svg {...s}>
+      <rect x="2.75" y="3.5" width="14.5" height="13.5" rx="2.5" />
+      <path d="M6 10.5h8" strokeWidth="1.5" />
+    </svg>
+  ),
   list: () => (
     <svg {...s}>
       <path d="M3.5 5.5h13M3.5 10h13M3.5 14.5h13" />

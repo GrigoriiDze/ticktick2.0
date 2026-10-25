@@ -934,6 +934,7 @@ function Workspace({ user }: { user: User }) {
           void groupsRepo.softDelete(id)
         }}
         onToggleGroup={(id, collapsed) => void groupsRepo.update(id, { collapsed })}
+        onMoveToGroup={(projectId, groupId) => void projectsRepo.update(projectId, { groupId })}
         onSettings={() => setSettingsOpen(true)}
         onSelect={setView}
         onClose={() => setDrawer(false)}

@@ -8039,3 +8039,37 @@ body::after {
 .pomo-stat-dot {
   opacity: 0.5;
 }
+
+
+/* ---- Папки списков: drag-and-drop и управление ---- */
+.sd-group.drag-over {
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
+  border-radius: 8px;
+  outline: 1.5px dashed var(--accent);
+}
+.sd-group-head {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.sd-group-head .sd-item {
+  flex: 1;
+}
+.folder-more-btn {
+  background: none;
+  border: 0;
+  padding: 4px 6px;
+  color: var(--hint);
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+  opacity: 0.6;
+  transition: opacity 0.15s, background 0.15s;
+}
+.sd-group-head:hover .folder-more-btn {
+  opacity: 1;
+}
+.folder-more-btn:hover {
+  background: var(--hover);
+  color: var(--text);
+}
