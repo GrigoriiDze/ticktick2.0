@@ -50,3 +50,9 @@
   - Заголовок окна (Titlebar): оставлен нативный Windows-фрейм (декорации окна ОС) для стабильной работы оконных жестов, минимизации/максимизации и Aero Snap.
   - Синхронизация: подтверждена логика офлайн-работы через IndexedDB/Firestore кэш со слиянием при подключении (`src/data/sync.test.ts`).
   - Сборка `tauri build` выполнена успешно, сформирован исполняемый файл `zadachi.exe` и NSIS-инсталлятор `TickTick 2.0_1.4.0_x64-setup.exe`.
+
+- **Mobile APK (Capacitor):**
+  - StatusBar: функция `syncStatusBar()` в `app/src/platform/statusbar.ts` переведена на динамическое чтение токена `--bar` (`#ffffff` в светлой теме, `#1c1c1c` в тёмной), передаваемого в `@capacitor/status-bar` и нативный плагин `WindowColors`.
+  - SafeArea: проверена поддержка `env(safe-area-inset-top)` и `env(safe-area-inset-bottom)` для шторки, таббара, диалогов, FAB и панели добавления.
+  - Синхронизация Capacitor (`npx cap sync android`) и сборка `gradlew.bat assembleDebug` выполнены с использованием локального Temurin JDK 21 (`~/.jdks/jdk-21.0.12.1+1`).
+  - Готовый файл `app-debug.apk` собран и скопирован в `dist-apk/zadachi-debug.apk`.
