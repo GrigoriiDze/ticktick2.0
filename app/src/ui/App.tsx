@@ -637,7 +637,7 @@ function Workspace({ user }: { user: User }) {
             }
           }}
         />
-      ) : (
+      ) : effectiveView.type === 'habits' && wide ? null : (
         <header className={tabOf(effectiveView) === 'tasks' ? 'centered' : undefined}>
           {tasksSection && (
             <button className="round side-toggle" onClick={() => setSideHidden(!sideHidden)} aria-label={sideHidden ? 'Показать меню' : 'Скрыть меню'} title={sideHidden ? 'Показать меню' : 'Скрыть меню'}>
@@ -718,10 +718,18 @@ function Workspace({ user }: { user: User }) {
             habits={habits ?? []}
             checkins={checkins ?? []}
             ctx={ctx}
-            onCreate={(name) => {
+            wide={wide}
+            onCreate={(name, patch) => {
               const last = (habits ?? []).reduce((m, h) => Math.max(m, h.sortOrder), 0)
-              const color = ['#7BC4FA', '#A0EFED', '#F18BEC', '#FF8585', '#6E81ED', '#F5C26B', '#8EDB8E', '#B79BFF'][(habits ?? []).length % 8]
-              void habitsRepo.create({ name, startDay: today(ctx), color, sortOrder: orderBetween(last || null, null) })
+              const color = patch?.color || ['#7BC4FA', '#A0EFED', '#F18BEC', '#FF8585', '#6E81ED', '#F5C26B', '#8EDB8E', '#B79BFF'][(habits ?? []).length % 8]
+              void habitsRepo.create({
+                name,
+                startDay: today(ctx),
+                color,
+                repeat: patch?.repeat ?? null,
+                reminders: patch?.reminders ?? [],
+                sortOrder: orderBetween(last || null, null),
+              })
             }}
             onUpdate={(id, patch) => void habitsRepo.update(id, patch)}
             onArchive={(id, archived) => void habitsRepo.archive(id, archived)}
