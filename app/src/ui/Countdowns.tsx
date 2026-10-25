@@ -15,7 +15,9 @@ interface Props {
   onDelete: (id: string) => void
 }
 
-/** Обратный отсчёт: до свадьбы, сдачи объекта, поставки. Крупное число дней и подпись, как в TickTick */
+const CD_PALETTE = ['#4772FA', '#E5484D', '#2FAA6B', '#F5A623', '#8A63E6', '#2BB0B0', '#D6559D']
+
+/** Обратный отсчёт: до важного события, свадьбы, сдачи объекта, отпуска. Карточки с крупным числом дней */
 export function Countdowns({ list, today, editing, onEdit: setEditing, onCreate, onUpdate, onDelete }: Props) {
   const form = useExit(editing)
   const sorted = sortCountdowns(list, today)
@@ -23,24 +25,38 @@ export function Countdowns({ list, today, editing, onEdit: setEditing, onCreate,
 
   return (
     <div className="countdowns">
-      {sorted.length === 0 && <p className="muted cd-empty">Событий нет. Добавьте дату, до которой считаем дни</p>}
-      <ul>
-        {sorted.map((c) => {
+      {sorted.length === 0 && <p className="muted cd-empty">Событий нет. Нажмите «+», чтобы добавить дату, до которой считаем дни</p>}
+      <div className="cd-grid">
+        {sorted.map((c, idx) => {
           const days = daysUntil(c.date, today)
+          const isPast = days < 0
+          const color = CD_PALETTE[idx % CD_PALETTE.length]
           return (
-            <li key={c.id} className={days < 0 ? 'cd past' : 'cd'}>
-              <button className="cd-main" onClick={() => setEditing(c.id)} aria-label={`${c.name}, ${countdownLabel(days)}`}>
-                <span className="cd-name">{c.name}</span>
-                <span className="cd-date muted">{c.date.split('-').reverse().join('.')}</span>
+            <div key={c.id} className={`cd-card${isPast ? ' past' : ''}`} style={{ ['--cd-accent' as string]: color }}>
+              <div className="cd-stripe" />
+              <button
+                type="button"
+                className="cd-main"
+                onClick={() => setEditing(c.id)}
+                aria-label={`${c.name}, ${countdownLabel(days)}`}
+              >
+                <div className="cd-body">
+                  <div className="cd-info">
+                    <span className="cd-name">{c.name}</span>
+                    <span className="cd-date muted">{c.date.split('-').reverse().join('.')}</span>
+                  </div>
+                  <div className="cd-days-box" aria-hidden="true">
+                    <span className="cd-big-number">{days === 0 ? '0' : Math.abs(days)}</span>
+                    <span className="cd-days-label">
+                      {days === 0 ? 'сегодня' : isPast ? 'дней прошло' : 'дней осталось'}
+                    </span>
+                  </div>
+                </div>
               </button>
-              <span className="cd-days" aria-hidden="true">
-                <strong>{days === 0 ? '0' : Math.abs(days)}</strong>
-                <small>{countdownLabel(days).split(' ')[0]}</small>
-              </span>
-            </li>
+            </div>
           )
         })}
-      </ul>
+      </div>
 
       {form.value && (
         <CountdownForm
@@ -95,18 +111,34 @@ function CountdownForm({
     <>
       <div className={leaving ? 'scrim on leaving' : 'scrim on'} onClick={onClose} />
       <form className={leaving ? 'sheet cd-form leaving' : 'sheet cd-form'} onSubmit={submit} aria-label="Событие">
-        <input autoFocus value={name} onChange={(e) => setName(e.target.value)} placeholder="Название события" aria-label="Название события" enterKeyHint="done" />
+        <input
+          autoFocus
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Название события"
+          aria-label="Название события"
+          enterKeyHint="done"
+        />
         <label className="cd-field">
-          <span className="muted">Дата</span>
-          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} aria-label="Дата события" />
+          <span className="muted">Целевая дата</span>
+          <input
+            className="plain-select"
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            aria-label="Дата события"
+          />
         </label>
         <div className="cd-actions">
           {onDelete && (
-            <button type="button" className="danger" onClick={onDelete}>
+            <button type="button" className="ghost danger" onClick={onDelete}>
               Удалить
             </button>
           )}
-          <span className="qt-spacer" />
+          <span className="cd-spacer" />
+          <button type="button" className="ghost" onClick={onClose}>
+            Отмена
+          </button>
           <button type="submit" className="primary" disabled={!name.trim() || !date}>
             Сохранить
           </button>
