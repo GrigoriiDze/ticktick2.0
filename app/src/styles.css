@@ -4192,6 +4192,82 @@ button.cal-title-text:active {
 .addbar input::placeholder {
   color: var(--hint);
 }
+.addbar-smart-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  background: var(--sel, rgba(71, 114, 250, 0.15));
+  color: var(--accent, #4772fa);
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.addbar-actions {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.addbar-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: 0;
+  border-radius: 6px;
+  color: var(--hint);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.addbar-btn:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+.addbar-btn.flag.p5 { color: #e5484d; }
+.addbar-btn.flag.p3 { color: #f5a623; }
+.addbar-btn.flag.p1 { color: #4772fa; }
+
+.addbar-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: var(--popup, #1e1f23);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 150px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  z-index: 50;
+}
+.addbar-pop-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: none;
+  border: 0;
+  border-radius: 5px;
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.addbar-pop-item:hover {
+  background: var(--hover);
+}
+.addbar-pop-item.on {
+  background: var(--sel, rgba(71, 114, 250, 0.15));
+  color: var(--accent, #4772fa);
+  font-weight: 500;
+}
 
 .app.wide main {
   padding: 0 20px 40px;

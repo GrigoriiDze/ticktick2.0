@@ -125,8 +125,15 @@ export function TaskSheet(props: Props) {
   const body = (
     <>
       <header className="tp-head">
-        <button className="round" onClick={onClose} aria-label={mode === 'page' ? 'Назад' : 'Закрыть'}>
-          <ChevronLeft size={22} />
+        <button className="round" onClick={onClose} aria-label={props.docked ? 'Закрыть панель' : mode === 'page' ? 'Назад' : 'Закрыть'}>
+          {props.docked ? (
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          ) : (
+            <ChevronLeft size={22} />
+          )}
         </button>
         <button className="tp-project" onClick={() => setMenu('project')} aria-label="Список задачи">
           <span>{project?.name ?? 'Список'}</span>

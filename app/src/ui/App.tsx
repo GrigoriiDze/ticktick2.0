@@ -15,7 +15,7 @@ import { compareWaiting, isWaiting, waitingCount } from '../domain/waiting'
 import { orderBetween } from '../domain/order'
 import { nextOccurrence } from '../domain/repeat'
 import { isSite } from '../domain/sites'
-import { type Project, type SiteStage, type Task } from '../domain/types'
+import { type Priority, type Project, type SiteStage, type Task } from '../domain/types'
 import { Calendar, CalendarHeader, type QuickAddRequest } from './Calendar'
 import { CalendarDesktop, DeskCalHeader } from './CalendarDesktop'
 import { AddBar } from './AddBar'
@@ -137,6 +137,7 @@ function Workspace({ user }: { user: User }) {
   const [projectSheet, setProjectSheet] = useState(false)
   const [moreOpen, setMoreOpen] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [smartBoardMode, setSmartBoardMode] = useState<'list' | 'board'>(() => { try { return (localStorage.getItem('smart-board-mode') as 'list' | 'board') || 'list' } catch { return 'list' } })
   const [quickTask, setQuickTask] = useState<{ day: DayKey | null; time: string | null; columnId?: string | null } | null>(null)
   /** Список, в который пойдёт задача из «+» колонки доски «Сегодня» */
   const [quickProject, setQuickProject] = useState<string | null>(null)
@@ -289,6 +290,12 @@ function Workspace({ user }: { user: User }) {
         }
       },
     })),
+    ...(effectiveView.type === 'smart' && (effectiveView.id === 'today' || effectiveView.id === 'week')
+      ? [
+          { key: 'view-list', title: 'Вид: список', checked: smartBoardMode === 'list', onPick: () => { setSmartBoardMode('list'); try { localStorage.setItem('smart-board-mode', 'list') } catch {} } },
+          { key: 'view-board', title: 'Вид: доска', checked: smartBoardMode === 'board', onPick: () => { setSmartBoardMode('board'); try { localStorage.setItem('smart-board-mode', 'board') } catch {} } },
+        ]
+      : []),
     ...(currentProject
       ? [
           { key: 'view-list', title: 'Вид: список', checked: currentProject.viewMode !== 'kanban', onPick: () => setViewMode('list') },
@@ -545,7 +552,7 @@ function Workspace({ user }: { user: User }) {
   const tasksSection = wide && ['smart', 'project', 'tag', 'objects', 'waiting', 'trash'].includes(effectiveView.type)
   const showSide = tasksSection && !sideHidden
   /** На большом экране «Сегодня» и «7 дней» показываются доской, списки в виде канбана тоже. Справа тогда нет колонки карточки */
-  const deskBoard = wide && effectiveView.type === 'smart' && (effectiveView.id === 'today' || effectiveView.id === 'week')
+  const deskBoard = wide && smartBoardMode === 'board' && effectiveView.type === 'smart' && (effectiveView.id === 'today' || effectiveView.id === 'week')
   const kanbanHere = effectiveView.type === 'project' && currentProject?.viewMode === 'kanban'
   const boardLayout = deskBoard || kanbanHere
   const projectInfo = useMemo<ProjectInfo>(() => Object.fromEntries(sortedProjects.map((p) => [p.id, { name: p.name, color: p.color && /^#[0-9a-f]{6}$/i.test(p.color) ? p.color : null }])), [sortedProjects])
@@ -576,11 +583,11 @@ function Workspace({ user }: { user: User }) {
   }
 
   /** Задача из строки над списком: название, дата словами, метки */
-  function addFromBar(text: string) {
+  function addFromBar(text: string, priority: Priority = 0) {
     const s = parseSmart(text, ctx)
     const day = s.day ?? defaultQuickDay()
     const date = day ? { ...EMPTY_DATE, day, time: s.day ? s.time : null, reminders: s.day && s.time ? [AT_TIME] : [] } : EMPTY_DATE
-    void addQuick({ title: s.title.trim() || text.trim(), date, priority: 0, projectId: projectForNew(effectiveView), tags: s.tags.map(normalizeTag).filter(Boolean), content: '' })
+    void addQuick({ title: s.title.trim() || text.trim(), date, priority, projectId: projectForNew(effectiveView), tags: s.tags.map(normalizeTag).filter(Boolean), content: '' })
   }
 
   return (
@@ -678,7 +685,7 @@ function Workspace({ user }: { user: User }) {
 
       {error && <p className="error">{error}</p>}
 
-      {canAddHere && <AddBar target={effectiveView.type === 'project' ? (currentProject?.name ?? 'Список') : effectiveView.type === 'tag' ? `#${effectiveView.id}` : 'Входящие'} onAdd={addFromBar} />}
+      {canAddHere && <AddBar target={effectiveView.type === 'project' ? (currentProject?.name ?? 'Список') : effectiveView.type === 'tag' ? `#${effectiveView.id}` : 'Входящие'} ctx={ctx} onAdd={addFromBar} />}
 
       {wide && tasksSection && !boardLayout && !ox && <EmptyPane />}
 
