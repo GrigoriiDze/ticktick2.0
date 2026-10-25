@@ -1,8 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type PointerEvent } from 'react'
 import {
   CAL_VIEWS,
-  calTitle,
-  doneOnDay,
   eventsByDay,
   layoutColumns,
   monthGrid,
@@ -10,22 +8,21 @@ import {
   shiftAnchor,
   threeDays,
   tightTransfers,
-  WEEKDAYS_SHORT,
   weekdayIndex,
   weekDays,
   yearMonths,
   type CalEvent,
   type CalView,
 } from '../domain/calendar'
-import { formatDay, today, type DateCtx, type DayKey } from '../domain/dates'
+import { today, type DateCtx, type DayKey } from '../domain/dates'
 import type { Task } from '../domain/types'
-import { ChevronLeft, ChevronRight, ViewIcon } from './icons'
 import { PopMenu, type PopItem } from './PopMenu'
-import { TaskList, type RowActions } from './TaskList'
+import type { RowActions } from './TaskList'
 
-const HOUR_PX = 52
+const HOUR_PX = 56
 const SLOT_MIN = 30
-const MONTH_NAMES = ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь']
+const SHORT_MONTHS_RU = ['ЯНВ.', 'ФЕВ.', 'МАР.', 'АПР.', 'МАЙ', 'ИЮН.', 'ИЮЛ.', 'АВГ.', 'СЕНТ.', 'ОКТ.', 'НОЯБ.', 'ДЕК.']
+const WEEKDAYS_LOWER = ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс']
 
 export interface QuickAddRequest {
   day: DayKey
@@ -42,10 +39,8 @@ export interface CalProps {
   onAnchor: (day: DayKey) => void
   onView: (v: CalView) => void
   onSlot: (req: QuickAddRequest) => void
-  /** Задачу перетащили на другое время или день сетки */
   onMove?: (taskId: string, day: DayKey, minutes: number) => void
   actions: RowActions
-  /** Цвет списка по его id. Нет значения: цвет акцента */
   colors?: Record<string, string>
 }
 type Props = CalProps
@@ -53,11 +48,9 @@ type Props = CalProps
 const pad = (n: number) => String(n).padStart(2, '0')
 const hhmm = (min: number) => `${pad(Math.floor(min / 60))}:${pad(min % 60)}`
 
-/** Идёт перетаскивание события или только что закончилось: нажатия и свайпы в этот момент не считаются */
 let dragLive = false
 let dragJustEnded = false
 
-/** Свайп по горизонтали: влево следующий период, вправо прошлый. Вертикальную прокрутку не мешает */
 function useSwipe(onShift: (dir: 1 | -1) => void) {
   const start = useRef<{ x: number; y: number } | null>(null)
   return {
@@ -70,7 +63,7 @@ function useSwipe(onShift: (dir: 1 | -1) => void) {
       if (!s || dragLive || dragJustEnded) return
       const dx = e.clientX - s.x
       const dy = e.clientY - s.y
-      if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 2) onShift(dx < 0 ? 1 : -1)
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) onShift(dx < 0 ? 1 : -1)
     },
     onPointerCancel: () => {
       start.current = null
@@ -78,7 +71,7 @@ function useSwipe(onShift: (dir: 1 | -1) => void) {
   }
 }
 
-/** Шапка календаря: «сегодня», заголовок со стрелками, выбор вида и меню */
+/** Шапка мобильного календаря 1-в-1 по Photo 1 и Photo 2 */
 export function CalendarHeader(props: {
   view: CalView
   anchor: DayKey
@@ -90,68 +83,86 @@ export function CalendarHeader(props: {
   onView: (v: CalView) => void
   onToggleDone: () => void
 }) {
-  const { view, anchor, ctx, onMenu } = props
+  const { view, anchor, onToday, onView } = props
   const [menu, setMenu] = useState<'view' | 'more' | null>(null)
-  const title = calTitle(view, anchor, ctx)
-  const viewItems: PopItem[] = CAL_VIEWS.map((v) => ({ key: v.id, title: v.title, checked: v.id === view, onPick: () => props.onView(v.id) }))
-  const moreItems: PopItem[] = [{ key: 'done', title: 'Показывать выполненные', checked: props.showDone, onPick: props.onToggleDone }]
+  const monthIdx = Number(anchor.slice(5, 7)) - 1
+  const monthLabel = SHORT_MONTHS_RU[monthIdx] || 'МЕСЯЦ'
+
+  const viewItems: PopItem[] = CAL_VIEWS.map((v) => ({
+    key: v.id,
+    title: v.title,
+    checked: v.id === view,
+    onPick: () => onView(v.id),
+  }))
+  const moreItems: PopItem[] = [
+    { key: 'today', title: 'Сегодня', onPick: onToday },
+    { key: 'done', title: 'Показывать выполненные', checked: props.showDone, onPick: props.onToggleDone },
+  ]
+
+  const isMonth = view === 'month'
 
   return (
-    <header className="cal-head">
-      <div className="cal-head-left">
-        {onMenu && (
-          <button className="round menu-btn" onClick={onMenu} aria-label="Списки">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-              <path d="M4 6h16M4 12h16M4 18h16" />
+    <header className="m-cal-head">
+      <div className="m-cal-head-left">
+        <h2 className="m-cal-month-title">{monthLabel}</h2>
+      </div>
+
+      <div className="m-cal-head-right">
+        {!isMonth && (
+          <button
+            className="m-cal-btn"
+            onClick={() => onView('month')}
+            aria-label="Месяц"
+            title="Месяц"
+          >
+            {/* Иконка перекидного календаря с пружинами */}
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3.5" y="4.5" width="17" height="16" rx="3.5" />
+              <path d="M8 2.5v3.5M16 2.5v3.5M3.5 9.5h17" />
             </svg>
           </button>
         )}
-        <div className="cal-title">
-          <button className="ghost" onClick={() => props.onShift(-1)} aria-label="Назад">
-            <ChevronLeft size={18} />
-          </button>
-          <button className="cal-title-text" onClick={() => props.onView(view === 'list' ? 'month' : 'list')} aria-label={view === 'list' ? 'Открыть месяц' : 'Вернуться к списку дня'}>
-            {title.small && <span className="cal-small">{title.small}</span>}
-            <strong>{title.main}</strong>
-          </button>
-          <button className="ghost" onClick={() => props.onShift(1)} aria-label="Вперёд">
-            <ChevronRight size={18} />
-          </button>
-        </div>
-      </div>
 
-      <div className="cal-head-right">
         <button
-          className="cal-action-btn today-btn"
-          onClick={() => {
-            if (props.anchor === today(ctx) && view === 'list') props.onView('month')
-            else props.onToday()
-          }}
-          aria-label="Сегодня"
-          title="Сегодня"
+          className="m-cal-btn"
+          onClick={() => setMenu('view')}
+          aria-label="Вид календаря"
+          title="Вид"
         >
-          <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
-            <rect x="3.5" y="4.8" width="17" height="15.7" rx="3.5" fill="none" stroke="currentColor" strokeWidth="1.8" />
-            <path d="M8 2.8v3.6M16 2.8v3.6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-            <text x="12" y="16.5" textAnchor="middle" fontSize="9" fontWeight="700" fill="currentColor">
-              {Number(today(ctx).slice(8))}
-            </text>
-          </svg>
+          {isMonth ? (
+            /* 2x2 сетка (Photo 1) */
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <rect x="3.5" y="3.5" width="7" height="7" rx="1.5" />
+              <rect x="13.5" y="3.5" width="7" height="7" rx="1.5" />
+              <rect x="3.5" y="13.5" width="7" height="7" rx="1.5" />
+              <rect x="13.5" y="13.5" width="7" height="7" rx="1.5" />
+            </svg>
+          ) : (
+            /* 3 колонки сетки (Photo 2) */
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+              <rect x="4" y="3.5" width="3.8" height="17" rx="1" />
+              <rect x="10.1" y="3.5" width="3.8" height="17" rx="1" />
+              <rect x="16.2" y="3.5" width="3.8" height="17" rx="1" />
+            </svg>
+          )}
         </button>
-        <button className="cal-action-btn" onClick={() => setMenu('view')} aria-label="Вид календаря" title="Вид">
-          <ViewIcon size={20} />
-        </button>
-        <button className="cal-action-btn" onClick={() => setMenu('more')} aria-label="Меню календаря" title="Ещё">
-          <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
-            <circle cx="5" cy="12" r="1.8" fill="currentColor" />
-            <circle cx="12" cy="12" r="1.8" fill="currentColor" />
-            <circle cx="19" cy="12" r="1.8" fill="currentColor" />
+
+        <button
+          className="m-cal-btn"
+          onClick={() => setMenu('more')}
+          aria-label="Опции"
+          title="Опции"
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+            <circle cx="12" cy="5" r="1.8" />
+            <circle cx="12" cy="12" r="1.8" />
+            <circle cx="12" cy="19" r="1.8" />
           </svg>
         </button>
       </div>
 
       {menu === 'view' && <PopMenu label="Вид календаря" items={viewItems} onClose={() => setMenu(null)} />}
-      {menu === 'more' && <PopMenu label="Меню календаря" items={moreItems} onClose={() => setMenu(null)} />}
+      {menu === 'more' && <PopMenu label="Опции" items={moreItems} onClose={() => setMenu(null)} />}
     </header>
   )
 }
@@ -159,7 +170,6 @@ export function CalendarHeader(props: {
 export function Calendar(props: Props) {
   const { tasks, ctx, view, anchor } = props
 
-  // Диапазон дней, для которых нужны события
   const range = useMemo((): [DayKey, DayKey] => {
     if (view === 'month') {
       const g = monthGrid(anchor).flat()
@@ -174,6 +184,7 @@ export function Calendar(props: Props) {
     const w = weekDays(anchor)
     return [w[0], w[6]]
   }, [view, anchor])
+
   const events = useMemo(() => eventsByDay(tasks, ctx, range[0], range[1]), [tasks, ctx, range])
   const shift = (dir: 1 | -1) => props.onAnchor(shiftAnchor(view, anchor, dir))
   const swipe = useSwipe(shift)
@@ -189,108 +200,82 @@ export function Calendar(props: Props) {
 
   if (view === 'year') return <YearView {...props} events={events} />
 
+  // Полноэкранный месяц 1-в-1 по Photo 1
   return (
-    <div className="cal" {...swipe}>
-      {view === 'list' ? <WeekStrip {...props} events={events} /> : <MonthGrid {...props} events={events} />}
-      <DayCards {...props} events={events} />
-    </div>
-  )
-}
-
-function WeekStrip({ ctx, anchor, events, onAnchor, colors }: Props & { events: Map<DayKey, CalEvent[]> }) {
-  const now = today(ctx)
-  return (
-    <div className="strip">
-      {weekDays(anchor).map((d) => {
-        const evs = events.get(d) ?? []
-        return (
-          <button key={d} className={`strip-day${d === anchor ? ' sel' : ''}${d === now ? ' today' : ''}`} onClick={() => onAnchor(d)} aria-label={formatDay(d, ctx)} aria-pressed={d === anchor}>
-            <span className="strip-wd">{WEEKDAYS_SHORT[weekdayIndex(d)]}</span>
-            <span className="strip-num">{Number(d.slice(8))}</span>
-            <span className="cal-dots">
-              {evs.slice(0, 3).map((e, idx) => (
-                <span key={idx} className={`cal-dot p${e.task.priority}`} style={{ backgroundColor: colors?.[e.task.projectId] || undefined }} />
-              ))}
-            </span>
-          </button>
-        )
-      })}
-    </div>
-  )
-}
-
-function MonthGrid({ ctx, anchor, events, onAnchor, colors }: Props & { events: Map<DayKey, CalEvent[]> }) {
-  const weeks = useMemo(() => monthGrid(anchor), [anchor])
-  const now = today(ctx)
-  return (
-    <div className="month">
-      <div className="month-head">
-        {WEEKDAYS_SHORT.map((d) => (
+    <div className="m-cal-month-screen" {...swipe}>
+      <div className="m-cal-weekdays">
+        {WEEKDAYS_LOWER.map((d) => (
           <span key={d}>{d}</span>
         ))}
       </div>
+      <MonthFullGrid {...props} events={events} />
+    </div>
+  )
+}
+
+/** Сетка месяца на весь экран с плашками задач внутри (Photo 1) */
+function MonthFullGrid({ ctx, anchor, events, onAnchor, onView, actions, colors }: Props & { events: Map<DayKey, CalEvent[]> }) {
+  const weeks = useMemo(() => monthGrid(anchor), [anchor])
+  const now = today(ctx)
+
+  return (
+    <div className="m-cal-grid">
       {weeks.map((week) => (
-        <div className="month-week" key={week[0]}>
+        <div className="m-cal-row" key={week[0]}>
           {week.map((day) => {
             const evs = events.get(day) ?? []
+            const isToday = day === now
+            const isCurMonth = sameMonth(day, anchor)
+            const isSel = day === anchor
+
             return (
-              <button
+              <div
                 key={day}
-                className={`month-cell${sameMonth(day, anchor) ? '' : ' other'}${day === anchor ? ' sel' : ''}${day === now ? ' today' : ''}`}
-                onClick={() => onAnchor(day)}
-                aria-label={formatDay(day, ctx)}
-                aria-pressed={day === anchor}
+                className={`m-cal-cell${!isCurMonth ? ' off' : ''}${isSel ? ' sel' : ''}`}
+                onClick={() => {
+                  onAnchor(day)
+                }}
+                onDoubleClick={() => {
+                  onAnchor(day)
+                  onView('day')
+                }}
               >
-                <span className="num">{Number(day.slice(8))}</span>
-                <span className="cal-dots">
-                  {evs.slice(0, 3).map((e, idx) => (
-                    <span key={idx} className={`cal-dot p${e.task.priority}`} style={{ backgroundColor: colors?.[e.task.projectId] || undefined }} />
-                  ))}
-                </span>
-              </button>
+                <div className="m-cal-num-wrap">
+                  <span className={`m-cal-num${isToday ? ' today' : ''}`}>
+                    {Number(day.slice(8))}
+                  </span>
+                </div>
+
+                <div className="m-cal-chips-stack">
+                  {evs.slice(0, 3).map((e) => {
+                    const customBg = colors?.[e.task.projectId]
+                    return (
+                      <div
+                        key={e.task.id}
+                        className={`m-task-chip p${e.task.priority}${e.task.status === 'done' ? ' done' : ''}`}
+                        style={{
+                          backgroundColor: customBg ? `${customBg}2e` : undefined,
+                          color: customBg || undefined,
+                        }}
+                        onClick={(ev) => {
+                          ev.stopPropagation()
+                          actions.open(e.task.id)
+                        }}
+                      >
+                        {e.task.title}
+                      </div>
+                    )
+                  })}
+                  {evs.length > 3 && (
+                    <div className="m-task-chip-more">+{evs.length - 3}</div>
+                  )}
+                </div>
+              </div>
             )
           })}
         </div>
       ))}
     </div>
-  )
-}
-
-/** Задачи выбранного дня одной карточкой, закрытые в этот день отдельной */
-function DayCards({ ctx, anchor, events, tasks, showDone, actions, onSlot }: Props & { events: Map<DayKey, CalEvent[]> }) {
-  const list = useMemo(() => {
-    const seen = new Set<string>()
-    const out: Task[] = []
-    for (const e of events.get(anchor) ?? []) {
-      if (seen.has(e.task.id)) continue
-      seen.add(e.task.id)
-      out.push(e.task)
-    }
-    return out
-  }, [events, anchor])
-  const done = useMemo(() => (showDone ? doneOnDay(tasks, anchor, ctx) : []), [showDone, tasks, anchor, ctx])
-
-  return (
-    <>
-      <section className="group day-card">
-        <div className="day-head-row">
-          <h3 className="day-title">{formatDay(anchor, ctx)}</h3>
-          <button className="cal-day-add-btn" onClick={() => onSlot({ day: anchor, minutes: null })} aria-label="Добавить задачу" title="Добавить задачу">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
-              <path d="M12 5v14M5 12h14" />
-            </svg>
-            <span>Добавить</span>
-          </button>
-        </div>
-        {list.length ? <TaskList tasks={list} groups={null} ctx={ctx} listKey={`cal:${anchor}`} actions={actions} forDay={anchor} /> : <p className="muted day-empty">Нет задач</p>}
-      </section>
-      {done.length > 0 && (
-        <section className="group day-card">
-          <h3 className="day-title">Выполнено</h3>
-          <TaskList tasks={done} groups={null} ctx={ctx} listKey={`cal-done:${anchor}`} actions={actions} forDay={anchor} />
-        </section>
-      )}
-    </>
   )
 }
 
@@ -303,13 +288,12 @@ function YearView({ ctx, anchor, events, onAnchor, onView }: Props & { events: M
         <button
           key={first}
           className="year-month"
-          aria-label={`${MONTH_NAMES[Number(first.slice(5, 7)) - 1]} ${first.slice(0, 4)}`}
           onClick={() => {
             onAnchor(sameMonth(now, first) ? now : first)
             onView('month')
           }}
         >
-          <span className="year-name">{MONTH_NAMES[Number(first.slice(5, 7)) - 1]}</span>
+          <span className="year-name">{SHORT_MONTHS_RU[Number(first.slice(5, 7)) - 1]}</span>
           <span className="year-grid">
             {monthGrid(first)
               .flat()
@@ -329,10 +313,7 @@ function YearView({ ctx, anchor, events, onAnchor, onView }: Props & { events: M
   )
 }
 
-function chipClass(e: CalEvent): string {
-  return `ev-chip p${e.task.priority}${e.virtual ? ' virtual' : ''}`
-}
-
+/** Почасовая сетка с лентой дней и секцией All-Day 1-в-1 по Photo 2 */
 export function TimeGrid({
   ctx,
   view,
@@ -348,7 +329,6 @@ export function TimeGrid({
   const scroller = useRef<HTMLDivElement>(null)
   const [drag, setDrag] = useState<{ title: string; x: number; y: number; w: number; h: number; label: string } | null>(null)
 
-  /** Долгое нажатие поднимает событие, дальше его несут пальцем: по вертикали время (шаг 15 минут), по горизонтали день */
   function pressEvent(down: PointerEvent<HTMLElement>, e: CalEvent) {
     if (!onMove || e.virtual || e.task.repeat || e.startMin === null) return
     const el = down.currentTarget
@@ -374,7 +354,6 @@ export function TimeGrid({
     const stop = () => {
       dragLive = false
       window.clearTimeout(timer)
-      window.clearInterval(scrollTimer)
       window.removeEventListener('pointermove', move)
       window.removeEventListener('pointerup', up)
       window.removeEventListener('pointercancel', cancel)
@@ -405,20 +384,11 @@ export function TimeGrid({
       window.addEventListener('touchmove', block, { passive: false })
       show(last.x, last.y)
     }, 400)
-    // У верхнего и нижнего края сетка сама прокручивается
-    const scrollTimer = window.setInterval(() => {
-      const box = scroller.current
-      if (!active || !box) return
-      const r = box.getBoundingClientRect()
-      if (last.y > r.bottom - 48) box.scrollTop += 10
-      else if (last.y < r.top + 48) box.scrollTop -= 10
-      else return
-      show(last.x, last.y)
-    }, 16)
     window.addEventListener('pointermove', move)
     window.addEventListener('pointerup', up)
     window.addEventListener('pointercancel', cancel)
   }
+
   const now = today(ctx)
   const nowMin = useMemo(() => {
     const d = new Date(ctx.now)
@@ -427,65 +397,75 @@ export function TimeGrid({
     return h * 60 + m
   }, [ctx])
 
-  // При открытии прокручиваем к началу рабочего дня или чуть раньше текущего времени
   useEffect(() => {
     if (!scroller.current) return
-    const startHour = days.includes(now) ? Math.max(0, Math.floor(nowMin / 60) - 2) : 7
+    const startHour = days.includes(now) ? Math.max(0, Math.floor(nowMin / 60) - 2) : 9
     scroller.current.scrollTop = startHour * HOUR_PX
-  }, [view, days[0]]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [view, days[0]])
 
   const cols = days.length
-  const template = { gridTemplateColumns: `38px repeat(${cols}, 1fr)` }
+  const template = { gridTemplateColumns: `36px repeat(${cols}, 1fr)` }
 
   return (
     <div className="tg">
-      <div className="tg-head" style={template}>
+      {/* Лента дней недели Photo 2: сб 24, вс 25 (синий кружок)... */}
+      <div className="m-tg-date-strip" style={template}>
         <span />
-        {days.map((d) => (
-          <button
-            key={d}
-            className={d === now ? 'tg-day today' : 'tg-day'}
-            onClick={() => {
-              if (view !== 'day') {
+        {days.map((d) => {
+          const isToday = d === now
+          const wd = WEEKDAYS_LOWER[weekdayIndex(d)]
+          return (
+            <button
+              key={d}
+              className="m-tg-day-btn"
+              onClick={() => {
                 onAnchor(d)
-                onView('day')
-              }
-            }}
-          >
-            <span className="muted">{WEEKDAYS_SHORT[weekdayIndex(d)]}</span>
-            <span className="num">{Number(d.slice(8))}</span>
-          </button>
-        ))}
+                if (view !== 'day') onView('day')
+              }}
+            >
+              <span className="m-tg-wd">{wd}</span>
+              <span className={`m-tg-num${isToday ? ' today' : ''}`}>
+                {Number(d.slice(8))}
+              </span>
+            </button>
+          )
+        })}
       </div>
 
-      <div className="tg-allday" style={template}>
+      {/* Секция задач на весь день Photo 2 */}
+      <div className="m-tg-allday-row" style={template}>
         <span />
         {days.map((d) => (
-          <div key={d} className="tg-allcell" onClick={() => onSlot({ day: d, minutes: null })}>
+          <div key={d} className="m-tg-allcell" onClick={() => onSlot({ day: d, minutes: null })}>
             {(events.get(d) ?? [])
               .filter((e) => e.startMin === null)
-              .map((e) => (
-                <button
-                  key={`${e.task.id}-${d}`}
-                  className={chipClass(e)}
-                  onClick={(ev) => {
-                    ev.stopPropagation()
-                    actions.open(e.task.id)
-                  }}
-                >
-                  {e.task.title}
-                </button>
-              ))}
+              .map((e) => {
+                const bg = colors?.[e.task.projectId]
+                return (
+                  <button
+                    key={`${e.task.id}-${d}`}
+                    className={`m-task-chip p${e.task.priority}${e.task.status === 'done' ? ' done' : ''}`}
+                    style={{ backgroundColor: bg ? `${bg}2e` : undefined, color: bg || undefined }}
+                    onClick={(ev) => {
+                      ev.stopPropagation()
+                      actions.open(e.task.id)
+                    }}
+                  >
+                    {e.task.title}
+                  </button>
+                )
+              })}
           </div>
         ))}
       </div>
 
+      {/* Почасовая сетка с часами слева: 10, 11, 12, 13... */}
       <div className="tg-scroll" ref={scroller}>
         <div className="tg-body" style={{ ...template, height: HOUR_PX * 24 }}>
-          <div className="tg-hours">
+          <div className="m-tg-hours-col">
             {Array.from({ length: 24 }, (_, h) => (
-              <span key={h} style={{ top: h * HOUR_PX }}>
-                {h === 0 ? '' : `${pad(h)}:00`}
+              <span key={h} className="m-tg-hour-label" style={{ top: h * HOUR_PX }}>
+                {h}
               </span>
             ))}
           </div>
@@ -507,6 +487,7 @@ export function TimeGrid({
           ))}
         </div>
       </div>
+
       {drag && (
         <div className="ev-ghost" style={{ left: drag.x, top: drag.y, width: drag.w, minHeight: drag.h }} aria-hidden="true">
           <strong>{drag.label}</strong> {drag.title}
@@ -543,18 +524,26 @@ function DayColumn(props: {
     >
       {placed.map(({ event: e, col, cols }) => {
         const top = (e.startMin! / 60) * HOUR_PX
-        const height = Math.max(((e.endMin! - e.startMin!) / 60) * HOUR_PX - 2, 22)
+        const height = Math.max(((e.endMin! - e.startMin!) / 60) * HOUR_PX - 2, 24)
+        const customColor = props.colors?.[e.task.projectId]
         return (
           <button
             key={`${e.task.id}-${e.startMin}`}
             className={`ev p${e.task.priority}${e.virtual ? ' virtual' : ''}${tight.has(e.task.id) ? ' tight' : ''}${e.task.status === 'done' ? ' done' : ''}`}
-            style={{ ['--ev' as string]: props.colors?.[e.task.projectId], top, height, left: `${(col / cols) * 100}%`, width: `calc(${100 / cols}% - 2px)` }}
+            style={{
+              backgroundColor: customColor ? `${customColor}26` : undefined,
+              borderColor: customColor || undefined,
+              color: customColor || undefined,
+              top,
+              height,
+              left: `${(col / cols) * 100}%`,
+              width: `calc(${100 / cols}% - 2px)`,
+            }}
             onPointerDown={(down) => props.onPress(down, e)}
             onClick={(ev) => {
               ev.stopPropagation()
               props.onOpenTask(e.task.id)
             }}
-            title={tight.has(e.task.id) ? 'Между встречами мало времени на дорогу' : undefined}
           >
             <span className="ev-title">{e.task.title}</span>
             {props.detailed && (
@@ -570,4 +559,3 @@ function DayColumn(props: {
     </div>
   )
 }
-

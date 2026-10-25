@@ -862,7 +862,7 @@ header .more {
   border: 0;
   border-radius: 4px;
   background: rgba(71, 114, 250, 0.22);
-  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  background: rgba(var(--accent-rgb), 0.22);
   color: var(--text);
   white-space: nowrap;
   overflow: hidden;
@@ -873,19 +873,19 @@ header .more {
 .ev-chip.p5,
 .ev.p5 {
   background: rgba(239, 68, 68, 0.26);
-  background: color-mix(in srgb, #ef4444 26%, transparent);
+  background: rgba(239, 68, 68, 0.26);
   border-left-color: #ef4444;
 }
 .ev-chip.p3,
 .ev.p3 {
   background: rgba(245, 158, 11, 0.28);
-  background: color-mix(in srgb, #f59e0b 28%, transparent);
+  background: rgba(245, 158, 11, 0.28);
   border-left-color: #f59e0b;
 }
 .ev-chip.p1,
 .ev.p1 {
   background: rgba(59, 130, 246, 0.26);
-  background: color-mix(in srgb, #3b82f6 26%, transparent);
+  background: rgba(59, 130, 246, 0.26);
 }
 
 .ev-chip.virtual,
@@ -977,7 +977,7 @@ header .more {
   border-left: 3px solid var(--accent);
   border-radius: 6px;
   background: rgba(71, 114, 250, 0.22);
-  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  background: rgba(var(--accent-rgb), 0.22);
   color: var(--text);
   text-align: left;
   font-size: 11px;
@@ -1248,7 +1248,7 @@ header .more {
   bottom: calc(78px + env(safe-area-inset-bottom));
   background: var(--accent);
   box-shadow: 0 8px 22px rgba(var(--accent-rgb), 0.45);
-  box-shadow: 0 8px 22px color-mix(in srgb, var(--accent) 45%, transparent);
+  box-shadow: 0 8px 22px rgba(var(--accent-rgb), 0.45);
 }
 
 .more-sheet {
@@ -1458,7 +1458,7 @@ input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
   outline: 2px solid rgba(var(--accent-rgb), 0.55);
-  outline: 2px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  outline: 2px solid rgba(var(--accent-rgb), 0.55);
   outline-offset: 1px;
 }
 
@@ -2534,7 +2534,7 @@ main {
   transition: background 0.15s ease;
 }
 .cal-day-add-btn:hover {
-  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  background: rgba(var(--accent-rgb), 0.12);
 }
 
 .cal-title {
@@ -3249,7 +3249,7 @@ main {
 
 .mx-cell.drag-over {
   border-color: var(--mx);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--mx) 40%, transparent);
+  box-shadow: 0 0 0 2px rgba(128, 128, 128, 0.4);
 }
 
 .mx-cell.q1 { --mx: #ef5350; }
@@ -3263,7 +3263,7 @@ main {
   justify-content: space-between;
   gap: 8px;
   padding-bottom: 8px;
-  border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+  border-bottom: 1px solid rgba(128, 128, 128, 0.25);
   margin-bottom: 8px;
 }
 .mx-head-info {
@@ -3296,7 +3296,7 @@ main {
   font-size: 12px;
   font-weight: 600;
   color: var(--hint);
-  background: color-mix(in srgb, var(--text) 6%, transparent);
+  background: rgba(25, 25, 25, 0.06);
   padding: 1px 7px;
   border-radius: 10px;
 }
@@ -3307,7 +3307,7 @@ main {
   align-items: center;
   gap: 6px;
   padding: 5px 10px;
-  background: color-mix(in srgb, var(--field) 70%, transparent);
+  background: rgba(128, 128, 128, 0.1);
   border-radius: 8px;
   margin-bottom: 8px;
   border: 1px solid transparent;
@@ -3316,7 +3316,7 @@ main {
 .mx-addbar.on,
 .mx-addbar:focus-within {
   background: var(--field);
-  border-color: color-mix(in srgb, var(--mx) 60%, transparent);
+  border-color: rgba(128, 128, 128, 0.3);
 }
 .mx-add-plus {
   font-size: 16px;
@@ -3368,7 +3368,7 @@ main {
   gap: 8px;
   padding: 6px 8px;
   border-radius: 6px;
-  background: color-mix(in srgb, var(--bg) 50%, transparent);
+  background: rgba(240, 240, 240, 0.5);
   cursor: grab;
   transition: background 0.12s;
 }
@@ -3655,7 +3655,7 @@ main {
 }
 @keyframes row-flash {
   from {
-    background: color-mix(in srgb, var(--accent) 24%, var(--card));
+    background: rgba(var(--accent-rgb), 0.24);
   }
   to {
     background: var(--card);
@@ -3858,12 +3858,12 @@ main {
 }
 @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
   .tabbar {
-    background: color-mix(in srgb, var(--bar) 72%, transparent);
+    background: rgba(128, 128, 128, 0.2);
     -webkit-backdrop-filter: blur(22px) saturate(1.5);
     backdrop-filter: blur(22px) saturate(1.5);
   }
   .round {
-    background: color-mix(in srgb, var(--circle) 70%, transparent);
+    background: rgba(128, 128, 128, 0.2);
     -webkit-backdrop-filter: blur(16px);
     backdrop-filter: blur(16px);
   }
@@ -3902,7 +3902,7 @@ main {
   padding: 4px 8px;
   border-radius: 8px;
   border-left: 3px solid var(--accent);
-  background: color-mix(in srgb, var(--accent) 38%, var(--card));
+  background: rgba(var(--accent-rgb), 0.38);
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
   font-size: 13px;
   pointer-events: none;
@@ -4005,7 +4005,7 @@ main {
   padding: 10px 14px;
   border: 0;
   border-radius: 12px;
-  background: color-mix(in srgb, var(--accent) 22%, var(--card));
+  background: rgba(var(--accent-rgb), 0.22);
   color: var(--text);
   font: inherit;
   font-size: 14px;
@@ -4035,12 +4035,12 @@ button.cal-title-text {
   border-radius: 10px;
 }
 button.cal-title-text:active {
-  background: color-mix(in srgb, var(--text) 8%, transparent);
+  background: rgba(25, 25, 25, 0.08);
 }
 
 /* Боковое меню как в TickTick: без значков, выбранный пункт с оранжевой подложкой */
 .drawer .nav.on {
-  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  background: rgba(var(--accent-rgb), 0.16);
   color: var(--text);
 }
 .set-note {
@@ -4183,7 +4183,7 @@ button.cal-title-text:active {
   transition: color 0.15s var(--ease-std);
 }
 .rail-btn:hover {
-  color: color-mix(in srgb, var(--text) 60%, transparent);
+  color: rgba(25, 25, 25, 0.6);
 }
 .rail-btn.on {
   color: var(--rail-on);
@@ -4694,7 +4694,7 @@ button.cal-title-text:active {
   z-index: 1;
   display: grid;
   place-items: center;
-  color: color-mix(in srgb, var(--text) 9%, transparent);
+  color: rgba(25, 25, 25, 0.15);
   pointer-events: none;
 }
 
@@ -4767,7 +4767,7 @@ button.cal-title-text:active {
   border: 0;
   border-radius: 6px;
   background: none;
-  color: color-mix(in srgb, var(--text) 60%, transparent);
+  color: rgba(25, 25, 25, 0.6);
   font-size: 20px;
   font-weight: 300;
   cursor: pointer;
@@ -4777,7 +4777,7 @@ button.cal-title-text:active {
   height: 22px;
   margin-left: 4px;
   padding: 0;
-  color: color-mix(in srgb, var(--text) 60%, transparent);
+  color: rgba(25, 25, 25, 0.6);
 }
 .dk-icon:hover,
 .app.wide .kb-add:hover,
@@ -4957,7 +4957,7 @@ button.cal-title-text:active {
 }
 .dcal-btn:hover,
 .dcal-nav button:hover {
-  background: color-mix(in srgb, var(--text) 8%, transparent);
+  background: rgba(25, 25, 25, 0.08);
 }
 .dcal-nav {
   display: flex;
@@ -5019,7 +5019,7 @@ button.cal-title-text:active {
   cursor: pointer;
 }
 .dcal-menu button:hover {
-  background: color-mix(in srgb, var(--text) 8%, transparent);
+  background: rgba(25, 25, 25, 0.08);
 }
 .dcal-menu button.on {
   color: var(--accent);
@@ -5107,7 +5107,7 @@ button.cal-title-text:active {
   padding: 0 6px;
   border: 0;
   border-radius: 5px;
-  background: color-mix(in srgb, var(--c) 62%, #1b1b1b);
+  background: rgba(71, 114, 250, 0.5);
   color: #fff;
   font: inherit;
   font-size: 13px;
@@ -5128,7 +5128,7 @@ button.cal-title-text:active {
   opacity: 0.8;
 }
 .dchip.more {
-  background: color-mix(in srgb, var(--text) 12%, transparent);
+  background: rgba(25, 25, 25, 0.12);
   color: var(--text);
   justify-content: center;
   align-self: flex-start;
@@ -5223,7 +5223,7 @@ button.cal-title-text:active {
   visibility: hidden;
 }
 .dy-day.has {
-  background: color-mix(in srgb, var(--accent) 38%, #1b1b1b);
+  background: rgba(var(--accent-rgb), 0.38);
 }
 .dy-day.today {
   background: var(--accent);
@@ -5288,7 +5288,7 @@ button.cal-title-text:active {
   border: 0;
   border-left: 3px solid var(--c);
   border-radius: 6px;
-  background: color-mix(in srgb, var(--c) 18%, var(--card));
+  background: rgba(71, 114, 250, 0.18);
   color: var(--text);
   font: inherit;
   text-align: left;
@@ -5312,7 +5312,7 @@ button.cal-title-text:active {
 .app.wide .tg .ev {
   --ev: var(--accent);
   border-left-color: var(--ev);
-  background: color-mix(in srgb, var(--ev) 55%, #1b1b1b);
+  background: rgba(71, 114, 250, 0.55);
   color: #fff;
 }
 .app.wide .tg .ev.done {
@@ -5426,14 +5426,14 @@ button.cal-title-text:active {
   border: 0;
   border-radius: 8px;
   background: none;
-  color: color-mix(in srgb, var(--text) 85%, transparent);
+  color: rgba(25, 25, 25, 0.85);
   font: inherit;
   text-align: left;
   cursor: pointer;
 }
 .ds-nav-item svg {
   flex: none;
-  color: color-mix(in srgb, var(--text) 70%, transparent);
+  color: rgba(25, 25, 25, 0.7);
 }
 .ds-nav-item:hover,
 .ds-nav-item.on {
@@ -6016,7 +6016,7 @@ textarea.sheet-title {
   align-items: center;
   text-decoration: none;
   color: var(--accent);
-  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  border-color: rgba(var(--accent-rgb), 0.4);
 }
 .tm-flags {
   display: flex;
@@ -6034,7 +6034,7 @@ textarea.sheet-title {
   cursor: pointer;
 }
 .tm-flag.on {
-  background: color-mix(in srgb, var(--text) 8%, transparent);
+  background: rgba(25, 25, 25, 0.08);
 }
 .dup-list {
   align-self: flex-start;
@@ -6043,7 +6043,7 @@ textarea.sheet-title {
 .ds-kbd {
   padding: 3px 8px;
   border-radius: 6px;
-  background: color-mix(in srgb, var(--text) 8%, transparent);
+  background: rgba(25, 25, 25, 0.08);
   font: inherit;
   font-size: 12px;
   color: var(--muted);
@@ -7724,8 +7724,8 @@ textarea.sheet-title {
   background: var(--hover);
 }
 .search-tab.on {
-  background: color-mix(in srgb, var(--accent) 15%, transparent);
-  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  background: rgba(var(--accent-rgb), 0.15);
+  border-color: rgba(var(--accent-rgb), 0.4);
   color: var(--accent);
   font-weight: 600;
 }
@@ -7733,10 +7733,10 @@ textarea.sheet-title {
   font-size: 11px;
   padding: 1px 5px;
   border-radius: 6px;
-  background: color-mix(in srgb, var(--text) 8%, transparent);
+  background: rgba(25, 25, 25, 0.08);
 }
 .search-tab.on .tab-count {
-  background: color-mix(in srgb, var(--accent) 25%, transparent);
+  background: rgba(var(--accent-rgb), 0.25);
 }
 
 
@@ -7875,8 +7875,8 @@ textarea.sheet-title {
   align-items: center;
   gap: 8px;
   padding: 6px 14px;
-  background: color-mix(in srgb, var(--accent) 12%, transparent);
-  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  background: rgba(var(--accent-rgb), 0.12);
+  border: 1px solid rgba(var(--accent-rgb), 0.3);
   border-radius: 20px;
   max-width: 100%;
 }
@@ -8029,8 +8029,8 @@ textarea.sheet-title {
 }
 
 .pomo-btn-secondary.on {
-  background: color-mix(in srgb, var(--accent) 15%, transparent);
-  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  background: rgba(var(--accent-rgb), 0.15);
+  border-color: rgba(var(--accent-rgb), 0.4);
 }
 
 .pomo-play-btn {
@@ -8044,7 +8044,7 @@ textarea.sheet-title {
   border: 0;
   color: var(--on-accent, #fff);
   cursor: pointer;
-  box-shadow: 0 6px 20px color-mix(in srgb, var(--accent) 40%, transparent);
+  box-shadow: 0 6px 20px rgba(var(--accent-rgb), 0.4);
   transition: transform 0.12s, box-shadow 0.15s;
 }
 
@@ -8081,7 +8081,7 @@ textarea.sheet-title {
 
 /* ---- Папки списков: drag-and-drop и управление ---- */
 .sd-group.drag-over {
-  background: color-mix(in srgb, var(--accent) 15%, transparent);
+  background: rgba(var(--accent-rgb), 0.15);
   border-radius: 8px;
   outline: 1.5px dashed var(--accent);
 }
@@ -8110,4 +8110,612 @@ textarea.sheet-title {
 .folder-more-btn:hover {
   background: var(--hover);
   color: var(--text);
+}
+
+/* Hardware acceleration hints */
+.tabbar {
+  contain: layout style paint;
+}
+.m-cal-grid {
+  contain: content;
+}
+.m-cal-month-screen {
+  contain: content;
+}
+
+
+/* ---------- Мобильный календарь 1-в-1 по Photo 1 и Photo 2 ---------- */
+.m-cal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 52px;
+  padding: 0 16px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+  z-index: 2;
+}
+
+.m-cal-month-title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--text);
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.m-cal-head-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.m-cal-btn {
+  background: transparent;
+  border: 0;
+  padding: 6px;
+  margin: 0;
+  color: var(--text);
+  opacity: 0.85;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.m-cal-btn:active {
+  opacity: 0.5;
+  background: rgba(128, 128, 128, 0.1);
+}
+
+.m-cal-month-screen {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  background: var(--bg);
+}
+
+.m-cal-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  height: 28px;
+  align-items: center;
+  text-align: center;
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+}
+
+.m-cal-weekdays span {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+  text-transform: lowercase;
+}
+
+.m-cal-grid {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.m-cal-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  flex: 1;
+  min-height: 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.m-cal-cell {
+  display: flex;
+  flex-direction: column;
+  padding: 3px 2px 2px;
+  overflow: hidden;
+  border-right: 1px solid var(--line);
+  cursor: pointer;
+  user-select: none;
+  background: var(--bg);
+}
+
+.m-cal-cell:last-child {
+  border-right: none;
+}
+
+.m-cal-cell.off {
+  opacity: 0.35;
+}
+
+.m-cal-cell.sel {
+  background: rgba(var(--accent-rgb), 0.06);
+}
+
+.m-cal-num-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 22px;
+  margin-bottom: 2px;
+}
+
+.m-cal-num {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.m-cal-num.today {
+  background: #3b82f6 !important;
+  color: #ffffff !important;
+}
+
+.m-cal-chips-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+  flex: 1;
+}
+
+.m-task-chip {
+  display: block;
+  width: 100%;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 14px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+  border: 0;
+  cursor: pointer;
+  background: rgba(59, 130, 246, 0.15);
+  color: #2563eb;
+}
+
+.m-task-chip.p5 {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.m-task-chip.p3 {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.m-task-chip.p1 {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.m-task-chip.p0 {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+
+.m-task-chip.done {
+  opacity: 0.5;
+  text-decoration: line-through;
+}
+
+.m-task-chip-more {
+  font-size: 9px;
+  color: var(--muted);
+  padding-left: 2px;
+  line-height: 11px;
+}
+
+/* TimeGrid лента и почасовая сетка (Photo 2) */
+.m-tg-date-strip {
+  display: grid;
+  height: 52px;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+  flex-shrink: 0;
+}
+
+.m-tg-day-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+  padding: 4px 0;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.m-tg-wd {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: lowercase;
+  margin-bottom: 2px;
+}
+
+.m-tg-num {
+  font-size: 13px;
+  font-weight: 600;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.m-tg-num.today {
+  background: #3b82f6 !important;
+  color: #ffffff !important;
+}
+
+.m-tg-allday-row {
+  display: grid;
+  min-height: 30px;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+  flex-shrink: 0;
+}
+
+.m-tg-allcell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 3px 2px;
+  border-left: 1px solid var(--line);
+  overflow: hidden;
+}
+
+.m-tg-hours-col {
+  position: relative;
+  border-right: 1px solid var(--line);
+}
+
+.m-tg-hour-label {
+  position: absolute;
+  right: 6px;
+  transform: translateY(-50%);
+  font-size: 11px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Настройки мобильные 1-в-1 по Photo 3, 4, 5, 6 ---------- */
+.m-settings-screen {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  background: var(--bg);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: calc(70px + env(safe-area-inset-bottom));
+}
+
+.m-settings-head {
+  display: flex;
+  align-items: center;
+  height: 52px;
+  padding: 0 16px;
+  background: var(--bg);
+  flex-shrink: 0;
+}
+
+.m-settings-head h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+}
+
+.m-settings-back-btn {
+  background: transparent;
+  border: 0;
+  padding: 8px 8px 8px 0;
+  margin-right: 8px;
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Карточка профиля пользователя (Photo 3) */
+.m-set-profile-card {
+  display: flex;
+  align-items: center;
+  background: var(--card);
+  margin: 8px 16px 12px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.m-set-avatar-wrap {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  margin-right: 14px;
+  flex-shrink: 0;
+}
+
+.m-set-profile-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.m-set-profile-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.m-set-profile-sub {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+/* Группа настроек (белая скругленная карточка Photo 3) */
+.m-set-group {
+  background: var(--card);
+  margin: 0 16px 12px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.m-set-group-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  padding: 12px 16px 4px;
+  margin: 0;
+}
+
+.m-set-item {
+  display: flex;
+  align-items: center;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+  cursor: pointer;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  border-left: 0;
+  border-right: 0;
+  border-top: 0;
+  font: inherit;
+  color: var(--text);
+}
+
+.m-set-item:last-child {
+  border-bottom: none;
+}
+
+.m-set-item:active {
+  background: rgba(128, 128, 128, 0.08);
+}
+
+.m-set-item-icon {
+  width: 22px;
+  height: 22px;
+  margin-right: 14px;
+  color: #64748b;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.m-set-item-text {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.m-set-item-val {
+  font-size: 14px;
+  color: var(--muted);
+  margin-right: 8px;
+}
+
+.m-set-item-arrow {
+  color: #94a3b8;
+  flex-shrink: 0;
+}
+
+/* Экран тем (Photo 4) */
+.m-theme-screen {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  background: var(--bg);
+  overflow-y: auto;
+  padding-bottom: 24px;
+}
+
+.m-theme-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+  padding: 0 16px;
+}
+
+.m-theme-tab {
+  font-size: 15px;
+  font-weight: 600;
+  padding: 12px 16px;
+  color: var(--muted);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  position: relative;
+}
+
+.m-theme-tab.active {
+  color: var(--accent);
+}
+
+.m-theme-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 16px;
+  right: 16px;
+  height: 2.5px;
+  background: var(--accent);
+  border-radius: 2px 2px 0 0;
+}
+
+.m-theme-section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  padding: 16px 16px 8px;
+  margin: 0;
+}
+
+.m-theme-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  padding: 8px 16px 24px;
+}
+
+.m-theme-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+
+.m-theme-preview {
+  width: 100%;
+  aspect-ratio: 0.65;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  border: 2px solid transparent;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+.m-theme-card.active .m-theme-preview {
+  border-color: #3b82f6;
+}
+
+.m-theme-preview-bar {
+  height: 28%;
+  width: 100%;
+}
+
+.m-theme-preview-body {
+  flex: 1;
+  background: #f8fafc;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.m-theme-card.dark .m-theme-preview-body {
+  background: #1e293b;
+}
+
+.m-theme-preview-line {
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(128, 128, 128, 0.2);
+}
+
+.m-theme-check {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #3b82f6;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.m-theme-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+  margin-top: 6px;
+  text-align: center;
+}
+
+/* Экран панели вкладок (Photo 6) */
+.m-tabbar-screen {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  background: var(--bg);
+  overflow-y: auto;
+  padding-bottom: 24px;
+}
+
+.m-tab-badge-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 14px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.m-tab-badge-btn.del {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+.m-tab-badge-btn.add {
+  background: #10b981;
+  color: #ffffff;
+}
+
+.m-tab-drag-handle {
+  color: #94a3b8;
+  padding: 4px;
+  cursor: grab;
 }

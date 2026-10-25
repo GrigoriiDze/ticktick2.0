@@ -235,7 +235,7 @@ function Workspace({ user }: { user: User }) {
 
   const inView = useMemo(() => {
     const all = tasks ?? []
-    if (effectiveView.type === 'objects' || effectiveView.type === 'trash' || effectiveView.type === 'calendar' || effectiveView.type === 'habits' || effectiveView.type === 'matrix' || effectiveView.type === 'countdown' || effectiveView.type === 'search' || effectiveView.type === 'assistant' || effectiveView.type === 'pomo') return []
+    if (effectiveView.type === 'objects' || effectiveView.type === 'trash' || effectiveView.type === 'calendar' || effectiveView.type === 'habits' || effectiveView.type === 'matrix' || effectiveView.type === 'countdown' || effectiveView.type === 'search' || effectiveView.type === 'assistant' || effectiveView.type === 'pomo' || effectiveView.type === 'settings') return []
     if (effectiveView.type === 'waiting') return all.filter(isWaiting)
     if (effectiveView.type === 'tag') return all.filter((t) => t.status === 'open' && hasTag(t.tags, effectiveView.id))
     return effectiveView.type === 'smart'
@@ -431,8 +431,7 @@ function Workspace({ user }: { user: User }) {
   }
 
   function selectTab(tab: Tab) {
-    if (tab === 'more') setMoreOpen(true)
-    else if (tab === 'tasks') setView(lastTasksView.current)
+    if (tab === 'tasks') setView(lastTasksView.current)
     else setView({ type: tab })
   }
 
@@ -642,7 +641,7 @@ function Workspace({ user }: { user: User }) {
             else if (item === 'tasks') setView(lastTasksView.current)
             else setView({ type: item })
           }}
-          onSettings={() => setSettingsOpen(true)}
+          onSettings={() => (wide ? setSettingsOpen(true) : (setDrawer(false), setView({ type: 'settings' })))}
         />
       )}
       {effectiveView.type === 'calendar' && wide ? (
@@ -691,7 +690,7 @@ function Workspace({ user }: { user: User }) {
             }
           }}
         />
-      ) : effectiveView.type === 'habits' && wide ? null : (
+      ) : (effectiveView.type === 'habits' && wide) || (effectiveView.type === 'settings' && !wide) ? null : (
         <header className={tabOf(effectiveView) === 'tasks' ? 'centered' : undefined}>
           {tasksSection && (
             <button className="round side-toggle" onClick={() => setSideHidden(!sideHidden)} aria-label={sideHidden ? 'Показать меню' : 'Скрыть меню'} title={sideHidden ? 'Показать меню' : 'Скрыть меню'}>
@@ -830,6 +829,16 @@ function Workspace({ user }: { user: User }) {
             onSlot={slotRequest}
             onMove={moveEvent}
             actions={rowActions}
+          />
+        ) : effectiveView.type === 'settings' && !wide ? (
+          <Settings
+            menuLists={menuLists}
+            onMenuLists={(ids) => (setMenuListsState(ids), setMenuLists(ids))}
+            onImport={importBundle}
+            email={user.email}
+            onTaskMode={setTaskModeState}
+            onSignOut={() => void signOut()}
+            onClose={() => setView(lastTasksView.current)}
           />
         ) : effectiveView.type === 'trash' ? (
           <Trash

@@ -107,6 +107,28 @@
   --accent: #8a63e6;
   --accent-rgb: 138, 99, 230;
 }
+
+:root[data-accent='pink'] {
+  --accent: #ec4899;
+  --accent-rgb: 236, 72, 153;
+}
+:root[data-accent='yellow'] {
+  --accent: #f59e0b;
+  --accent-rgb: 245, 158, 11;
+}
+:root[data-accent='slate'] {
+  --accent: #1e293b;
+  --accent-rgb: 30, 41, 59;
+}
+:root[data-accent='gray'] {
+  --accent: #64748b;
+  --accent-rgb: 100, 116, 139;
+}
+:root[data-accent='indigo'] {
+  --accent: #6366f1;
+  --accent-rgb: 99, 102, 241;
+}
+
 :root[data-accent='red'] {
   --accent: #e5484d;
   --accent-rgb: 229, 72, 77;

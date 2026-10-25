@@ -43,7 +43,7 @@ export function setTheme(mode: ThemeMode): void {
   apply(mode)
 }
 
-export type Accent = 'orange' | 'blue' | 'green' | 'purple' | 'red'
+export type Accent = 'orange' | 'blue' | 'green' | 'purple' | 'red' | 'pink' | 'yellow' | 'slate' | 'gray' | 'indigo'
 
 export const ACCENTS: Array<{ id: Accent; title: string; color: string }> = [
   { id: 'orange', title: 'Оранжевый', color: '#f16905' },
@@ -51,6 +51,11 @@ export const ACCENTS: Array<{ id: Accent; title: string; color: string }> = [
   { id: 'green', title: 'Зелёный', color: '#2faa6b' },
   { id: 'purple', title: 'Фиолетовый', color: '#8a63e6' },
   { id: 'red', title: 'Красный', color: '#e5484d' },
+  { id: 'pink', title: 'Розовый', color: '#ec4899' },
+  { id: 'yellow', title: 'Жёлтый', color: '#f59e0b' },
+  { id: 'slate', title: 'Чёрный', color: '#1e293b' },
+  { id: 'gray', title: 'Серый', color: '#64748b' },
+  { id: 'indigo', title: 'Индиго', color: '#6366f1' },
 ]
 
 const ACCENT_KEY = 'accent'

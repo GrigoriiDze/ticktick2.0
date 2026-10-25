@@ -15,11 +15,12 @@ export type View =
   | { type: 'search' }
   | { type: 'assistant' }
   | { type: 'pomo' }
+  | { type: 'settings' }
 
 export const DEFAULT_VIEW: View = { type: 'smart', id: 'today' }
 
 export function viewKey(v: View): string {
-  return v.type === 'objects' || v.type === 'trash' || v.type === 'calendar' || v.type === 'habits' || v.type === 'matrix' || v.type === 'countdown' || v.type === 'search' || v.type === 'assistant' || v.type === 'waiting' || v.type === 'pomo' ? v.type : `${v.type}:${v.id}`
+  return v.type === 'objects' || v.type === 'trash' || v.type === 'calendar' || v.type === 'habits' || v.type === 'matrix' || v.type === 'countdown' || v.type === 'search' || v.type === 'assistant' || v.type === 'waiting' || v.type === 'pomo' || v.type === 'settings' ? v.type : `${v.type}:${v.id}`
 }
 
 export function sameView(a: View, b: View): boolean {
@@ -37,6 +38,7 @@ export function viewTitle(view: View, projects: Project[]): string {
   if (view.type === 'search') return 'Поиск'
   if (view.type === 'assistant') return 'Помощник'
   if (view.type === 'pomo') return 'Фокус'
+  if (view.type === 'settings') return 'Настройки'
   if (view.type === 'tag') return `#${view.id}`
   if (view.type === 'smart') return SMART_LISTS.find((l) => l.id === view.id)!.title
   return projects.find((p) => p.id === view.id)?.name ?? (view.id === INBOX_ID ? 'Входящие' : 'Список')
@@ -55,7 +57,7 @@ export function loadView(): View {
     if (!raw) return DEFAULT_VIEW
     const v = JSON.parse(raw) as View
     if (v.type === 'search' || v.type === 'assistant') return DEFAULT_VIEW
-    if (v.type === 'objects' || v.type === 'trash' || v.type === 'calendar' || v.type === 'habits' || v.type === 'matrix' || v.type === 'countdown' || v.type === 'waiting' || v.type === 'pomo') return v
+    if (v.type === 'objects' || v.type === 'trash' || v.type === 'calendar' || v.type === 'habits' || v.type === 'matrix' || v.type === 'countdown' || v.type === 'waiting' || v.type === 'pomo' || v.type === 'settings') return v
     if (v.type === 'tag' && typeof v.id === 'string') return v
     if (v.type === 'smart' && SMART_LISTS.some((l) => l.id === v.id)) return v
     if (v.type === 'project' && typeof v.id === 'string') return v
