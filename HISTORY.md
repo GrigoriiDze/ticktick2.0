@@ -20,3 +20,9 @@
   - Ряд кнопок действий: высота `--qa-buttons-h` (48px).
   - Ограничение высоты шторки: `--qa-max-h` (268px).
   - Анимация появления: `--dur-sheet-in` (250ms) + кривая `--ease-sheet`.
+
+- **Шторки и диалоги:**
+  - Фон шторок (`.sheet`, `.task-dialog`, `.tp-bottom`): `--sheet` (вместо `--card`).
+  - Фон диалогов и попапов (`.dialog`, `.pop`): `--popup`.
+  - Скругления: шторки `--radius-sheet` (20px), диалоги `--radius-dialog` (20px), всплывающие меню `--radius-window` (8px).
+  - Затемнение фона (scrim): цвет `rgba(0, 0, 0, 0.5)`, длительности `--dur-scrim-in` (300ms) и `--dur-scrim-out` (200ms).

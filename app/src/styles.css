@@ -253,7 +253,7 @@ main {
 .scrim {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.5);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s;
@@ -334,7 +334,7 @@ main {
   bottom: 0;
   max-width: 720px;
   margin: 0 auto;
-  background: var(--card);
+  background: var(--sheet);
   border-radius: var(--radius-sheet) var(--radius-sheet) 0 0;
   padding: 16px 16px calc(16px + env(safe-area-inset-bottom));
   z-index: 12;
@@ -2076,9 +2076,9 @@ main {
   width: min(340px, calc(100% - 32px));
   max-height: 70vh;
   overflow-y: auto;
-  background: var(--card);
+  background: var(--popup);
   border: 1px solid var(--line);
-  border-radius: 20px;
+  border-radius: var(--radius-window);
   padding: 6px 0;
   z-index: 22;
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
@@ -2261,9 +2261,9 @@ main {
   top: 50%;
   transform: translate(-50%, -50%);
   width: min(340px, calc(100% - 32px));
-  background: var(--card);
+  background: var(--popup);
   border: 1px solid var(--line);
-  border-radius: 24px;
+  border-radius: var(--radius-dialog);
   padding: 20px;
   z-index: 21;
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
@@ -2874,7 +2874,7 @@ main {
 
 .tp-bottom {
   flex: none;
-  background: var(--card);
+  background: var(--sheet);
   border-top: 1px solid var(--line);
   padding-bottom: env(safe-area-inset-bottom);
 }
@@ -3501,6 +3501,13 @@ main {
   animation: pop-in var(--dur-popup-in) var(--ease-dec) both;
 }
 .pop.leaving {
+  animation: pop-out var(--dur-popup-out) var(--ease-acc) both;
+  pointer-events: none;
+}
+.dialog {
+  animation: pop-in var(--dur-dialog) var(--ease-dec) both;
+}
+.dialog.leaving {
   animation: pop-out var(--dur-popup-out) var(--ease-acc) both;
   pointer-events: none;
 }
