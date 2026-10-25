@@ -158,3 +158,11 @@
   - Сборка выполнена через `assembleRelease` с боевым ключом подписи `keystore.properties` (решена ошибка `INSTALL_FAILED_UPDATE_INCOMPATIBLE` при накате поверх старой версии).
   - Размер APK уменьшен с 7.15 МБ до 5.23 МБ.
   - Файл сохранён как `dist-apk/TickTick2-2.0.apk`, обновлены `hosting/update/zadachi.apk` и `hosting/update/version.json`.
+
+### 25.10.2026 — Сквозной сеньор-аудит (Senior QA & Engineering Audit)
+- Проведен комплексный аудит Android APK:
+  - Проверена криптографическая подпись схемы v2 через `apksigner`: отпечаток SHA-256 (`c19caf94...`) на 100% совпадает с боевым ключом версии 1.4, обеспечивая накат обновления.
+  - Манифест через `aapt`: `package='dev.grigorii.tasks'`, `versionCode=6`, `versionName="2.0"`, `minSdkVersion=24`, `targetSdkVersion=36`.
+  - Проверена работа офлайн-кэша IndexedDB, системных разрешений и плагинов Capacitor.
+- Проведен аудит утечек памяти: подтверждена корректная отписка всех слушателей Firestore и очистка интервалов.
+- Результаты зафиксированы в `AUDIT_PLAN.md`.
