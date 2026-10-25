@@ -31,6 +31,7 @@ import { Kanban } from './Kanban'
 import { useExit } from './useExit'
 import { Matrix } from './Matrix'
 import { Countdowns } from './Countdowns'
+import { Pomo } from './Pomo'
 import { buildBoard, DEFAULT_COLUMNS, nextColumnOrder, orderAt } from '../domain/kanban'
 import { Habits } from './Habits'
 import { MoreSheet } from './MoreSheet'
@@ -202,7 +203,7 @@ function Workspace({ user }: { user: User }) {
   }, [])
   useEffect(() => {
     // Матрица и обратный отсчёт сидят во вкладке задач на телефоне, но списком задач не считаются: иначе «Задачи» возвращали бы в них же
-    if (tabOf(view) === 'tasks' && view.type !== 'matrix' && view.type !== 'countdown' && view.type !== 'search' && view.type !== 'assistant') lastTasksView.current = view
+    if (tabOf(view) === 'tasks' && view.type !== 'matrix' && view.type !== 'countdown' && view.type !== 'search' && view.type !== 'assistant' && view.type !== 'pomo') lastTasksView.current = view
   }, [view])
   useEffect(() => saveCalendar(cal.view), [cal.view])
   const wide = useWide()
@@ -234,7 +235,7 @@ function Workspace({ user }: { user: User }) {
 
   const inView = useMemo(() => {
     const all = tasks ?? []
-    if (effectiveView.type === 'objects' || effectiveView.type === 'trash' || effectiveView.type === 'calendar' || effectiveView.type === 'habits' || effectiveView.type === 'matrix' || effectiveView.type === 'countdown' || effectiveView.type === 'search' || effectiveView.type === 'assistant') return []
+    if (effectiveView.type === 'objects' || effectiveView.type === 'trash' || effectiveView.type === 'calendar' || effectiveView.type === 'habits' || effectiveView.type === 'matrix' || effectiveView.type === 'countdown' || effectiveView.type === 'search' || effectiveView.type === 'assistant' || effectiveView.type === 'pomo') return []
     if (effectiveView.type === 'waiting') return all.filter(isWaiting)
     if (effectiveView.type === 'tag') return all.filter((t) => t.status === 'open' && hasTag(t.tags, effectiveView.id))
     return effectiveView.type === 'smart'
@@ -558,7 +559,7 @@ function Workspace({ user }: { user: User }) {
   const kanbanHere = effectiveView.type === 'project' && currentProject?.viewMode === 'kanban'
   const boardLayout = deskBoard || kanbanHere
   const projectInfo = useMemo<ProjectInfo>(() => Object.fromEntries(sortedProjects.map((p) => [p.id, { name: p.name, color: p.color && /^#[0-9a-f]{6}$/i.test(p.color) ? p.color : null }])), [sortedProjects])
-  const railOf = (v: View): RailItem => (v.type === 'calendar' ? 'calendar' : v.type === 'matrix' ? 'matrix' : v.type === 'habits' ? 'habits' : v.type === 'countdown' ? 'countdown' : v.type === 'search' ? 'search' : v.type === 'assistant' ? 'assistant' : 'tasks')
+  const railOf = (v: View): RailItem => (v.type === 'calendar' ? 'calendar' : v.type === 'matrix' ? 'matrix' : v.type === 'habits' ? 'habits' : v.type === 'pomo' ? 'pomo' : v.type === 'countdown' ? 'countdown' : v.type === 'search' ? 'search' : v.type === 'assistant' ? 'assistant' : 'tasks')
   const canAddHere = tasksSection && !boardLayout && (effectiveView.type === 'project' || effectiveView.type === 'tag' || (effectiveView.type === 'smart' && effectiveView.id !== 'done' && effectiveView.id !== 'wontdo'))
 
   /** Цвет события в календаре: цвет списка, а у списков без цвета свой из набора, чтобы соседние не сливались */
@@ -753,6 +754,8 @@ function Workspace({ user }: { user: User }) {
             onOpenProject={(id) => setView({ type: 'project', id })}
             onOpenTag={(tag) => setView({ type: 'tag', id: tag })}
           />
+        ) : effectiveView.type === 'pomo' ? (
+          <Pomo tasks={tasks ?? []} actions={rowActions} />
         ) : effectiveView.type === 'countdown' ? (
           <Countdowns
             list={countdowns ?? []}
@@ -973,6 +976,10 @@ function Workspace({ user }: { user: User }) {
           }}
           onOpenMatrix={() => {
             setView({ type: 'matrix' })
+            setMoreOpen(false)
+          }}
+          onOpenPomo={() => {
+            setView({ type: 'pomo' })
             setMoreOpen(false)
           }}
           onOpenCountdown={() => {

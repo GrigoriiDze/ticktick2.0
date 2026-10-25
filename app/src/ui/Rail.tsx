@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-export type RailItem = 'tasks' | 'calendar' | 'matrix' | 'habits' | 'countdown' | 'search' | 'assistant'
+export type RailItem = 'tasks' | 'calendar' | 'matrix' | 'habits' | 'pomo' | 'countdown' | 'search' | 'assistant'
 
 interface Props {
   active: RailItem | null
@@ -60,6 +60,17 @@ const ITEMS: Array<{ id: RailItem; title: string; icon: ReactNode }> = [
       <svg {...fill}>
         <circle cx="12" cy="12" r="8.2" fill="none" stroke="currentColor" strokeWidth="2.2" />
         <circle cx="12" cy="12" r="3.6" fill="currentColor" />
+      </svg>
+    ),
+  },
+  {
+    id: 'pomo',
+    title: 'Фокус',
+    icon: (
+      <svg {...fill}>
+        <circle cx="12" cy="13" r="8" fill="none" stroke="currentColor" strokeWidth="2.2" />
+        <path d="M12 9v4l2.5 2.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+        <path d="M9 3h6M12 3v2" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
       </svg>
     ),
   },
