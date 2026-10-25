@@ -56,11 +56,10 @@ export function loadView(): View {
     const raw = localStorage.getItem(KEY)
     if (!raw) return DEFAULT_VIEW
     const v = JSON.parse(raw) as View
-    if (v.type === 'search' || v.type === 'assistant') return DEFAULT_VIEW
-    if (v.type === 'objects' || v.type === 'trash' || v.type === 'calendar' || v.type === 'habits' || v.type === 'matrix' || v.type === 'countdown' || v.type === 'waiting' || v.type === 'pomo' || v.type === 'settings') return v
-    if (v.type === 'tag' && typeof v.id === 'string') return v
     if (v.type === 'smart' && SMART_LISTS.some((l) => l.id === v.id)) return v
     if (v.type === 'project' && typeof v.id === 'string') return v
+    if (v.type === 'tag' && typeof v.id === 'string') return v
+    if (v.type === 'objects' || v.type === 'waiting') return v
   } catch {
     // хранилище недоступно, берём список по умолчанию
   }

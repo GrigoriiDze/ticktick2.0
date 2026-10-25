@@ -99,7 +99,7 @@ function loadCalendar(day: DayKey): { view: CalView; anchor: DayKey } {
   } catch {
     // хранилище недоступно
   }
-  return { view: 'list', anchor: day }
+  return { view: 'month', anchor: day }
 }
 
 const CAL_DONE_KEY = 'calendar-show-done'
@@ -159,7 +159,7 @@ function Workspace({ user }: { user: User }) {
   const [update, setUpdate] = useState<UpdateInfo | null>(null)
   const [cdEditing, setCdEditing] = useState<'new' | string | null>(null)
   const [undo, setUndo] = useState<{ key: number; run: () => void } | null>(null)
-  const lastTasksView = useRef<View>(view.type === 'matrix' || view.type === 'countdown' || view.type === 'search' || view.type === 'assistant' ? DEFAULT_VIEW : view)
+  const lastTasksView = useRef<View>(tabOf(view) === 'tasks' ? view : DEFAULT_VIEW)
   const [cal, setCal] = useState<{ view: CalView; anchor: DayKey }>(() => loadCalendar(today({ now: Date.now(), tz: Intl.DateTimeFormat().resolvedOptions().timeZone })))
 
   // Раз за запуск тихо смотрим, нет ли новой версии. Нет связи или это браузер: молчим
@@ -431,8 +431,12 @@ function Workspace({ user }: { user: User }) {
   }
 
   function selectTab(tab: Tab) {
-    if (tab === 'tasks') setView(lastTasksView.current)
-    else setView({ type: tab })
+    if (tab === 'tasks') {
+      const target = tabOf(lastTasksView.current) === 'tasks' ? lastTasksView.current : DEFAULT_VIEW
+      setView(target)
+    } else {
+      setView({ type: tab })
+    }
   }
 
   const offerUndo = (run: () => void) => setUndo({ key: Date.now(), run })

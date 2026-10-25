@@ -7,7 +7,6 @@ import {
   sameMonth,
   shiftAnchor,
   threeDays,
-  tightTransfers,
   weekdayIndex,
   weekDays,
   yearMonths,
@@ -48,9 +47,6 @@ type Props = CalProps
 const pad = (n: number) => String(n).padStart(2, '0')
 const hhmm = (min: number) => `${pad(Math.floor(min / 60))}:${pad(min % 60)}`
 
-let dragLive = false
-let dragJustEnded = false
-
 function useSwipe(onShift: (dir: 1 | -1) => void) {
   const start = useRef<{ x: number; y: number } | null>(null)
   return {
@@ -60,7 +56,7 @@ function useSwipe(onShift: (dir: 1 | -1) => void) {
     onPointerUp: (e: PointerEvent) => {
       const s = start.current
       start.current = null
-      if (!s || dragLive || dragJustEnded) return
+      if (!s) return
       const dx = e.clientX - s.x
       const dy = e.clientY - s.y
       if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) onShift(dx < 0 ? 1 : -1)
@@ -71,7 +67,7 @@ function useSwipe(onShift: (dir: 1 | -1) => void) {
   }
 }
 
-/** Шапка мобильного календаря 1-в-1 по Photo 1 и Photo 2 */
+/** Шапка мобильного календаря 1-в-1 по Photo 1 и Photo 2 с кнопкой бокового меню */
 export function CalendarHeader(props: {
   view: CalView
   anchor: DayKey
@@ -104,6 +100,13 @@ export function CalendarHeader(props: {
   return (
     <header className="m-cal-head">
       <div className="m-cal-head-left">
+        {props.onMenu && (
+          <button className="round menu" onClick={props.onMenu} aria-label="Списки" style={{ marginRight: 6 }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+          </button>
+        )}
         <h2 className="m-cal-month-title">{monthLabel}</h2>
       </div>
 
@@ -185,14 +188,17 @@ export function Calendar(props: Props) {
     return [w[0], w[6]]
   }, [view, anchor])
 
-  const events = useMemo(() => eventsByDay(tasks, ctx, range[0], range[1]), [tasks, ctx, range])
+  const events = useMemo(
+    () => eventsByDay(tasks, ctx, range[0], range[1], props.showDone),
+    [tasks, ctx.now, ctx.tz, range[0], range[1], props.showDone],
+  )
   const shift = (dir: 1 | -1) => props.onAnchor(shiftAnchor(view, anchor, dir))
   const swipe = useSwipe(shift)
 
   if (view === 'week' || view === 'days3' || view === 'day') {
     const days = view === 'week' ? weekDays(anchor) : view === 'days3' ? threeDays(anchor) : [anchor]
     return (
-      <div className="cal time" {...swipe}>
+      <div className="cal time">
         <TimeGrid {...props} days={days} events={events} />
       </div>
     )
@@ -321,73 +327,11 @@ export function TimeGrid({
   events,
   actions,
   onSlot,
-  onMove,
   colors,
   onAnchor,
   onView,
 }: Props & { days: DayKey[]; events: Map<DayKey, CalEvent[]> }) {
   const scroller = useRef<HTMLDivElement>(null)
-  const [drag, setDrag] = useState<{ title: string; x: number; y: number; w: number; h: number; label: string } | null>(null)
-
-  function pressEvent(down: PointerEvent<HTMLElement>, e: CalEvent) {
-    if (!onMove || e.virtual || e.task.repeat || e.startMin === null) return
-    const el = down.currentTarget
-    const rect = el.getBoundingClientRect()
-    const grab = down.clientY - rect.top
-    const startX = down.clientX
-    const startY = down.clientY
-    let active = false
-    let last = { x: startX, y: startY }
-    const spot = (x: number, y: number) => {
-      const col = (document.elementFromPoint(x, y) as HTMLElement | null)?.closest<HTMLElement>('.tg-col[data-day]')
-      if (!col) return null
-      const r = col.getBoundingClientRect()
-      const raw = ((y - grab - r.top) / HOUR_PX) * 60
-      const minutes = Math.min(1440 - 15, Math.max(0, Math.round(raw / 15) * 15))
-      return { day: col.dataset.day as DayKey, minutes }
-    }
-    const show = (x: number, y: number) => {
-      const s = spot(x, y)
-      setDrag({ title: e.task.title, x, y: y - grab, w: rect.width, h: rect.height, label: s ? hhmm(s.minutes) : '' })
-    }
-    const block = (ev: Event) => ev.preventDefault()
-    const stop = () => {
-      dragLive = false
-      window.clearTimeout(timer)
-      window.removeEventListener('pointermove', move)
-      window.removeEventListener('pointerup', up)
-      window.removeEventListener('pointercancel', cancel)
-      window.removeEventListener('touchmove', block)
-    }
-    const move = (ev: globalThis.PointerEvent) => {
-      last = { x: ev.clientX, y: ev.clientY }
-      if (active) show(ev.clientX, ev.clientY)
-      else if (Math.hypot(ev.clientX - startX, ev.clientY - startY) > 8) stop()
-    }
-    const cancel = () => {
-      stop()
-      setDrag(null)
-    }
-    const up = (ev: globalThis.PointerEvent) => {
-      const wasActive = active
-      stop()
-      if (!wasActive) return
-      dragJustEnded = true
-      window.setTimeout(() => (dragJustEnded = false), 60)
-      const s = spot(ev.clientX, ev.clientY)
-      setDrag(null)
-      if (s) onMove?.(e.task.id, s.day, s.minutes)
-    }
-    const timer = window.setTimeout(() => {
-      active = true
-      dragLive = true
-      window.addEventListener('touchmove', block, { passive: false })
-      show(last.x, last.y)
-    }, 400)
-    window.addEventListener('pointermove', move)
-    window.addEventListener('pointerup', up)
-    window.addEventListener('pointercancel', cancel)
-  }
 
   const now = today(ctx)
   const nowMin = useMemo(() => {
@@ -395,7 +339,7 @@ export function TimeGrid({
     const t = new Intl.DateTimeFormat('en-GB', { timeZone: ctx.tz, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(d)
     const [h, m] = t.split(':').map(Number)
     return h * 60 + m
-  }, [ctx])
+  }, [ctx.now, ctx.tz])
 
   useEffect(() => {
     if (!scroller.current) return
@@ -478,21 +422,12 @@ export function TimeGrid({
               detailed={view === 'day'}
               day={d}
               colors={colors}
-              onOpenTask={(id) => {
-                if (!dragJustEnded) actions.open(id)
-              }}
+              onOpenTask={(id) => actions.open(id)}
               onSlot={(minutes) => onSlot({ day: d, minutes })}
-              onPress={pressEvent}
             />
           ))}
         </div>
       </div>
-
-      {drag && (
-        <div className="ev-ghost" style={{ left: drag.x, top: drag.y, width: drag.w, minHeight: drag.h }} aria-hidden="true">
-          <strong>{drag.label}</strong> {drag.title}
-        </div>
-      )}
     </div>
   )
 }
@@ -506,17 +441,14 @@ function DayColumn(props: {
   colors?: Record<string, string>
   onOpenTask: (id: string) => void
   onSlot: (minutes: number) => void
-  onPress: (down: PointerEvent<HTMLElement>, e: CalEvent) => void
 }) {
   const placed = useMemo(() => layoutColumns(props.events), [props.events])
-  const tight = useMemo(() => tightTransfers(props.events), [props.events])
 
   return (
     <div
       className="tg-col"
       data-day={props.day}
       onClick={(e) => {
-        if (dragJustEnded) return
         const rect = e.currentTarget.getBoundingClientRect()
         const raw = ((e.clientY - rect.top) / HOUR_PX) * 60
         props.onSlot(Math.min(1440 - SLOT_MIN, Math.max(0, Math.floor(raw / SLOT_MIN) * SLOT_MIN)))
@@ -529,7 +461,7 @@ function DayColumn(props: {
         return (
           <button
             key={`${e.task.id}-${e.startMin}`}
-            className={`ev p${e.task.priority}${e.virtual ? ' virtual' : ''}${tight.has(e.task.id) ? ' tight' : ''}${e.task.status === 'done' ? ' done' : ''}`}
+            className={`ev p${e.task.priority}${e.virtual ? ' virtual' : ''}${e.task.status === 'done' ? ' done' : ''}`}
             style={{
               backgroundColor: customColor ? `${customColor}26` : undefined,
               borderColor: customColor || undefined,
@@ -539,7 +471,6 @@ function DayColumn(props: {
               left: `${(col / cols) * 100}%`,
               width: `calc(${100 / cols}% - 2px)`,
             }}
-            onPointerDown={(down) => props.onPress(down, e)}
             onClick={(ev) => {
               ev.stopPropagation()
               props.onOpenTask(e.task.id)
