@@ -1070,6 +1070,12 @@ header .more {
   transition: background 0.15s, border-color 0.15s;
 }
 
+.habit-check[aria-pressed='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
 .habit-check.failed {
   border-color: var(--danger);
   color: var(--danger);
@@ -1135,7 +1141,7 @@ header .more {
   aspect-ratio: 1;
   border-radius: 50%;
   border: 1.5px solid transparent;
-  background: var(--bg);
+  background: var(--chip);
   color: var(--text);
   font-size: 13px;
   cursor: pointer;
@@ -1157,7 +1163,8 @@ header .more {
 }
 
 .hm-cell.done {
-  color: #1c1f24;
+  background: var(--accent);
+  color: var(--on-accent);
   font-weight: 700;
 }
 
@@ -2194,8 +2201,12 @@ main {
 
 .dp-day.sel {
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
   box-shadow: none;
+}
+
+.dp-day:active {
+  background: var(--selected);
 }
 
 .dp-rows {
@@ -2543,8 +2554,13 @@ main {
 .strip-day.sel .strip-num,
 .month-cell.sel .num {
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
   box-shadow: none;
+}
+
+.strip-day:active .strip-num,
+.month-cell:active .num {
+  background: var(--selected);
 }
 
 .dot {
@@ -2664,7 +2680,6 @@ main {
   display: flex;
   flex-direction: column;
   padding-top: env(safe-area-inset-top);
-  animation: page-in 0.24s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 @keyframes page-in {
@@ -3264,7 +3279,7 @@ main {
   gap: 10px;
   padding: 10px;
   margin-bottom: 6px;
-  background: var(--bg);
+  background: var(--sheet);
   border-radius: 12px;
   user-select: none;
   -webkit-user-select: none;
@@ -3314,7 +3329,7 @@ main {
   z-index: 80;
   transform: translate(-50%, -50%);
   padding: 10px 12px;
-  background: var(--card);
+  background: var(--sheet);
   border: 1px solid var(--accent);
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
@@ -3491,7 +3506,7 @@ main {
   pointer-events: none;
 }
 .page {
-  animation: page-in var(--dur-page) var(--ease-dec-quint) both;
+  animation: page-in var(--dur-page) var(--ease-emph) both;
 }
 .page.leaving {
   animation: page-out var(--dur-fade) var(--ease-acc) both;
