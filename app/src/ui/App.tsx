@@ -142,6 +142,7 @@ function Workspace({ user }: { user: User }) {
   /** Список, в который пойдёт задача из «+» колонки доски «Сегодня» */
   const [quickProject, setQuickProject] = useState<string | null>(null)
   const [calDone, setCalDone] = useState(loadCalDone)
+  const [calSideOpen, setCalSideOpen] = useState(() => { try { return localStorage.getItem('cal-side-open') !== '0' } catch { return true } })
   const [sortMode, setSortMode] = useState<SortMode>(loadSort)
   const [groupMode, setGroupMode] = useState<GroupMode>(loadGroup)
   const [listMenu, setListMenu] = useState(false)
@@ -611,6 +612,12 @@ function Workspace({ user }: { user: User }) {
           anchor={cal.anchor}
           ctx={ctx}
           showDone={calDone}
+          sideOpen={calSideOpen}
+          onToggleSide={() => {
+            const next = !calSideOpen
+            setCalSideOpen(next)
+            try { localStorage.setItem('cal-side-open', next ? '1' : '0') } catch {}
+          }}
           onShift={(dir) => setCal({ ...cal, anchor: shiftAnchor(calView, cal.anchor, dir) })}
           onToday={() => setCal({ ...cal, anchor: today(ctx) })}
           onView={(v) => setCal({ ...cal, view: v })}
@@ -695,7 +702,7 @@ function Workspace({ user }: { user: User }) {
         </button>
       )}
 
-      <main key={viewKey(effectiveView)}>
+      <main key={viewKey(effectiveView)} className={effectiveView.type === 'calendar' && wide ? 'cal-main' : undefined}>
         {effectiveView.type === 'assistant' ? (
           <Assistant tasks={tasks ?? []} projects={sortedProjects} ctx={ctx} settings={aiSettings} onSettings={(patch) => void settingsRepo.setAi(patch)} />
         ) : effectiveView.type === 'search' ? (
@@ -751,6 +758,10 @@ function Workspace({ user }: { user: User }) {
             anchor={cal.anchor}
             showDone={calDone}
             colors={colors}
+            projects={sortedProjects}
+            habits={habits ?? []}
+            checkins={checkins ?? []}
+            sideOpen={calSideOpen}
             onAnchor={(day) => setCal((c) => ({ ...c, anchor: day }))}
             onView={(v) => setCal((c) => ({ ...c, view: v }))}
             onSlot={slotRequest}

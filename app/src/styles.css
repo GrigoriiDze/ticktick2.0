@@ -7232,3 +7232,220 @@ body::after {
   margin-top: 10px;
 }
 
+
+
+/* ---- Календарь на большом экране: Раскладка и боковая панель ---- */
+.app.wide main.cal-main {
+  padding: 0;
+  overflow: hidden;
+}
+
+.dcal-root {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.dcal-side {
+  width: 230px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  padding: 10px 14px 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--bg);
+  box-sizing: border-box;
+}
+
+.dcal-content {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Мини-календарь */
+.dmini {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.dmini-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.dmini-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  text-transform: capitalize;
+}
+.dmini-nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.dmini-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  background: none;
+  border: 0;
+  color: var(--hint);
+  cursor: pointer;
+}
+.dmini-btn:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+.dmini-wd {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--hint);
+}
+.dmini-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+}
+.dmini-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  border-radius: 4px;
+  background: none;
+  border: 0;
+  font-size: 11px;
+  color: var(--text);
+  cursor: pointer;
+  padding: 0;
+}
+.dmini-cell.off {
+  color: var(--muted);
+  opacity: 0.4;
+}
+.dmini-cell:hover:not(.sel) {
+  background: var(--hover);
+}
+.dmini-cell.sel {
+  background: var(--accent);
+  color: var(--on-accent, #fff);
+  font-weight: 600;
+}
+.dmini-cell.today:not(.sel) {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* Фильтр списков в календаре */
+.dcal-proj-sec {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+.dcal-proj-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.dcal-proj-title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--hint);
+}
+.dcal-proj-all-btn {
+  background: none;
+  border: 0;
+  font-size: 11px;
+  color: var(--accent);
+  cursor: pointer;
+  padding: 0;
+}
+.dcal-proj-all-btn:hover {
+  text-decoration: underline;
+}
+.dcal-proj-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.dcal-proj-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 13px;
+  color: var(--text);
+  transition: background 0.15s;
+}
+.dcal-proj-item:hover {
+  background: var(--hover);
+}
+.dcal-proj-item input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  cursor: pointer;
+  accent-color: var(--accent);
+}
+.dcal-proj-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.dcal-proj-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dcal-proj-count {
+  font-size: 11px;
+  color: var(--hint);
+}
+
+/* Точки привычек в ячейке месяца */
+.dm-cell-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.dm-habits {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding-right: 4px;
+}
+.dm-hdot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.dm-hmore {
+  font-size: 9px;
+  color: var(--hint);
+  line-height: 1;
+}

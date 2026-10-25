@@ -1,6 +1,21 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { DESKTOP_VIEWS, eventsByDay, monthGrid, sameMonth, threeDays, twoWeeks, weekDays, weekdayIndex, yearMonths, calTitle, type CalEvent, type CalView } from '../domain/calendar'
+import {
+  DESKTOP_VIEWS,
+  eventsByDay,
+  monthGrid,
+  sameMonth,
+  shiftAnchor,
+  threeDays,
+  twoWeeks,
+  weekDays,
+  weekdayIndex,
+  yearMonths,
+  calTitle,
+  type CalEvent,
+  type CalView,
+} from '../domain/calendar'
 import { addDays, formatDay, today, type DateCtx, type DayKey } from '../domain/dates'
+import type { Habit, HabitCheckin, Project, Task } from '../domain/types'
 import { TimeGrid, type CalProps } from './Calendar'
 import { ChevronLeft, ChevronRight } from './icons'
 
@@ -18,14 +33,20 @@ export interface DeskProps extends CalProps {
   colors: Record<string, string>
   /** Задачу перетащили на другой день (время остаётся) */
   onMoveDay: (taskId: string, day: DayKey) => void
+  sideOpen?: boolean
+  projects?: Project[]
+  habits?: Habit[]
+  checkins?: HabitCheckin[]
 }
 
-/** Шапка календаря на большом экране: название периода, «+», выбор вида, переход по периодам */
+/** Шапка календаря на большом экране: переключение панели, название периода, «+», выбор вида, переход по периодам */
 export function DeskCalHeader(props: {
   view: CalView
   anchor: DayKey
   ctx: DateCtx
   showDone: boolean
+  sideOpen?: boolean
+  onToggleSide?: () => void
   onShift: (dir: 1 | -1) => void
   onToday: () => void
   onView: (v: CalView) => void
@@ -49,6 +70,19 @@ export function DeskCalHeader(props: {
 
   return (
     <header className="dcal-head" ref={box}>
+      {props.onToggleSide && (
+        <button
+          className="round side-toggle"
+          onClick={props.onToggleSide}
+          aria-label={props.sideOpen ? 'Скрыть панель' : 'Показать панель'}
+          title={props.sideOpen ? 'Скрыть панель' : 'Показать панель'}
+        >
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M3 5h10M3 10h7M3 15h10" />
+            <path d={props.sideOpen ? 'M17 7.5L14.5 10l2.5 2.5' : 'M14.5 7.5L17 10l-2.5 2.5'} />
+          </svg>
+        </button>
+      )}
       <h1>{title.main.toLowerCase().startsWith('сегодня') ? title.small : title.main}</h1>
       <span className="dcal-spacer" />
       <button className="dcal-btn" onClick={props.onAdd} aria-label="Добавить задачу">
@@ -95,9 +129,183 @@ export function DeskCalHeader(props: {
   )
 }
 
-/** Календарь для большого экрана. Для маленького есть свой, в Calendar.tsx */
+/** Мини-календарь в левой панели десктопного календаря */
+function MiniCalendar({
+  anchor,
+  ctx,
+  onAnchor,
+}: {
+  anchor: DayKey
+  ctx: DateCtx
+  onAnchor: (day: DayKey) => void
+}) {
+  const [miniMonth, setMiniMonth] = useState<DayKey>(anchor)
+  useEffect(() => {
+    if (!sameMonth(anchor, miniMonth)) {
+      setMiniMonth(anchor)
+    }
+  }, [anchor])
+
+  const now = today(ctx)
+  const weeks = useMemo(() => monthGrid(miniMonth), [miniMonth])
+  const m = Number(miniMonth.slice(5, 7)) - 1
+  const year = miniMonth.slice(0, 4)
+
+  return (
+    <div className="dmini">
+      <div className="dmini-head">
+        <span className="dmini-title">{MONTH_NAMES[m]} {year}</span>
+        <div className="dmini-nav">
+          <button
+            type="button"
+            className="dmini-btn"
+            onClick={() => setMiniMonth(shiftAnchor('month', miniMonth, -1))}
+            aria-label="Предыдущий месяц"
+          >
+            <ChevronLeft size={14} />
+          </button>
+          <button
+            type="button"
+            className="dmini-btn"
+            onClick={() => setMiniMonth(shiftAnchor('month', miniMonth, 1))}
+            aria-label="Следующий месяц"
+          >
+            <ChevronRight size={14} />
+          </button>
+        </div>
+      </div>
+      <div className="dmini-wd">
+        {['П', 'В', 'С', 'Ч', 'П', 'С', 'В'].map((wd, i) => (
+          <span key={i} className="dmini-wd-col">{wd}</span>
+        ))}
+      </div>
+      <div className="dmini-grid">
+        {weeks.flat().map((day) => {
+          const inMonth = sameMonth(day, miniMonth)
+          const isSel = day === anchor
+          const isToday = day === now
+          return (
+            <button
+              type="button"
+              key={day}
+              className={`dmini-cell${inMonth ? '' : ' off'}${isSel ? ' sel' : ''}${isToday ? ' today' : ''}`}
+              onClick={() => onAnchor(day)}
+              aria-label={formatDay(day, ctx)}
+            >
+              <span>{Number(day.slice(8))}</span>
+            </button>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+/** Фильтр списков задач в левой панели */
+function ProjectsFilter({
+  projects,
+  colors,
+  tasks,
+  visibleProjects,
+  onToggleProject,
+  onToggleAll,
+}: {
+  projects: Project[]
+  colors: Record<string, string>
+  tasks: Task[]
+  visibleProjects: Set<string> | null
+  onToggleProject: (projectId: string) => void
+  onToggleAll: (selectAll: boolean) => void
+}) {
+  const taskCounts = useMemo(() => {
+    const counts: Record<string, number> = {}
+    for (const t of tasks) {
+      if (t.status === 'open' && (t.start || t.due)) {
+        counts[t.projectId] = (counts[t.projectId] ?? 0) + 1
+      }
+    }
+    return counts
+  }, [tasks])
+
+  const allSelected = visibleProjects === null || projects.every((p) => visibleProjects.has(p.id))
+
+  return (
+    <div className="dcal-proj-sec">
+      <div className="dcal-proj-head">
+        <span className="dcal-proj-title">Списки</span>
+        <button
+          type="button"
+          className="dcal-proj-all-btn"
+          onClick={() => onToggleAll(!allSelected)}
+        >
+          {allSelected ? 'Снять все' : 'Выбрать все'}
+        </button>
+      </div>
+      <div className="dcal-proj-list">
+        {projects.map((p) => {
+          const checked = visibleProjects === null || visibleProjects.has(p.id)
+          const color = colors[p.id] || p.color || 'var(--accent)'
+          const count = taskCounts[p.id] ?? 0
+          return (
+            <label key={p.id} className="dcal-proj-item">
+              <input
+                type="checkbox"
+                checked={checked}
+                onChange={() => onToggleProject(p.id)}
+              />
+              <span className="dcal-proj-dot" style={{ backgroundColor: color }} />
+              <span className="dcal-proj-name">{p.name}</span>
+              {count > 0 && <span className="dcal-proj-count">{count}</span>}
+            </label>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+/** Календарь для большого экрана: боковая панель + сетка */
 export function CalendarDesktop(props: DeskProps) {
-  const { tasks, ctx, view, anchor, showDone } = props
+  const { tasks, ctx, view, anchor, showDone, sideOpen = true } = props
+
+  const [visibleProjects, setVisibleProjects] = useState<Set<string> | null>(() => {
+    try {
+      const raw = localStorage.getItem('cal-filter-projects')
+      return raw ? new Set(JSON.parse(raw)) : null
+    } catch {
+      return null
+    }
+  })
+
+  function toggleProject(projectId: string) {
+    setVisibleProjects((prev) => {
+      const allIds = (props.projects ?? []).map((p) => p.id)
+      const current = prev ? new Set(prev) : new Set(allIds)
+      if (current.has(projectId)) {
+        current.delete(projectId)
+      } else {
+        current.add(projectId)
+      }
+      try {
+        localStorage.setItem('cal-filter-projects', JSON.stringify([...current]))
+      } catch {}
+      return current
+    })
+  }
+
+  function toggleAll(selectAll: boolean) {
+    const allIds = (props.projects ?? []).map((p) => p.id)
+    const next = selectAll ? new Set(allIds) : new Set<string>()
+    setVisibleProjects(next)
+    try {
+      localStorage.setItem('cal-filter-projects', JSON.stringify([...next]))
+    } catch {}
+  }
+
+  const filteredTasks = useMemo(() => {
+    if (!visibleProjects) return tasks
+    return tasks.filter((t) => visibleProjects.has(t.projectId))
+  }, [tasks, visibleProjects])
 
   const range = useMemo((): [DayKey, DayKey] => {
     if (view === 'year') return [`${anchor.slice(0, 4)}-01-01`, `${anchor.slice(0, 4)}-12-31`]
@@ -118,20 +326,44 @@ export function CalendarDesktop(props: DeskProps) {
     const w = weekDays(anchor)
     return [w[0], w[6]]
   }, [view, anchor])
-  const events = useMemo(() => eventsByDay(tasks, ctx, range[0], range[1], showDone), [tasks, ctx, range, showDone])
 
-  if (view === 'year') return <DeskYear {...props} events={events} />
-  if (view === 'agenda') return <DeskAgenda {...props} events={events} />
-  if (view === 'week' || view === 'day' || view === 'days3') {
-    const days = view === 'week' ? weekDays(anchor) : view === 'days3' ? threeDays(anchor) : [anchor]
-    return (
-      <div className="dcal-time">
-        <TimeGrid {...props} days={days} events={events} />
-      </div>
-    )
+  const events = useMemo(() => eventsByDay(filteredTasks, ctx, range[0], range[1], showDone), [filteredTasks, ctx, range, showDone])
+
+  const renderContent = () => {
+    if (view === 'year') return <DeskYear {...props} tasks={filteredTasks} events={events} />
+    if (view === 'agenda') return <DeskAgenda {...props} tasks={filteredTasks} events={events} />
+    if (view === 'week' || view === 'day' || view === 'days3') {
+      const days = view === 'week' ? weekDays(anchor) : view === 'days3' ? threeDays(anchor) : [anchor]
+      return (
+        <div className="dcal-time">
+          <TimeGrid {...props} tasks={filteredTasks} days={days} events={events} />
+        </div>
+      )
+    }
+    const weeks = view === 'weeks2' ? twoWeeks(anchor) : monthGrid(props.anchor)
+    return <DeskMonth {...props} tasks={filteredTasks} weeks={weeks} events={events} />
   }
-  const weeks = view === 'weeks2' ? twoWeeks(anchor) : monthGrid(props.anchor)
-  return <DeskMonth {...props} weeks={weeks} events={events} />
+
+  return (
+    <div className="dcal-root">
+      {sideOpen && (
+        <aside className="dcal-side">
+          <MiniCalendar anchor={anchor} ctx={ctx} onAnchor={props.onAnchor} />
+          {props.projects && props.projects.length > 0 && (
+            <ProjectsFilter
+              projects={props.projects}
+              colors={props.colors}
+              tasks={tasks}
+              visibleProjects={visibleProjects}
+              onToggleProject={toggleProject}
+              onToggleAll={toggleAll}
+            />
+          )}
+        </aside>
+      )}
+      <div className="dcal-content">{renderContent()}</div>
+    </div>
+  )
 }
 
 type EventMap = Map<DayKey, CalEvent[]>
@@ -161,6 +393,21 @@ function DeskMonth(props: DeskProps & { weeks: DayKey[][]; events: EventMap }) {
   const grid = useRef<HTMLDivElement>(null)
   const cap = useCapacity(grid, [weeks.length])
   const [more, setMore] = useState<DayKey | null>(null)
+
+  const habitMap = useMemo(() => new Map((props.habits ?? []).map((h) => [h.id, h])), [props.habits])
+  const dayCheckins = useMemo(() => {
+    const map = new Map<DayKey, Habit[]>()
+    if (!props.checkins) return map
+    for (const c of props.checkins) {
+      if (c.status !== 'done') continue
+      const h = habitMap.get(c.habitId)
+      if (!h) continue
+      const arr = map.get(c.day) ?? []
+      arr.push(h)
+      map.set(c.day, arr)
+    }
+    return map
+  }, [props.checkins, habitMap])
 
   const chip = (e: CalEvent) => {
     const t = e.task
@@ -208,6 +455,7 @@ function DeskMonth(props: DeskProps & { weeks: DayKey[][]; events: EventMap }) {
               const shown = list.length > cap ? list.slice(0, cap - 1) : list
               const rest = list.length - shown.length
               const num = Number(day.slice(8))
+              const doneHabits = dayCheckins.get(day)
               return (
                 <div
                   key={day}
@@ -220,7 +468,21 @@ function DeskMonth(props: DeskProps & { weeks: DayKey[][]; events: EventMap }) {
                     if (id) props.onMoveDay(id, day)
                   }}
                 >
-                  <span className={day === now ? 'dm-num today' : 'dm-num'}>{num === 1 ? `${num} ${MONTH_SHORT[Number(day.slice(5, 7)) - 1]}` : num}</span>
+                  <div className="dm-cell-top">
+                    <span className={day === now ? 'dm-num today' : 'dm-num'}>
+                      {num === 1 ? `${num} ${MONTH_SHORT[Number(day.slice(5, 7)) - 1]}` : num}
+                    </span>
+                    {doneHabits && doneHabits.length > 0 && (
+                      <div className="dm-habits" title={`Привычки: ${doneHabits.map((h) => h.name).join(', ')}`}>
+                        {doneHabits.slice(0, 3).map((h) => (
+                          <span key={h.id} className="dm-hdot" style={{ backgroundColor: h.color || 'var(--accent)' }} />
+                        ))}
+                        {doneHabits.length > 3 && (
+                          <span className="dm-hmore">+{doneHabits.length - 3}</span>
+                        )}
+                      </div>
+                    )}
+                  </div>
                   {shown.map(chip)}
                   {rest > 0 && (
                     <button
@@ -336,4 +598,3 @@ function DeskAgenda(props: DeskProps & { events: EventMap }) {
     </div>
   )
 }
-
