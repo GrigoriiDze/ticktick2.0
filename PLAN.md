@@ -1,7 +1,7 @@
 # PLAN.md — План полной переработки и сверки интерфейса под оригинальный TickTick
 
 > Обновлён: 25.10.2026
-> Статус: **В работе: Блок 9 — Сборка и деплой релизов (Web / Desktop / APK)**
+> Статус: **Все 9 блоков завершены [100%]**
 > Внимание по ресурсам: свободно ~1 ГБ RAM, работаем строго поочерёдно с минимальным расходом памяти.
 
 ## Общая цель
@@ -100,11 +100,11 @@
 
 ---
 
-## Блок 9. Сборка и деплой релизов (Web / Desktop / APK) — [Впереди]
+## Блок 9. Сборка и деплой релизов (Web / Desktop / APK) — [ГОТОВО]
 
-- [ ] **9.1. Web-сборка:** сборка `npm run web` и проверка папки `hosting/`.
-- [ ] **9.2. Desktop (.exe):** сборка через `tauri build`.
-- [ ] **9.3. Android APK:** синхронизация Capacitor и сборка `assembleDebug`.
+- [x] **9.1. Web-сборка:** сборка `npm run web` и проверка папки `hosting/` (bundle готов к `firebase deploy --only hosting`).
+- [x] **9.2. Desktop (.exe):** сборка через `tauri build` (`zadachi.exe` и NSIS инсталлятор `TickTick 2.0_1.4.0_x64-setup.exe` в `src-tauri/target/release/bundle/nsis/`).
+- [x] **9.3. Android APK:** синхронизация Capacitor и сборка `assembleDebug` (`zadachi-debug.apk` в `dist-apk/` и `app/android/app/build/outputs/apk/debug/app-debug.apk`).
 
 ## Прогресс
 
@@ -118,5 +118,5 @@
 | 6 — Настройки                | 1     | ГОТОВО      |
 | 7 — Помодоро / Фокус         | 3     | ГОТОВО      |
 | 8 — Папки и смарт-фильтры    | 2     | ГОТОВО      |
-| 9 — Сборки (Web, Win, APK)   | 3     | В РАБОТЕ    |
-| Итого                        | 22    | 86%         |
+| 9 — Сборки (Web, Win, APK)   | 3     | ГОТОВО      |
+| Итого                        | 22    | 100%        |

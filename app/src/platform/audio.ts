@@ -122,3 +122,4 @@ export function setWhiteNoise(enabled: boolean): void {
     whiteNoiseNode = gain
   } catch {}
 }
+

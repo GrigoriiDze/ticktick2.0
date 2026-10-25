@@ -133,3 +133,15 @@
   - Добавлен drag-and-drop перенос проектов: перетаскивание проекта на заголовок папки перемещает его в эту папку (`projectsRepo.update(id, { groupId })`).
   - Перетаскивание проекта в корневой список проектов сбрасывает принадлежность к папке (`groupId: null`).
   - Добавлена кнопка «⋯» при наведении на папку для управления группой.
+
+### 25.10.2026 — Блок 9: Сборка и деплой релизов (Web / Desktop / APK)
+- **Веб-версия (`hosting/`):**
+  - Выполнена сборка Vite через `npm run web`.
+  - Директория `hosting/` обновлена свежим бандлом (папка `hosting/update` сохранена).
+- **Windows Desktop (`app/src-tauri`):**
+  - Собрано приложение `zadachi.exe` через `tauri build` с ограничением памяти `CARGO_BUILD_JOBS=1`.
+  - Собран NSIS установщик: `TickTick 2.0_1.4.0_x64-setup.exe` (2.33 МБ) в `app/src-tauri/target/release/bundle/nsis/`.
+- **Android APK (`app/android`):**
+  - Выполнен `npx cap sync android` для синхронизации фронтенд-ассетов и плагинов.
+  - Настроено ограничение JVM-памяти в `gradle.properties` (`-Xmx768m -XX:MaxMetaspaceSize=256m`).
+  - Успешно собран `app-debug.apk` через Gradle `assembleDebug` и скопирован в `dist-apk/zadachi-debug.apk`.

@@ -32,3 +32,4 @@ describe('pomo domain logic', () => {
     expect(stats.minutes).toBe(60) // (1500 + 1500 + 600) / 60 = 60 min
   })
 })
+
