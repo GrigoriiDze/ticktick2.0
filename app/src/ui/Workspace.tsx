@@ -8,13 +8,15 @@ import { StorageService, STORAGE_KEYS } from '../platform/storage'
 import type { User } from '../platform/auth'
 import { CAL_VIEWS, DESKTOP_VIEWS, shiftAnchor, type CalView } from '../domain/calendar'
 import { addDays, localToMs, matchesSmartList, SMART_LISTS, timeOf, today, type DayKey } from '../domain/dates'
-import { hasTag, isExpired, tagCounts } from '../domain/extras'
+import { hasTag, isExpired, normalizeTag, tagCounts } from '../domain/extras'
 import { GROUP_MODES, groupByMode, groupDone, groupTasks, type GroupMode } from '../domain/groups'
 import { compareWaiting, isWaiting, waitingCount } from '../domain/waiting'
 import { orderBetween } from '../domain/order'
 import { isSite } from '../domain/sites'
 import type { Quadrant } from '../domain/matrix'
-import { INBOX_ID, type Project, type Task } from '../domain/types'
+import { INBOX_ID, type Priority, type Project, type Task } from '../domain/types'
+import { parseSmart } from '../domain/smartdate'
+import { AT_TIME, datePatchOf, EMPTY_DATE } from '../domain/datevalue'
 import type { QuickAddRequest } from './Calendar'
 import type { ProjectInfo } from './Desk'
 import { sectionsByDay } from '../domain/deskboard'
@@ -34,7 +36,7 @@ import { getMenuLists, getTaskMode, type MenuListId, type TaskViewMode } from '.
 import { useDateCtx } from './useNow'
 import { useReminders } from './useReminders'
 import { useWorkspace } from './useWorkspace'
-import { DEFAULT_VIEW, loadView, saveView, viewTitle, type View } from './view'
+import { DEFAULT_VIEW, loadView, projectForNew, saveView, viewTitle, type View } from './view'
 import { DEFAULT_AI } from '../domain/assistant'
 
 function loadGroup(): GroupMode {
@@ -395,6 +397,7 @@ export function Workspace({ user }: { user: User }) {
   const slotRequest = (req: QuickAddRequest) =>
     openModal({
       type: 'quick-add',
+      defaultProjectId: projectForNew(effectiveView),
       defaultDay: req.day,
       defaultTime: req.minutes === null ? null : `${String(Math.floor(req.minutes / 60)).padStart(2, '0')}:${String(req.minutes % 60).padStart(2, '0')}`,
     })
@@ -464,6 +467,41 @@ export function Workspace({ user }: { user: User }) {
     return out
   }, [sortedProjects])
 
+  const canAddHere =
+    wide &&
+    tasksSection &&
+    !boardLayout &&
+    (effectiveView.type === 'project' ||
+      effectiveView.type === 'tag' ||
+      (effectiveView.type === 'smart' && effectiveView.id !== 'done' && effectiveView.id !== 'wontdo'))
+
+  const addBarTarget =
+    effectiveView.type === 'project'
+      ? currentProject?.name ?? 'Список'
+      : effectiveView.type === 'tag'
+        ? `#${effectiveView.id}`
+        : 'Входящие'
+
+  const addFromBar = (text: string, priority: Priority = 0) => {
+    const s = parseSmart(text, ctx)
+    const day = s.day ?? defaultQuickDay()
+    const date = day ? { ...EMPTY_DATE, day, time: s.day ? s.time : null, reminders: s.day && s.time ? [AT_TIME] : [] } : EMPTY_DATE
+    const patch = datePatchOf(date, ctx)
+    const last = (tasks ?? []).reduce((m, t) => Math.max(m, t.sortOrder), 0)
+    void tasksRepo.create({
+      title: s.title.trim() || text.trim(),
+      projectId: projectForNew(effectiveView),
+      tags: [...new Set([...(effectiveView.type === 'tag' ? [effectiveView.id] : []), ...s.tags.map(normalizeTag).filter(Boolean)])],
+      priority,
+      content: '',
+      sortOrder: orderBetween(last || null, null),
+      ...patch.fields,
+      reminders: Object.fromEntries(patch.reminders.map((trigger, i) => [`r${i + 1}`, { trigger }])),
+    })
+  }
+
+  const hasPane = wide && tasksSection && !boardLayout && isModalOpen('task-detail')
+
   return (
     <>
       <AppShell
@@ -518,11 +556,21 @@ export function Workspace({ user }: { user: User }) {
             setViewMode(currentProject.viewMode === 'kanban' ? 'list' : 'kanban')
           }
         }}
-        onOpenQuickAdd={() => openModal({ type: 'quick-add', defaultDay: defaultQuickDay() })}
+        onOpenQuickAdd={() =>
+          openModal({
+            type: 'quick-add',
+            defaultProjectId: projectForNew(effectiveView),
+            defaultDay: defaultQuickDay(),
+          })
+        }
         onOpenCountdownAdd={() => setCdEditing('new')}
         moreOpen={isModalOpen('more-sheet')}
         undo={undo}
         setUndo={setUndo}
+        hasPane={hasPane}
+        canAddHere={canAddHere}
+        addBarTarget={addBarTarget}
+        onAddFromBar={addFromBar}
       >
         <AppRouter
           effectiveView={effectiveView}
@@ -563,7 +611,7 @@ export function Workspace({ user }: { user: User }) {
           onAddTask={(projId, colId, day) =>
             openModal({
               type: 'quick-add',
-              defaultProjectId: projId,
+              defaultProjectId: projId ?? projectForNew(effectiveView),
               columnId: colId,
               defaultDay: day ?? defaultQuickDay(),
             })

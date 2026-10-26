@@ -1,6 +1,6 @@
 {
-  "versionCode": 7,
-  "versionName": "2.0.1",
+  "versionCode": 8,
+  "versionName": "2.0.2",
   "apk": "https://ticktick-47613.web.app/update/zadachi.bin",
-  "notes": "TickTick 2.0.1: этапы 1-4 аудита, оптимизация ререндеров, скролл календаря, стабильность"
+  "notes": "TickTick 2.0.2: фикс создания задач в списках, добавление AddBar на десктопе, кнопка добавления в пустом списке"
 }

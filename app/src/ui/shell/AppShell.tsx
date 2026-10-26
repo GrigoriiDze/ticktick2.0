@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import type { DateCtx, DayKey } from '../../domain/dates'
 import { today } from '../../domain/dates'
-import type { Project, ProjectGroup } from '../../domain/types'
+import type { Priority, Project, ProjectGroup } from '../../domain/types'
 import { viewTitle, type View } from '../view'
 import { ChevronLeft } from '../icons'
 import { Rail, type RailItem } from '../Rail'
@@ -13,6 +13,8 @@ import { DeskCalHeader } from '../CalendarDesktop'
 import { UndoIcon } from '../icons'
 import { StorageService, STORAGE_KEYS } from '../../platform/storage'
 import type { MenuListId } from '../../platform/theme'
+import { AddBar } from '../AddBar'
+import { EmptyPane } from '../EmptyPane'
 
 const railOf = (v: View): RailItem =>
   v.type === 'calendar' ? 'calendar' :
@@ -80,6 +82,9 @@ export interface AppShellProps {
   undo: { key: number; run: () => void } | null
   setUndo: (u: { key: number; run: () => void } | null) => void
   hasPane?: boolean
+  onAddFromBar?: (text: string, priority?: Priority) => void
+  canAddHere?: boolean
+  addBarTarget?: string
 }
 
 export function AppShell(props: AppShellProps) {
@@ -134,6 +139,9 @@ export function AppShell(props: AppShellProps) {
     undo,
     setUndo,
     hasPane,
+    onAddFromBar,
+    canAddHere,
+    addBarTarget,
   } = props
 
   return (
@@ -293,6 +301,12 @@ export function AppShell(props: AppShellProps) {
           )}
         </header>
       )}
+
+      {canAddHere && onAddFromBar && (
+        <AddBar target={addBarTarget ?? 'Входящие'} ctx={ctx} onAdd={onAddFromBar} />
+      )}
+
+      {wide && tasksSection && !boardLayout && !hasPane && <EmptyPane />}
 
       {/* 3. Main Viewport Content */}
       <main className="main">{children}</main>

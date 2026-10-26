@@ -21,7 +21,7 @@ import type { RowActions } from '../TaskList'
 import { Empty, TaskList } from '../TaskList'
 import { Trash } from '../Trash'
 import { Assistant } from '../Assistant'
-import type { View } from '../view'
+import { projectForNew, type View } from '../view'
 import { boardByDay, boardByProject } from '../../domain/deskboard'
 import { nextColumnOrder } from '../../domain/kanban'
 import type { ColumnsRepo } from '../../data/columns'
@@ -360,14 +360,20 @@ export function AppRouter(props: AppRouterProps): ReactNode {
         onRenameColumn={(id, name) => void columnsRepo.update(id, { name })}
         onDeleteColumn={onDeleteColumn}
         onMoveCard={onMoveCard}
-        onAddTask={(_projId, colId) => onAddTask(undefined, colId, null)}
+        onAddTask={(_projId, colId) => onAddTask(currentProject.id, colId, null)}
       />
     )
   }
 
   // 15. Пустой список
   if (empty) {
-    return <Empty title="Нет задач" hint="Добавьте первую кнопкой «+»" />
+    return (
+      <Empty
+        title="Нет задач"
+        hint="Добавьте первую кнопкой «+»"
+        onAdd={() => onAddTask(projectForNew(effectiveView))}
+      />
+    )
   }
 
   // 16. Обычный список задач (TaskList)

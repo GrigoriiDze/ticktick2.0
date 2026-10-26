@@ -125,7 +125,7 @@ export function TaskList({ tasks, groups, ctx, listKey, actions, forDay, project
 }
 
 /** Пустой список: свой рисунок и две строки */
-export function Empty({ title, hint }: { title: string; hint?: string }) {
+export function Empty({ title, hint, onAdd }: { title: string; hint?: string; onAdd?: () => void }) {
   return (
     <div className="empty">
       <svg width="120" height="96" viewBox="0 0 120 96" aria-hidden="true">
@@ -136,6 +136,25 @@ export function Empty({ title, hint }: { title: string; hint?: string }) {
       </svg>
       <strong>{title}</strong>
       {hint && <span className="muted">{hint}</span>}
+      {onAdd && (
+        <button
+          type="button"
+          className="primary"
+          style={{
+            marginTop: 14,
+            padding: '8px 18px',
+            fontSize: 14,
+            borderRadius: 18,
+            cursor: 'pointer',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 6,
+          }}
+          onClick={onAdd}
+        >
+          + Добавить задачу
+        </button>
+      )}
     </div>
   )
 }
