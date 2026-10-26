@@ -1,4 +1,4 @@
-import { useState, type FormEvent, type ReactNode } from 'react'
+import { useState, useRef, type FormEvent, type ReactNode } from 'react'
 import { SMART_LISTS, type SmartListId } from '../domain/dates'
 import { buildSidebar } from '../domain/sidebar'
 import { INBOX_ID, type Project, type ProjectGroup } from '../domain/types'
@@ -50,6 +50,25 @@ export function Drawer(props: Props) {
   const [renameText, setRenameText] = useState('')
   const [folded, setFolded] = useState<Record<string, boolean>>({})
   const [dragOverGroup, setDragOverGroup] = useState<string | null>(null)
+  const drawerTouch = useRef<{ x: number; y: number } | null>(null)
+
+  function onDrawerTouchStart(e: React.TouchEvent) {
+    if (props.docked) return
+    const t = e.touches[0]
+    if (t) drawerTouch.current = { x: t.clientX, y: t.clientY }
+  }
+
+  function onDrawerTouchEnd(e: React.TouchEvent) {
+    if (props.docked || !drawerTouch.current) return
+    const t = e.changedTouches[0]
+    if (!t) return
+    const dx = t.clientX - drawerTouch.current.x
+    const dy = t.clientY - drawerTouch.current.y
+    drawerTouch.current = null
+    if (dx < -45 && Math.abs(dy) < 40) {
+      onClose()
+    }
+  }
 
   const tree = buildSidebar(projects, groups)
   const pick = (v: View) => {
@@ -241,33 +260,68 @@ export function Drawer(props: Props) {
     )
   }
 
+  const smartIcon = (id: SmartListId) => {
+    if (id === 'today' || id === 'tomorrow') {
+      const dNum = id === 'tomorrow' ? (props.dayOfMonth ?? 25) + 1 : (props.dayOfMonth ?? 25)
+      return (
+        <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" style={{ color: '#f5a623' }}>
+          <rect x="3" y="4.5" width="18" height="16.5" rx="3.5" fill="currentColor" />
+          <path d="M8 2.5v3M16 2.5v3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          <text x="12" y="16.5" textAnchor="middle" fontSize="9.5" fontWeight="800" fill="#ffffff">
+            {dNum}
+          </text>
+        </svg>
+      )
+    }
+    if (id === 'inbox') {
+      return (
+        <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" style={{ color: '#f5a623' }}>
+          <path d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6z" fill="currentColor" />
+          <path d="M4 13h4.5l1.5 2.5h4L15.5 13H20" fill="none" stroke="#ffffff" strokeWidth="1.8" strokeLinejoin="round" />
+        </svg>
+      )
+    }
+    return SideIcon.list()
+  }
+
   return (
     <>
       {!props.docked && <div className={open ? 'scrim on' : 'scrim'} onClick={onClose} />}
-      <aside className={props.docked ? 'drawer docked on' : open ? 'drawer on' : 'drawer'} aria-hidden={!props.docked && !open}>
+      <aside className={props.docked ? 'drawer docked on' : open ? 'drawer on' : 'drawer'} aria-hidden={!props.docked && !open} onTouchStart={onDrawerTouchStart} onTouchEnd={onDrawerTouchEnd}>
         <div className="drawer-head">
           <span className="drawer-avatar" aria-hidden="true">
-            {login.slice(0, 1).toUpperCase()}
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+            </svg>
           </span>
-          <span className="drawer-name">{login}</span>
+          <span className="drawer-name">{email || login}</span>
+          <span className="drawer-crown" aria-hidden="true">👑</span>
+          <button className="ghost" onClick={() => pick({ type: 'search' })} aria-label="Поиск">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round">
+              <circle cx="11" cy="11" r="6.5" />
+              <path d="M16 16l4.2 4.2" />
+            </svg>
+          </button>
           <button className="ghost" onClick={() => (props.onSettings(), onClose())} aria-label="Настройки">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinejoin="round" aria-hidden="true">
+              <path d="M12 2.8l7.4 4.3v9.8L12 21.2l-7.4-4.3V7.1L12 2.8z" />
               <circle cx="12" cy="12" r="3" />
-              <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3h0a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5h0a1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8v0a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" />
             </svg>
           </button>
         </div>
 
         <div className="drawer-list">
-          {SMART_LISTS.filter((l) => props.smartIds.includes(l.id)).map((l) => item({ type: 'smart', id: l.id }, l.title, counts[`smart:${l.id}`]))}
+          {SMART_LISTS.filter((l) => props.smartIds.includes(l.id)).map((l) =>
+            item({ type: 'smart', id: l.id }, l.title, counts[`smart:${l.id}`], smartIcon(l.id)),
+          )}
           <hr />
-          {objectsCount > 0 && item({ type: 'objects' }, 'Объекты', objectsCount)}
-          {waiting.total > 0 && item({ type: 'waiting' }, 'Зависло', waiting.total)}
+          {objectsCount > 0 && item({ type: 'objects' }, 'Объекты', objectsCount, SideIcon.folder())}
+          {waiting.total > 0 && item({ type: 'waiting' }, 'Зависло', waiting.total, SideIcon.list())}
 
           {tree.map((entry) => {
             if (entry.kind === 'project') {
               const p = entry.project
-              return item({ type: 'project', id: p.id }, p.name, counts[`project:${p.id}`])
+              return item({ type: 'project', id: p.id }, p.name, counts[`project:${p.id}`], SideIcon.list())
             }
             const g = entry.group
             const total = entry.projects.reduce((n, p) => n + (counts[`project:${p.id}`] ?? 0), 0)
@@ -295,7 +349,7 @@ export function Drawer(props: Props) {
                 )}
                 {!g.collapsed && (
                   <div className="nav-children">
-                    {entry.projects.map((p) => item({ type: 'project', id: p.id }, p.name, counts[`project:${p.id}`]))}
+                    {entry.projects.map((p) => item({ type: 'project', id: p.id }, p.name, counts[`project:${p.id}`], SideIcon.list()))}
                     {entry.projects.length === 0 && <p className="muted nav-empty">В папке пусто</p>}
                   </div>
                 )}
@@ -319,18 +373,32 @@ export function Drawer(props: Props) {
           {tags.length > 0 && (
             <>
               <hr />
-              {tags.map((t) => item({ type: 'tag', id: t.tag }, `#${t.tag}`, t.count))}
+              {tags.map((t) => item({ type: 'tag', id: t.tag }, `#${t.tag}`, t.count, SideIcon.tag()))}
             </>
           )}
           <hr />
-          {(counts['smart:wontdo'] ?? 0) > 0 && item({ type: 'smart', id: 'wontdo' }, 'Не будет выполнено', counts['smart:wontdo'])}
-          {trashCount > 0 && item({ type: 'trash' }, 'Корзина', trashCount)}
+          {item({ type: 'smart', id: 'done' }, 'Выполнено', undefined, SideIcon.done())}
+          {(counts['smart:wontdo'] ?? 0) > 0 && item({ type: 'smart', id: 'wontdo' }, 'Не будет выполнено', counts['smart:wontdo'], SideIcon.wontdo())}
+          {item({ type: 'trash' }, 'Корзина', trashCount || undefined, SideIcon.trash())}
         </div>
 
         <div className="drawer-foot">
           <button className="nav add-list" onClick={() => setAddMenu(true)}>
-            <span className="nav-icon">+</span>
+            <span className="nav-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 8v8M8 12h8" />
+              </svg>
+            </span>
             <span className="nav-title">Добавить</span>
+          </button>
+          <button className="ghost drawer-foot-gear" onClick={() => (props.onSettings(), onClose())} aria-label="Настроить списки">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="4" y1="7" x2="14" y2="7" />
+              <line x1="4" y1="12" x2="11" y2="12" />
+              <line x1="4" y1="17" x2="11" y2="17" />
+              <circle cx="17" cy="14.5" r="3" />
+            </svg>
           </button>
         </div>
       </aside>

@@ -13,4 +13,4 @@ if (!dbPath || !out) {
 }
 const bundle = buildImport(readDesktopDb(dbPath))
 writeFileSync(out, JSON.stringify(bundle))
-console.log(`Готово: задач ${bundle.tasks.length}, списков ${bundle.projects.length}, папок ${bundle.groups.length}, колонок ${bundle.columns.length}, привычек ${bundle.habits.length}, отметок ${bundle.checkins.length}`)
+console.log(`Готово: задач ${bundle.tasks.length}, списков ${bundle.projects.length}, папок ${bundle.groups.length}, колонок ${bundle.columns.length}, привычек ${bundle.habits.length}, отметок ${bundle.checkins.length}, файлов ${bundle.files?.length ?? 0}`)

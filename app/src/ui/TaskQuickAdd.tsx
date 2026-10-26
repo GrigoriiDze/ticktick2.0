@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
-import { formatRowDay, type DateCtx, type DayKey } from '../domain/dates'
+import { addDays, formatRowDay, today, type DateCtx, type DayKey } from '../domain/dates'
 import { AT_TIME, EMPTY_DATE, type DateValue } from '../domain/datevalue'
 import { normalizeTag } from '../domain/extras'
 import { parseSmart } from '../domain/smartdate'
@@ -41,6 +41,24 @@ const PRIORITIES: Array<{ value: Priority; title: string }> = [
 
 type Menu = 'priority' | 'list' | 'tag' | null
 
+function loadDefaultPriority(): Priority {
+  try {
+    const v = Number(localStorage.getItem('tt_default_priority') ?? '0')
+    if (v === 5 || v === 3 || v === 1) return v
+  } catch {}
+  return 0
+}
+
+function loadDefaultDayPref(ctx: DateCtx, explicitDay: DayKey | null): DayKey | null {
+  if (explicitDay !== null) return explicitDay
+  try {
+    const pref = localStorage.getItem('tt_default_date')
+    if (pref === 'today') return today(ctx)
+    if (pref === 'tomorrow') return addDays(today(ctx), 1)
+  } catch {}
+  return null
+}
+
 /**
  * Быстрое добавление по кнопке «+». Дату можно написать словами («завтра в 7 вечера», «в пятницу»),
  * метку через решётку («#срочно»): найденное видно на кнопке даты до отправки
@@ -49,7 +67,7 @@ export function TaskQuickAdd({ ctx, projects, allTags, defaultProjectId, default
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [manual, setManual] = useState<DateValue | null>(null)
-  const [priority, setPriority] = useState<Priority>(0)
+  const [priority, setPriority] = useState<Priority>(() => loadDefaultPriority())
   const [projectId, setProjectId] = useState(defaultProjectId)
   const [picked, setPicked] = useState<string[]>([])
   const [menu, setMenu] = useState<Menu>(null)
@@ -87,10 +105,31 @@ export function TaskQuickAdd({ ctx, projects, allTags, defaultProjectId, default
     })
   }
 
-  const smart = parseSmart(title, ctx)
+  const rawSmart = parseSmart(title, ctx)
+  const smartDateEnabled = (() => {
+    try { return localStorage.getItem('tt_smart_date_rec') !== '0' } catch { return true }
+  })()
+  const smartTagEnabled = (() => {
+    try { return localStorage.getItem('tt_smart_tag_rec') !== '0' } catch { return true }
+  })()
+  const smartRemoveText = (() => {
+    try { return localStorage.getItem('tt_smart_remove_text') !== '0' } catch { return true }
+  })()
+
+  const smart = {
+    title: smartRemoveText ? rawSmart.title : title,
+    day: smartDateEnabled ? rawSmart.day : null,
+    time: smartDateEnabled ? rawSmart.time : null,
+    tags: smartTagEnabled ? rawSmart.tags : [],
+  }
+
+  const resolvedDefaultDay = loadDefaultDayPref(ctx, defaultDay)
   // Своя дата главнее той, что нашлась в тексте
-  const fallback: DateValue = defaultDay ? { ...EMPTY_DATE, day: defaultDay, time: defaultTime, reminders: defaultTime ? [AT_TIME] : [] } : EMPTY_DATE
-  const date: DateValue = manual ?? (smart.day ? { ...EMPTY_DATE, day: smart.day, time: smart.time, reminders: smart.time ? [AT_TIME] : [] } : fallback)
+  const fallback: DateValue = resolvedDefaultDay
+    ? { ...EMPTY_DATE, day: resolvedDefaultDay, time: defaultTime, reminders: defaultTime ? [AT_TIME] : [] }
+    : EMPTY_DATE
+  const date: DateValue =
+    manual ?? (smart.day ? { ...EMPTY_DATE, day: smart.day, time: smart.time, reminders: smart.time ? [AT_TIME] : [] } : fallback)
   const dateLabel = date.day ? (date.time ? `${formatRowDay(date.day, ctx)} ${date.time}` : formatRowDay(date.day, ctx)) : null
   const tags = [...new Set([...smart.tags.map(normalizeTag), ...picked])].filter(Boolean)
 
@@ -137,7 +176,8 @@ export function TaskQuickAdd({ ctx, projects, allTags, defaultProjectId, default
             <TagIcon size={22} />
             {tags.length > 0 && <span>{tags.length}</span>}
           </button>
-          <button type="button" className={projectId !== defaultProjectId ? 'qt-btn on' : 'qt-btn'} onClick={() => setMenu('list')} aria-label="Список">
+          <button type="button" className={projectId !== defaultProjectId ? 'qt-btn on' : 'qt-btn'} onClick={() => setMenu(
+'list')} aria-label="Список">
             <ListIcon size={22} />
           </button>
           <span className="qt-spacer" />
@@ -161,4 +201,3 @@ export function TaskQuickAdd({ ctx, projects, allTags, defaultProjectId, default
     </>
   )
 }
-

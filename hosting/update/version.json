@@ -1,6 +1,6 @@
 {
-  "versionCode": 6,
-  "versionName": "2.0",
-  "apk": "https://ticktick-47613.web.app/update/zadachi.apk",
-  "notes": "TickTick 2.0: Привычки, Помодоро, Матрица Эйзенхауэра, обратный отсчет, смарт-фильтры, чистый быстрый интерфейс без лагов"
+  "versionCode": 7,
+  "versionName": "2.0.1",
+  "apk": "https://ticktick-47613.web.app/update/zadachi.bin",
+  "notes": "TickTick 2.0.1: этапы 1-4 аудита, оптимизация ререндеров, скролл календаря, стабильность"
 }

@@ -1,13 +1,23 @@
+import { existsSync, readFileSync } from 'node:fs'
+import { dirname, extname, resolve } from 'node:path'
 import { DatabaseSync } from 'node:sqlite'
-import { dedupeTasks, type RawCheckin, type RawColumn, type RawGroup, type RawHabit, type RawHabitNote, type RawProject, type RawTask } from '../src/import/ticktick'
+import { MAX_FILE_BYTES } from '../src/domain/files'
+import {
+  dedupeTasks,
+  importedFileId,
+  importedId,
+  type ImportedAttachment,
+  type RawCheckin,
+  type RawColumn,
+  type RawGroup,
+  type RawHabit,
+  type RawHabitNote,
+  type RawProject,
+  type RawTask,
+} from '../src/import/ticktick'
 
 /**
  * Чтение базы десктопного TickTick (AppData\Roaming\Tick_Tick\TickTick.db). Только чтение, лучше на копии файла.
- *
- * Две особенности, найденные на настоящих данных:
- *  1. Список проектов надо брать из основной таблицы ProjectModel, в таблице JSON-копий их не все
- *  2. Признак «в корзине» надёжно хранится в основной таблице TaskModel (колонка deleted), а в JSON-копии он почти всегда 0.
- *     Без этого в импорт попали бы сотни удалённых задач как открытые
  */
 export interface DesktopData {
   groups: RawGroup[]
@@ -17,11 +27,38 @@ export interface DesktopData {
   habits: RawHabit[]
   checkins: RawCheckin[]
   habitNotes: RawHabitNote[]
+  files: ImportedAttachment[]
   counts: { habits: number; habitCheckins: number; pomodoros: number; columns: number; comments: number; attachments: number }
+}
+
+function guessMime(fileName: string, rawType?: string | null): string {
+  if (rawType && rawType.includes('/')) return rawType
+  const ext = (rawType || extname(fileName)).toLowerCase().replace(/^\./, '')
+  const map: Record<string, string> = {
+    png: 'image/png',
+    jpg: 'image/jpeg',
+    jpeg: 'image/jpeg',
+    webp: 'image/webp',
+    gif: 'image/gif',
+    pdf: 'application/pdf',
+    txt: 'text/plain',
+    md: 'text/markdown',
+    csv: 'text/csv',
+    doc: 'application/msword',
+    docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    xls: 'application/vnd.ms-excel',
+    xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    zip: 'application/zip',
+    mp3: 'audio/mpeg',
+    wav: 'audio/wav',
+    m4a: 'audio/mp4',
+  }
+  return map[ext] || 'application/octet-stream'
 }
 
 export function readDesktopDb(path: string): DesktopData {
   const db = new DatabaseSync(path, { readOnly: true })
+  const baseDir = dirname(resolve(path))
   const rows = (sql: string) => db.prepare(sql).all() as Array<Record<string, unknown>>
   const count = (table: string) => Number((db.prepare(`select count(*) c from ${table}`).get() as { c: number }).c)
 
@@ -53,6 +90,64 @@ export function readDesktopDb(path: string): DesktopData {
   const tasks = dedupeTasks(rows('select jsonString from TaskSyncedJsonModel').map((r) => JSON.parse(String(r.jsonString)) as RawTask)).map(
     (t) => ({ ...t, deleted: deleted.get(t.id) ?? t.deleted ?? 0 }),
   )
+
+  // Читаем вложения из AttachmentModel (если файлы лежат в локальном кэше TickTick на ПК, переносим их байты)
+  const files: ImportedAttachment[] = []
+  try {
+    const rawAttachments = rows('select * from AttachmentModel')
+    const taskById = new Map(tasks.map((t) => [t.id, t]))
+    for (const a of rawAttachments) {
+      const del = Number(a.deleted ?? a.Deleted ?? 0)
+      if (del !== 0) continue
+      const attId = String(a.id ?? a.Id ?? a.refId ?? '')
+      const taskId = String(a.taskId ?? a.TaskId ?? '')
+      const fileName = String(a.fileName ?? a.FileName ?? a.name ?? 'file')
+      const fileType = guessMime(fileName, (a.fileType ?? a.FileType ?? null) as string | null)
+      if (!attId || !taskId) continue
+
+      const candidates = [
+        a.localPath ? String(a.localPath) : '',
+        a.LocalPath ? String(a.LocalPath) : '',
+        a.path ? String(a.path) : '',
+        resolve(baseDir, 'Attachment', attId, fileName),
+        resolve(baseDir, 'Attachment', taskId, fileName),
+        resolve(baseDir, 'Attachment', fileName),
+        resolve(baseDir, 'Attachments', attId, fileName),
+      ].filter(Boolean)
+
+      let loaded = false
+      for (const candidate of candidates) {
+        if (existsSync(candidate)) {
+          const buf = readFileSync(candidate)
+          if (buf.byteLength <= MAX_FILE_BYTES) {
+            files.push({
+              id: importedFileId(attId),
+              taskId: importedId(taskId),
+              name: fileName,
+              type: fileType,
+              size: buf.byteLength,
+              base64: buf.toString('base64'),
+            })
+            loaded = true
+          }
+          break
+        }
+      }
+
+      // Если файл не скачан локально на ПК, сохраняем упоминание в заметке задачи, чтобы не потерять информацию
+      if (!loaded) {
+        const targetTask = taskById.get(taskId)
+        if (targetTask) {
+          const noteLine = `[Вложение из TickTick: ${fileName}]`
+          if (!(targetTask.content ?? '').includes(noteLine)) {
+            targetTask.content = targetTask.content ? `${targetTask.content}\n\n${noteLine}` : noteLine
+          }
+        }
+      }
+    }
+  } catch {
+    // Если таблица AttachmentModel имеет нестандартную структуру, не прерываем импорт остальных данных
+  }
 
   const habits = rows(
     'select Id, Name, Color, Status, RepeatRule, CreatedTime, ArchivedTime, TargetStartDate, TargetDays, Reminder, cast(SortOrder as real) as SortOrder, Encouragement from HabitModel',
@@ -92,6 +187,7 @@ export function readDesktopDb(path: string): DesktopData {
     habits,
     checkins,
     habitNotes,
+    files,
     counts: {
       habits: count('HabitModel'),
       habitCheckins: count('HabitCheckInModel'),

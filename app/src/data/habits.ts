@@ -78,8 +78,8 @@ export function createCheckinsRepo(db: Firestore, uid: string) {
      * Отметка за день. Идентификатор складывается из привычки и дня, поэтому на один день она одна,
      * даже если два устройства отметили её без сети. merge не затирает заметку
      */
-    set(habitId: string, day: string, status: CheckStatus): Promise<void> {
-      return setDoc(ref(habitId, day), { habitId, day, status, updatedAt: serverTimestamp(), createdAt: serverTimestamp() }, { merge: true })
+    set(habitId: string, day: string, status: CheckStatus, note?: string | null): Promise<void> {
+      return setDoc(ref(habitId, day), { habitId, day, status, ...(note !== undefined ? { note } : {}), updatedAt: serverTimestamp(), createdAt: serverTimestamp() }, { merge: true })
     },
 
     clear(habitId: string, day: string): Promise<void> {

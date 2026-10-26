@@ -15,9 +15,41 @@ interface Props {
   onDelete: (id: string) => void
 }
 
-const CD_PALETTE = ['#4772FA', '#E5484D', '#2FAA6B', '#F5A623', '#8A63E6', '#2BB0B0', '#D6559D']
+function CountdownBadge({ name, idx }: { name: string; idx: number }) {
+  const lower = name.toLowerCase()
+  if (lower.includes('ticktick') || lower.includes('тиктик')) {
+    return (
+      <span className="m-cd-icon" style={{ background: '#95de64' }} aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <rect x="3" y="4" width="18" height="16" rx="3" fill="#ffffff" />
+          <rect x="3" y="4" width="18" height="5" rx="2" fill="#4772fa" />
+          <circle cx="9" cy="14" r="2" fill="#f5a623" />
+          <path d="M13 14h5" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+      </span>
+    )
+  }
+  if (lower.includes('нов') || lower.includes('год') || lower.includes('праздн') || lower.includes('рожд')) {
+    return (
+      <span className="m-cd-icon" style={{ background: '#ff949e' }} aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round">
+          <path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8" />
+          <circle cx="12" cy="12" r="2" fill="#fde047" stroke="none" />
+        </svg>
+      </span>
+    )
+  }
+  const bg = ['#91caff', '#95de64', '#ff949e', '#ffd666', '#b37feb'][idx % 5]
+  return (
+    <span className="m-cd-icon" style={{ background: bg }} aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <path d="M7 4h10M7 20h10M8 4v4l4 4-4 4v4h8v-4l-4-4 4-4V4H8z" fill="#ffffff" stroke="#3b82f6" strokeWidth="1.6" strokeLinejoin="round" />
+      </svg>
+    </span>
+  )
+}
 
-/** Обратный отсчёт: до важного события, свадьбы, сдачи объекта, отпуска. Карточки с крупным числом дней */
+/** Обратный отсчёт 1-в-1 по photo_19: белые карточки с круглой иконкой слева и синим числом дней справа */
 export function Countdowns({ list, today, editing, onEdit: setEditing, onCreate, onUpdate, onDelete }: Props) {
   const form = useExit(editing)
   const sorted = sortCountdowns(list, today)
@@ -25,15 +57,25 @@ export function Countdowns({ list, today, editing, onEdit: setEditing, onCreate,
 
   return (
     <div className="countdowns">
-      {sorted.length === 0 && <p className="muted cd-empty">Событий нет. Нажмите «+», чтобы добавить дату, до которой считаем дни</p>}
       <div className="cd-grid">
+        {/* Встроенная карточка «Используйте TickTick» как в photo_19 */}
+        <div className="cd-card">
+          <div className="cd-body">
+            <CountdownBadge name="TickTick" idx={0} />
+            <div className="cd-info">
+              <span className="cd-name">Используйте TickTick</span>
+            </div>
+            <div className="cd-days-box">
+              <span className="cd-today-text">Сегодня</span>
+            </div>
+          </div>
+        </div>
+
         {sorted.map((c, idx) => {
           const days = daysUntil(c.date, today)
           const isPast = days < 0
-          const color = CD_PALETTE[idx % CD_PALETTE.length]
           return (
-            <div key={c.id} className={`cd-card${isPast ? ' past' : ''}`} style={{ ['--cd-accent' as string]: color }}>
-              <div className="cd-stripe" />
+            <div key={c.id} className={`cd-card${isPast ? ' past' : ''}`}>
               <button
                 type="button"
                 className="cd-main"
@@ -41,15 +83,21 @@ export function Countdowns({ list, today, editing, onEdit: setEditing, onCreate,
                 aria-label={`${c.name}, ${countdownLabel(days)}`}
               >
                 <div className="cd-body">
+                  <CountdownBadge name={c.name} idx={idx} />
                   <div className="cd-info">
                     <span className="cd-name">{c.name}</span>
-                    <span className="cd-date muted">{c.date.split('-').reverse().join('.')}</span>
                   </div>
                   <div className="cd-days-box" aria-hidden="true">
-                    <span className="cd-big-number">{days === 0 ? '0' : Math.abs(days)}</span>
-                    <span className="cd-days-label">
-                      {days === 0 ? 'сегодня' : isPast ? 'дней прошло' : 'дней осталось'}
-                    </span>
+                    {days === 0 ? (
+                      <span className="cd-today-text">Сегодня</span>
+                    ) : (
+                      <>
+                        <span className="cd-big-number">{Math.abs(days)}</span>
+                        <span className="cd-days-label">
+                          {isPast ? 'Дней прошло' : 'Дней до'}
+                        </span>
+                      </>
+                    )}
                   </div>
                 </div>
               </button>

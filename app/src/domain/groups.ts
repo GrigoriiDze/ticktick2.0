@@ -53,13 +53,14 @@ export function groupTasks(listId: SmartListId, tasks: Task[], ctx: DateCtx): Gr
 }
 
 /** Как группировать задачи в списке: по сроку, важности или метке. Выбор сохраняется на устройстве */
-export type GroupMode = 'none' | 'date' | 'priority' | 'tag'
+export type GroupMode = 'none' | 'date' | 'priority' | 'tag' | 'created'
 
 export const GROUP_MODES: Array<{ id: GroupMode; title: string }> = [
   { id: 'none', title: 'Без группировки' },
   { id: 'date', title: 'По сроку' },
   { id: 'priority', title: 'По важности' },
   { id: 'tag', title: 'По метке' },
+  { id: 'created', title: 'По времени создания' },
 ]
 
 const PRIORITY_TITLES: Array<[number, string]> = [
@@ -86,6 +87,9 @@ export function groupByMode(mode: GroupMode, tasks: Task[], ctx: DateCtx): Group
     } else if (mode === 'tag') {
       const tag = t.tags[0]
       put(tag ? `t:${tag}` : 'none', tag ? `#${tag}` : 'Без метки', t)
+    } else if (mode === 'created') {
+      const day = t.createdAt ? dayKeyOf(t.createdAt.toMillis(), ctx.tz) : '0000'
+      put(`c:${day}`, dayTitle(day, ctx), t)
     } else {
       const day = dayOf(t, ctx)
       if (day === null) put('9none', 'Без срока', t)
@@ -96,8 +100,16 @@ export function groupByMode(mode: GroupMode, tasks: Task[], ctx: DateCtx): Group
       else put('8later', 'Позже', t)
     }
   }
-  const order = (k: string) => (mode === 'priority' ? PRIORITY_TITLES.findIndex(([v]) => `p:${v}` === k) : mode === 'tag' ? (k === 'none' ? '~' : k) : k)
-  const list = [...groups.values()].sort((a, b) => (order(a.key) < order(b.key) ? -1 : order(a.key) > order(b.key) ? 1 : 0))
+  const order = (k: string) => {
+    if (mode === 'priority') return PRIORITY_TITLES.findIndex(([v]) => `p:${v}` === k)
+    if (mode === 'tag') return k === 'none' ? '~' : k
+    if (mode === 'created') return k // c:YYYY-MM-DD
+    return k
+  }
+  const list = [...groups.values()].sort((a, b) => {
+    if (mode === 'created') return a.key < b.key ? 1 : -1
+    return order(a.key) < order(b.key) ? -1 : order(a.key) > order(b.key) ? 1 : 0
+  })
   return list.length >= 2 ? list : null
 }
 

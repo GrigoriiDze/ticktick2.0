@@ -2,7 +2,7 @@ import { useEffect, useState, type ReactNode } from 'react'
 import { resetPassword } from '../platform/auth'
 import { notificationsSupported, sendTestNotification } from '../platform/notifications'
 import { ACCENTS, MENU_LIST_CHOICES, getAccent, getTheme, setAccent, setTheme, type Accent, type MenuListId, type ThemeMode } from '../platform/theme'
-import { useImportAndUpdates, type Props } from './Settings'
+import { copyMcpConfig, useImportAndUpdates, type Props } from './Settings'
 
 type Section = 'account' | 'smart' | 'notify' | 'look' | 'import' | 'keys' | 'about'
 
@@ -113,7 +113,7 @@ export function SettingsDesktop({ email, menuLists, onMenuLists, onSignOut, onIm
   const [accent, setAccentState] = useState<Accent>(getAccent)
   const [note, setNote] = useState<string | null>(null)
   const [perm, setPerm] = useState<NotificationPermission>(typeof Notification === 'undefined' ? 'denied' : Notification.permission)
-  const { bundle, imp, impBusy, pickFile, runBundle, upd, checking, check } = useImportAndUpdates(onImport)
+  const { bundle, imp, impBusy, pickFile, runBundle, exportBackup, upd, checking, check } = useImportAndUpdates(onImport)
 
   useEffect(() => {
     const key = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
@@ -251,14 +251,25 @@ export function SettingsDesktop({ email, menuLists, onMenuLists, onSignOut, onIm
 
           {current.id === 'import' && (
             <>
-              <h2 className="ds-title">Импорт</h2>
+              <h2 className="ds-title">Интеграция MCP (Claude / Gemini / GPT)</h2>
+              <div className="ds-group" style={{ marginBottom: 18 }}>
+                <Row
+                  label="Сервер MCP для ИИ-агентов"
+                  note={note ?? 'Копирует готовый JSON-конфиг с токеном вашей сессии для подключения в Claude Desktop, Antigravity, Gemini CLI или Cursor.'}
+                >
+                  <button className="ds-link" onClick={() => void copyMcpConfig().then(setNote).catch((e: Error) => setNote(e.message))}>
+                    Скопировать конфиг MCP
+                  </button>
+                </Row>
+              </div>
+              <h2 className="ds-title">Импорт и экспорт</h2>
               <div className="ds-cards">
                 <label className="ds-card">
-                  <span className="ds-card-title">Импорт из TickTick</span>
-                  <span className="ds-card-hint">Выберите файл, сохранённый скриптом выгрузки. То, что уже есть, повторно не добавится</span>
+                  <span className="ds-card-title">Импорт из TickTick (.csv / .json)</span>
+                  <span className="ds-card-hint">Выберите официальный CSV-бэкап из TickTick или JSON-файл выгрузки (с задачами, выполненными, заметками, привычками и файлами). Дубли не создаются.</span>
                   <input
                     type="file"
-                    accept=".json,application/json"
+                    accept=".json,.csv,application/json,text/csv"
                     hidden
                     onChange={(e) => {
                       const input = e.target
@@ -266,6 +277,10 @@ export function SettingsDesktop({ email, menuLists, onMenuLists, onSignOut, onIm
                     }}
                   />
                 </label>
+                <button type="button" className="ds-card" style={{ textAlign: 'left', cursor: 'pointer' }} onClick={() => void exportBackup()} disabled={impBusy}>
+                  <span className="ds-card-title">Экспорт резервной копии (.json)</span>
+                  <span className="ds-card-hint">Сохранить все списки, папки, задачи, заметки, привычки и прикреплённые файлы в один JSON-файл.</span>
+                </button>
               </div>
               {imp && <p className="ds-status">{imp}</p>}
               {bundle && (

@@ -19,11 +19,32 @@
     "public": "hosting",
     "headers": [
       {
+        "source": "/update/zadachi.bin",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "application/vnd.android.package-archive"
+          },
+          {
+            "key": "Content-Disposition",
+            "value": "attachment; filename=\"zadachi.apk\""
+          },
+          {
+            "key": "Access-Control-Allow-Origin",
+            "value": "*"
+          }
+        ]
+      },
+      {
         "source": "/update/**",
         "headers": [
           {
             "key": "Cache-Control",
             "value": "no-cache"
+          },
+          {
+            "key": "Access-Control-Allow-Origin",
+            "value": "*"
           }
         ]
       },
@@ -50,7 +71,7 @@
       "firebase.json",
       "**/.*",
       "**/node_modules/**",
-      "update/**"
+      "**/*.apk"
     ]
   }
 }

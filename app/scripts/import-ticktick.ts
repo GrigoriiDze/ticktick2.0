@@ -39,7 +39,7 @@ if (!real) {
 }
 
 const bundle = buildImport(readDesktopDb(path))
-const { groups, columns, projects, tasks, habits, checkins } = bundle
+const { groups, columns, projects, tasks, habits, checkins, files } = bundle
 
 async function main() {
   let user
@@ -52,7 +52,7 @@ async function main() {
 
   console.log(real ? 'ЦЕЛЬ: настоящий проект Firebase' : 'ЦЕЛЬ: локальный эмулятор', '| пользователь', user.uid)
   const t0 = Date.now()
-  const result = await writeImport(db, user.uid, projects, tasks, habits, checkins, (done, total) => process.stdout.write(`\rзаписано ${done} из ${total}`), groups, columns)
+  const result = await writeImport(db, user.uid, projects, tasks, habits, checkins, (done, total) => process.stdout.write(`\rзаписано ${done} из ${total}`), groups, columns, files ?? [])
   console.log(`\nГотово за ${((Date.now() - t0) / 1000).toFixed(1)} с`, JSON.stringify(result))
 }
 

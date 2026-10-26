@@ -25,9 +25,9 @@
   --bar: #ffffff;
   --danger: #e5484d;
 
-  /* Акцент. Синий по умолчанию у TickTick: colorAccent #4772fa. У нас выбирается в «Ещё», по умолчанию оранжевый */
-  --accent: #f16905;
-  --accent-rgb: 241, 105, 5;
+  /* Акцент. Синий по умолчанию у TickTick: colorAccent #4772fa */
+  --accent: #4772fa;
+  --accent-rgb: 71, 114, 250;
   --on-accent: #ffffff;
   --selected: rgba(var(--accent-rgb), 0.1); /* item_selected_color: акцент 10% */
 
@@ -163,31 +163,4 @@
 
 :root[data-theme='light'] {
   color-scheme: light;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    --bg: #010101;
-    --card: #1c1c1c;
-    --sheet: #1c1c1c;
-    --popup: #242424;
-    --text: rgba(255, 255, 255, 0.87);
-    --muted: rgba(255, 255, 255, 0.56);
-    --faint: rgba(255, 255, 255, 0.36);
-    --hint: rgba(255, 255, 255, 0.36);
-    --done: rgba(255, 255, 255, 0.3);
-    --line: rgba(255, 255, 255, 0.12);
-    --line-strong: rgba(255, 255, 255, 0.15);
-    --chip: rgba(255, 255, 255, 0.12);
-    --icon: #b2b6bd;
-    --icon-off: rgba(255, 255, 255, 0.6);
-    --icon-disabled: #4c4f53;
-    --tab-off: #b2b6bd;
-    --snack: #4c4f53;
-    --circle: #131313;
-    --bar: #1c1c1c;
-    --danger: #ff6b6b;
-    --on-accent: #ffffff;
-    --selected: rgba(var(--accent-rgb), 0.2);
-  }
 }

@@ -18,6 +18,8 @@ app/android/app/src/main/assets/capacitor.plugins.json
 *.apk
 *.aab
 *.keystore
+hosting/update/*.bin
+scratch/
 dist-apk/
 docs/reference/
 

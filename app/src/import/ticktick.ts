@@ -379,3 +379,17 @@ export function convertCheckins(raws: RawCheckin[], notes: RawHabitNote[] = []):
   }
   return out
 }
+
+// ---------- Вложения (файлы к задачам) ----------
+
+export interface ImportedAttachment {
+  id: string
+  taskId: string
+  name: string
+  type: string
+  size: number
+  /** Содержимое файла в base64 */
+  base64: string
+}
+
+export const importedFileId = (sourceId: string) => `tt-f-${sourceId}`

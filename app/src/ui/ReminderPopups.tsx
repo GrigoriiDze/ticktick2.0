@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { dueReminders, type DueReminder } from '../domain/reminders'
 import type { Task } from '../domain/types'
+import { playNotificationSound } from '../platform/audio'
+import { withDefaultReminders } from './useReminders'
 
 const HANDLED_KEY = 'rem-handled'
 const SNOOZE_MIN = 10
@@ -24,26 +26,6 @@ function saveHandled(set: Set<string>): void {
   }
 }
 
-/** Короткий мягкий сигнал, пока не подключён свой звуковой файл */
-function chime(): void {
-  try {
-    const ctx = new AudioContext()
-    const osc = ctx.createOscillator()
-    const gain = ctx.createGain()
-    osc.type = 'sine'
-    osc.frequency.value = 880
-    gain.gain.setValueAtTime(0.0001, ctx.currentTime)
-    gain.gain.exponentialRampToValueAtTime(0.12, ctx.currentTime + 0.02)
-    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.6)
-    osc.connect(gain).connect(ctx.destination)
-    osc.start()
-    osc.stop(ctx.currentTime + 0.65)
-    osc.onended = () => void ctx.close()
-  } catch {
-    // звук не обязателен
-  }
-}
-
 interface Props {
   /** null, пока задачи не загрузились */
   tasks: Task[] | null
@@ -52,8 +34,8 @@ interface Props {
 }
 
 /**
- * Окно напоминания на компьютере и в браузере, как в десктопном TickTick: срок, название, начало заметки,
- * «Отсрочка» и «Выполнено». Системное уведомление Windows показываем тоже, если человек его разрешил
+ * Окно напоминания на компьютере и в приложении: срок, название, начало заметки,
+ * «Отсрочка» и «Выполнено». Использует выбранный в Настройках рингтон уведомления и вибрацию.
  */
 export function ReminderPopups({ tasks, onOpen, onDone }: Props) {
   const [shown, setShown] = useState<DueReminder[]>([])
@@ -66,11 +48,25 @@ export function ReminderPopups({ tasks, onOpen, onDone }: Props) {
   useEffect(() => {
     if (tasks === null) return
     const tick = () => {
+      try {
+        if (localStorage.getItem('tt_reminder_popup') === '0') {
+          setShown([])
+          return
+        }
+      } catch {}
       const now = Date.now()
-      const list = dueReminders(tasksRef.current ?? [], { now, tz: Intl.DateTimeFormat().resolvedOptions().timeZone }, handled.current, MAX_AGE_MS).filter((r) => (snoozed.current.get(r.key) ?? 0) <= now)
+      const enriched = withDefaultReminders(tasksRef.current ?? [])
+      const list = dueReminders(enriched, { now, tz: Intl.DateTimeFormat().resolvedOptions().timeZone }, handled.current, MAX_AGE_MS).filter(
+        (r) => (snoozed.current.get(r.key) ?? 0) <= now,
+      )
       const fresh = list.filter((r) => !announced.current.has(r.key))
       if (fresh.length) {
-        chime()
+        playNotificationSound()
+        try {
+          if (localStorage.getItem('tt_vibrate_notif') !== '0' && typeof navigator !== 'undefined' && navigator.vibrate) {
+            navigator.vibrate([150, 80, 150])
+          }
+        } catch {}
         for (const r of fresh) {
           announced.current.add(r.key)
           if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {

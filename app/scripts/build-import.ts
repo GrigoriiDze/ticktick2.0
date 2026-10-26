@@ -18,5 +18,5 @@ export function buildImport(desktop: DesktopData): ImportBundle {
     if (!prev || c.day < prev) firstDay.set(c.habitId, c.day)
   }
   const habits = desktop.habits.map((h) => convertHabit(h, firstDay.get(`tt-h-${h.id}`) ?? null).value).filter((h): h is NonNullable<typeof h> => h !== null)
-  return { version: 1, groups, columns, projects, tasks, habits, checkins }
+  return { version: 1, groups, columns, projects, tasks, habits, checkins, files: desktop.files ?? [] }
 }

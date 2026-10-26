@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import { CheckIcon, ChevronRight } from './icons'
 
 export interface PopItem {
@@ -33,10 +34,11 @@ export function PopMenu({ items, label, onClose }: Props) {
     window.addEventListener('keydown', key)
     return () => window.removeEventListener('keydown', key)
   })
-  return (
+
+  const content = (
     <>
-      <div className={out ? 'scrim on top leaving' : 'scrim on top'} onClick={dismiss} />
-      <div className={out ? 'pop leaving' : 'pop'} role="menu" aria-label={label}>
+      <div className={out ? 'scrim on top leaving' : 'scrim on top'} style={{ zIndex: 1999 }} onClick={dismiss} />
+      <div className={out ? 'pop leaving' : 'pop'} style={{ zIndex: 2000 }} role="menu" aria-label={label}>
         {items.map((it) => (
           <button
             key={it.key}
@@ -59,4 +61,9 @@ export function PopMenu({ items, label, onClose }: Props) {
       </div>
     </>
   )
+
+  if (typeof document !== 'undefined') {
+    return createPortal(content, document.body)
+  }
+  return content
 }

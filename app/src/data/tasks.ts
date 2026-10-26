@@ -135,6 +135,22 @@ export function createTasksRepo(db: Firestore, uid: string) {
       return write(id, clean(patch))
     },
 
+    /** Пакетное обновление задач в одном Firestore batch (моментальный перенос) */
+    async batchUpdate(ids: string[], patch: TaskPatch): Promise<void> {
+      const cleaned = clean(patch)
+      if (Object.keys(cleaned).length === 0 || ids.length === 0) return
+      for (let i = 0; i < ids.length; i += 400) {
+        const batch = writeBatch(db)
+        for (const id of ids.slice(i, i + 400)) {
+          const stamped = { ...cleaned, updatedAt: serverTimestamp() }
+          batch.update(ref(id), stamped)
+          const old = known.get(id)
+          if (old) known.set(id, { ...old, ...(cleaned as Partial<Task>) })
+        }
+        await batch.commit()
+      }
+    },
+
     complete(id: string, done: boolean): Promise<void> {
       return write(id, { status: done ? 'done' : 'open', completedAt: done ? Date.now() : null })
     },

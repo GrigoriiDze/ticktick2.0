@@ -203,3 +203,10 @@ export const ViewIcon = (p: P) => (
     <path d="M11.5 7h8M11.5 17h8" />
   </svg>
 )
+
+
+export const FilterIcon = (p: P) => (
+  <svg {...base(p)} aria-hidden="true">
+    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+  </svg>
+)

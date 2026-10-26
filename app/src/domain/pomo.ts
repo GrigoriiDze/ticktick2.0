@@ -1,3 +1,5 @@
+import { StorageService, STORAGE_KEYS } from '../platform/storage'
+
 export type PomoMode = 'pomo' | 'shortBreak' | 'longBreak' | 'stopwatch'
 export type PomoStatus = 'idle' | 'running' | 'paused'
 
@@ -16,21 +18,12 @@ export const POMO_DURATIONS: Record<'pomo' | 'shortBreak' | 'longBreak', number>
   longBreak: 15 * 60,
 }
 
-const STORAGE_KEY = 'pomo_sessions'
-
 export function loadFocusSessions(): FocusSession[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    return raw ? (JSON.parse(raw) as FocusSession[]) : []
-  } catch {
-    return []
-  }
+  return StorageService.get<FocusSession[]>(STORAGE_KEYS.POMO_SESSIONS, [])
 }
 
 export function saveFocusSessions(sessions: FocusSession[]): void {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(sessions.slice(-200)))
-  } catch {}
+  StorageService.set(STORAGE_KEYS.POMO_SESSIONS, sessions.slice(-200))
 }
 
 /** Считает минуты фокуса за указанный день (по полуночи в локальной таймзоне) */

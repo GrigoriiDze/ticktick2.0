@@ -1,16 +1,16 @@
 export type ThemeMode = 'system' | 'light' | 'dark'
 
-const KEY = 'theme'
+const KEY = 'tt_theme_v3'
 export const THEME_EVENT = 'themechange'
 
 export function getTheme(): ThemeMode {
   try {
     const v = localStorage.getItem(KEY)
-    if (v === 'light' || v === 'dark') return v
+    if (v === 'light' || v === 'dark' || v === 'system') return v
   } catch {
-    // хранилище недоступно, берём системную
+    // хранилище недоступно, берём светлую по умолчанию
   }
-  return 'system'
+  return 'light'
 }
 
 /** Тёмная ли тема сейчас: выбранная вручную или системная */
@@ -23,14 +23,31 @@ export function isDark(): boolean {
 
 function apply(mode: ThemeMode): void {
   const root = document.documentElement
-  if (mode === 'system') root.removeAttribute('data-theme')
-  else root.setAttribute('data-theme', mode)
+  if (mode === 'system') {
+    const dark = typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches
+    root.setAttribute('data-theme', dark ? 'dark' : 'light')
+  } else {
+    root.setAttribute('data-theme', mode)
+  }
   window.dispatchEvent(new Event(THEME_EVENT))
 }
 
-/** Применяет сохранённую тему до первой отрисовки, чтобы не мигало */
+export function applyDisplayPrefs(): void {
+  if (typeof document === 'undefined') return
+  const root = document.documentElement
+  try {
+    const fontSize = localStorage.getItem('tt_font_size') || 'normal'
+    root.setAttribute('data-font-size', fontSize)
+    root.setAttribute('data-hide-sidebar-counts', localStorage.getItem('tt_hide_sidebar_counts') === '1' ? '1' : '0')
+    root.setAttribute('data-hide-notes', localStorage.getItem('tt_hide_notes') === '1' ? '1' : '0')
+    root.setAttribute('data-hide-list-color', localStorage.getItem('tt_hide_list_color') === '1' ? '1' : '0')
+  } catch {}
+}
+
+/** Применяет сохранённую тему и настройки экрана до первой отрисовки, чтобы не мигало */
 export function initTheme(): void {
   apply(getTheme())
+  applyDisplayPrefs()
 }
 
 export function setTheme(mode: ThemeMode): void {
@@ -58,7 +75,7 @@ export const ACCENTS: Array<{ id: Accent; title: string; color: string }> = [
   { id: 'indigo', title: 'Индиго', color: '#6366f1' },
 ]
 
-const ACCENT_KEY = 'accent'
+const ACCENT_KEY = 'tt_accent_v3'
 
 export function getAccent(): Accent {
   try {
@@ -67,8 +84,8 @@ export function getAccent(): Accent {
   } catch {
     // хранилище недоступно, берём по умолчанию
   }
-  // На компьютере TickTick синий, на телефоне у клиента оранжевый
-  return typeof window !== 'undefined' && window.matchMedia?.('(min-width: 900px)').matches ? 'blue' : 'orange'
+  // В оригинальном TickTick по умолчанию фирменный синий #4772fa на всех платформах
+  return 'blue'
 }
 
 function applyAccent(a: Accent): void {
@@ -77,6 +94,7 @@ function applyAccent(a: Accent): void {
 
 export function initAccent(): void {
   applyAccent(getAccent())
+  applyDisplayPrefs()
 }
 
 export function setAccent(a: Accent): void {

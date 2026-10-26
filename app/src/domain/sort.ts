@@ -2,21 +2,40 @@ import { compareTasks, type DateCtx } from './dates'
 import { plainText } from './extras'
 import type { Task } from './types'
 
-export type SortMode = 'date' | 'priority' | 'title'
+export type SortMode = 'manual' | 'date' | 'priority' | 'title'
+export type SortOrder = 'asc' | 'desc'
 
 export const SORT_MODES: Array<{ id: SortMode; title: string }> = [
+  { id: 'manual', title: 'По умолчанию' },
   { id: 'date', title: 'По сроку' },
   { id: 'priority', title: 'По важности' },
   { id: 'title', title: 'По названию' },
 ]
 
 /** Порядок в списке. Закреплённые всегда сверху, дальше по выбранному признаку, при равенстве по сроку */
-export function compareFor(mode: SortMode, ctx: DateCtx): (a: Task, b: Task) => number {
-  if (mode === 'date') return (a, b) => compareTasks(a, b, ctx)
-  return (a, b) => {
+export function compareFor(
+  mode: SortMode,
+  ctxOrOrder: DateCtx | SortOrder,
+  maybeCtx?: DateCtx,
+): (a: Task, b: Task) => number {
+  const order: SortOrder = typeof ctxOrOrder === 'string' ? ctxOrOrder : 'asc'
+  const ctx: DateCtx = typeof ctxOrOrder === 'string' ? maybeCtx! : ctxOrOrder
+
+  return (a: Task, b: Task) => {
     if ((a.pinnedAt !== null) !== (b.pinnedAt !== null)) return a.pinnedAt !== null ? -1 : 1
-    if (mode === 'priority') return b.priority - a.priority || compareTasks(a, b, ctx)
-    return a.title.localeCompare(b.title, 'ru') || compareTasks(a, b, ctx)
+
+    let diff = 0
+    if (mode === 'manual') {
+      diff = a.sortOrder - b.sortOrder || compareTasks(a, b, ctx)
+    } else if (mode === 'date') {
+      diff = compareTasks(a, b, ctx)
+    } else if (mode === 'priority') {
+      diff = b.priority - a.priority || compareTasks(a, b, ctx)
+    } else if (mode === 'title') {
+      diff = a.title.localeCompare(b.title, 'ru') || compareTasks(a, b, ctx)
+    }
+
+    return order === 'desc' ? -diff : diff
   }
 }
 

@@ -11,6 +11,7 @@
     "test:sync": "firebase emulators:exec --config ../firebase.json --only firestore --project demo-ticktick \"vitest run src/data\"",
     "release": "node scripts/release.mjs",
     "web": "node scripts/web.mjs",
+    "mcp": "node scripts/mcp-server.mjs",
     "desktop": "tauri build",
     "desktop:dev": "tauri dev"
   },

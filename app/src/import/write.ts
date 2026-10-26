@@ -1,5 +1,14 @@
 import { collection, doc, getDocs, serverTimestamp, writeBatch, type Firestore } from 'firebase/firestore'
-import type { ImportedCheckin, ImportedColumn, ImportedGroup, ImportedHabit, ImportedProject, ImportedTask } from './ticktick'
+import { chunkId, splitChunks } from '../domain/files'
+import type {
+  ImportedAttachment,
+  ImportedCheckin,
+  ImportedColumn,
+  ImportedGroup,
+  ImportedHabit,
+  ImportedProject,
+  ImportedTask,
+} from './ticktick'
 
 export interface WriteResult {
   groups: { added: number; existing: number }
@@ -8,6 +17,7 @@ export interface WriteResult {
   tasks: { added: number; existing: number }
   habits: { added: number; existing: number }
   checkins: { added: number; existing: number }
+  files?: { added: number; existing: number }
 }
 
 const BATCH = 400
@@ -37,6 +47,7 @@ export async function writeImport(
   onProgress?: (done: number, total: number) => void,
   groups: ImportedGroup[] = [],
   columns: ImportedColumn[] = [],
+  files: ImportedAttachment[] = [],
 ): Promise<WriteResult> {
   const haveGroups = await existingIds(db, uid, 'projectGroups')
   const haveColumns = await existingIds(db, uid, 'columns')
@@ -44,6 +55,7 @@ export async function writeImport(
   const haveTasks = await existingIds(db, uid, 'tasks')
   const haveHabits = await existingIds(db, uid, 'habits')
   const haveCheckins = await existingIds(db, uid, 'habitCheckins')
+  const haveFiles = files.length > 0 ? await existingIds(db, uid, 'taskFiles') : new Set<string>()
 
   const newGroups = groups.filter((g) => !haveGroups.has(g.id))
   const newColumns = columns.filter((c) => !haveColumns.has(c.id))
@@ -51,9 +63,31 @@ export async function writeImport(
   const newTasks = tasks.filter((t) => !haveTasks.has(t.id))
   const newHabits = habits.filter((h) => !haveHabits.has(h.id))
   const newCheckins = checkins.filter((c) => !haveCheckins.has(c.id))
-  const total = newGroups.length + newColumns.length + newProjects.length + newTasks.length + newHabits.length + newCheckins.length
+  const newFiles = files.filter((f) => !haveFiles.has(f.id))
 
   type Op = { path: string[]; data: Record<string, unknown> }
+  const fileOps: Op[] = []
+  for (const f of newFiles) {
+    const chunks = splitChunks(f.base64)
+    fileOps.push({
+      path: ['users', uid, 'taskFiles', f.id],
+      data: {
+        taskId: f.taskId,
+        name: f.name,
+        type: f.type,
+        size: f.size,
+        chunks: chunks.length,
+        createdAt: serverTimestamp(),
+      },
+    })
+    chunks.forEach((data, index) => {
+      fileOps.push({
+        path: ['users', uid, 'taskFileChunks', chunkId(f.id, index)],
+        data: { fileId: f.id, index, data },
+      })
+    })
+  }
+
   const ops: Op[] = [
     ...newGroups.map((g) => ({ path: ['users', uid, 'projectGroups', g.id], data: body(g) })),
     ...newColumns.map((c) => ({ path: ['users', uid, 'columns', c.id], data: body(c) })),
@@ -64,8 +98,10 @@ export async function writeImport(
       path: ['users', uid, 'habitCheckins', c.id],
       data: (({ id: _id, ...rest }) => ({ ...rest, createdAt: serverTimestamp(), updatedAt: serverTimestamp() }))(c),
     })),
+    ...fileOps,
   ]
 
+  const total = ops.length
   let done = 0
   for (let i = 0; i < ops.length; i += BATCH) {
     const batch = writeBatch(db)
@@ -82,5 +118,6 @@ export async function writeImport(
     tasks: { added: newTasks.length, existing: tasks.length - newTasks.length },
     habits: { added: newHabits.length, existing: habits.length - newHabits.length },
     checkins: { added: newCheckins.length, existing: checkins.length - newCheckins.length },
+    files: { added: newFiles.length, existing: files.length - newFiles.length },
   }
 }
